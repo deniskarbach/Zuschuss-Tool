@@ -1,0 +1,24 @@
+Status;Funktion;Reserve_D;Behinderung;Soziales;Anwesenheit;Reserve_H;Reserve_I;Reserve_J;Reserve_K;Reserve_L;Nachname;Vorname;Geburtsdatum;Kontakt;PLZ;Wohnort;Geschlecht;Platz_1;Platz_2;Platz_3;Platz_4;Platz_5;Platz_6;Platz_7;Alter;Landkreis;Bundesland
+Angemeldet;TN;--;--;--;3;--;--;--;--;--;Neumann;Sophie;08.06.2011;sophie.n@test.de;56112;Lahnstein;w;;;;;;;13;Rhein-Lahn-Kreis;Rheinland-Pfalz
+Angemeldet;TN;--;--;--;3;--;--;--;--;--;Schwarz;Lukas;25.12.2009;lukas.s@test.de;56346;Nastätten;m;;;;;;;15;Rhein-Lahn-Kreis;Rheinland-Pfalz
+Angemeldet;TN;--;--;--;3;--;--;--;--;--;Reuter;Marie;14.03.2012;marie.r@test.de;56130;Bad Ems;w;;;;;;;12;Rhein-Lahn-Kreis;Rheinland-Pfalz
+Angemeldet;TN;--;--;--;3;--;--;--;--;--;Voss;Jonas;07.08.2010;jonas.v@test.de;57610;Altenkirchen;m;;;;;;;14;Landkreis Altenkirchen;Rheinland-Pfalz
+Angemeldet;TN;--;--;--;3;--;--;--;--;--;Janssen;Emily;19.01.2011;emily.j@test.de;57610;Altenkirchen;w;;;;;;;13;Landkreis Altenkirchen;Rheinland-Pfalz
+Angemeldet;TN;--;--;--;3;--;--;--;--;--;Conrad;David;02.05.2009;david.c@test.de;57518;Betzdorf;m;;;;;;;15;Landkreis Altenkirchen;Rheinland-Pfalz
+Angemeldet;TN;--;--;--;3;--;--;--;--;--;Schuster;Lara;23.09.2012;lara.s@test.de;55232;Alzey;w;;;;;;;12;Landkreis Alzey-Worms;Rheinland-Pfalz
+Angemeldet;TN;--;--;--;3;--;--;--;--;--;Möller;Tobias;11.11.2010;tobias.m@test.de;55543;Bad Kreuznach;m;;;;;;;14;Landkreis Bad Kreuznach;Rheinland-Pfalz
+Angemeldet;TN;--;--;--;3;--;--;--;--;--;Kühn;Isabella;05.04.2011;isabella.k@test.de;54516;Wittlich;w;;;;;;;13;Landkreis Bernkastel-Wittlich;Rheinland-Pfalz
+Angemeldet;TN;--;--;--;3;--;--;--;--;--;Schumacher;Alexander;17.07.2009;alexander.s@test.de;55116;Mainz;m;;;;;;;15;Kreisfreie Stadt Mainz;Rheinland-Pfalz
+Angemeldet;TN;--;--;--;3;--;--;--;--;--;Ziegler;Sophia;29.12.2012;sophia.z@test.de;55218;Ingelheim;w;;;;;;;12;Landkreis Mainz-Bingen;Rheinland-Pfalz
+Angemeldet;TN;--;--;--;3;--;--;--;--;--;Marx;Maximilian;08.02.2010;maximilian.m@test.de;55469;Simmern;m;;;;;;;14;Landkreis Rhein-Hunsrück-Kreis;Rheinland-Pfalz
+Angemeldet;TN;--;--;--;3;--;--;--;--;--;Böttcher;Emilia;21.06.2011;emilia.b@test.de;65385;Rüdesheim;w;;;;;;;13;Verbandsgemeinde Rüdesheim;Hessen
+Angemeldet;TN;--;--;--;3;--;--;--;--;--;Jäger;Felix;03.10.2009;felix.j@test.de;54329;Konz;m;;;;;;;15;Landkreis Trier-Saarburg;Rheinland-Pfalz
+Angemeldet;TN;--;--;--;3;--;--;--;--;--;Naumann;Mia;16.03.2012;mia.na@test.de;56414;Hundsangen;w;;;;;;;12;Westerwaldkreis;Rheinland-Pfalz
+Angemeldet;TN;--;--;--;3;--;--;--;--;--;Krämer;Nico;28.08.2010;nico.kr@test.de;56457;Westerburg;m;;;;;;;14;Westerwaldkreis;Rheinland-Pfalz
+Angemeldet;TN;--;--;--;3;--;--;--;--;--;Henning;Charlotte;09.01.2011;charlotte.h@test.de;60311;Frankfurt;w;;;;;;;13;Frankfurt am Main;Hessen
+Angemeldet;TN;--;--;--;3;--;--;--;--;--;Herbst;Philipp;22.05.2009;philipp.h@test.de;50667;Köln;m;;;;;;;15;Köln;Nordrhein-Westfalen
+Angemeldet;TN;--;MmB;--;3;--;--;--;--;--;Förster;Antonia;04.11.2012;antonia.f@test.de;56346;Nastätten;w;;;;;;;12;Rhein-Lahn-Kreis;Rheinland-Pfalz
+Angemeldet;TN;--;--;Arbeitslos;3;--;--;--;--;--;Brendel;Vincent;15.06.2010;vincent.b@test.de;57610;Altenkirchen;m;;;;;;;14;Landkreis Altenkirchen;Rheinland-Pfalz
+Angemeldet;MA;--;--;--;3;--;--;--;--;--;Koch;Thomas;14.03.1987;thomas.ma@test.de;56130;Bad Ems;m;;;;;;;37;Rhein-Lahn-Kreis;Rheinland-Pfalz
+Angemeldet;MA;--;--;--;3;--;--;--;--;--;Mayer;Christine;22.07.1981;christine.ma@test.de;57610;Altenkirchen;w;;;;;;;43;Landkreis Altenkirchen;Rheinland-Pfalz
+Angemeldet;REF;--;--;--;3;--;--;--;--;--;Stark;Dr. Peter;06.09.1970;peter.ref@test.de;56346;Nastätten;m;;;;;;;54;Rhein-Lahn-Kreis;Rheinland-Pfalz

@@ -1,0 +1,1 @@
+=WENNFEHLER(FILTER(INPUT_ONLINE!A2:AAN748; REGEXMATCH(INPUT_ONLINE!A1:AAN1; "(?i)Geburtsdatum|Geburtstag|Geb.*Dat") * NICHT(REGEXMATCH(INPUT_ONLINE!A1:AAN1; "(?i)Ort|Name"))); "k.A.:Geburtsdatum")
