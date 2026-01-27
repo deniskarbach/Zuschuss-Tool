@@ -1,0 +1,17 @@
+COL_DEF Neue Einträge für Google Sheets
+=======================================
+
+Füge diese Zeilen in das COL_DEF Blatt ein:
+
+| A (KEY) | B (SCHLUESSEL) | C (TN_HEADER) | D (TYP) | E (FORMEL) |
+|---------|----------------|---------------|---------|------------|
+| * | Vor- u. Zuname | - | KOMBINIERT | {Vorname} & " " & {Nachname} |
+| * | Kreis | Landkreis | DIREKT | |
+| * | Geburts-jahr | Geburtsdatum | FORMEL | YEAR({Geburtsdatum}) |
+| * | Teiln. Tage | Anwesenheit | DIREKT | |
+
+Tab-getrennt zum Einfügen:
+*	Vor- u. Zuname	-	KOMBINIERT	{Vorname} & " " & {Nachname}
+*	Kreis	Landkreis	DIREKT	
+*	Geburts-jahr	Geburtsdatum	FORMEL	YEAR({Geburtsdatum})
+*	Teiln. Tage	Anwesenheit	DIREKT	

@@ -1,0 +1,30 @@
+={
+"KEY" \ "SCHLUESSEL" \ "TN_HEADER" \ "TYP" \ "FORMEL";
+"*" \ "Name" \ "Nachname" \ "DIREKT" \ "";
+"*" \ "Vorname" \ "Vorname" \ "DIREKT" \ "";
+"*" \ "Geburtsdatum" \ "Geburtsdatum" \ "DIREKT" \ "";
+"*" \ "Jahr" \ "Geburtsdatum" \ "FORMEL" \ "YEAR({Geburtsdatum})";
+"*" \ "PLZ" \ "PLZ" \ "DIREKT" \ "";
+"*" \ "Ort" \ "Wohnort" \ "DIREKT" \ "";
+"*" \ "Wohnort" \ "Wohnort" \ "DIREKT" \ "";
+"*" \ "PLZ+Ort" \ "-" \ "KOMBINIERT" \ "{PLZ} & "", "" & {Ort}";
+"*" \ "Straße" \ "Straße" \ "DIREKT" \ "";
+"*" \ "Alter" \ "Alter" \ "DIREKT" \ "";
+"*" \ "Landkreis" \ "Landkreis" \ "DIREKT" \ "";
+"*" \ "Kreis" \ "Landkreis" \ "DIREKT" \ "";
+"*" \ "Bundesland" \ "Bundesland" \ "DIREKT" \ "";
+"*" \ "Funktion" \ "Funktion" \ "DIREKT" \ "";
+"*" \ "Anwesenheit" \ "Anwesenheit" \ "DIREKT" \ "";
+"*" \ "Teiln. Tage" \ "Anwesenheit" \ "DIREKT" \ "";
+"*" \ "Unterschrift" \ "-" \ "LEER" \ "";
+"*" \ "Name+Vorname" \ "-" \ "KOMBINIERT" \ "{Nachname} & "", "" & {Vorname}";
+"*" \ "Vorname+Name" \ "-" \ "KOMBINIERT" \ "{Vorname} & "" "" & {Nachname}";
+"*" \ "Vor- u. Zuname" \ "-" \ "KOMBINIERT" \ "{Vorname} & "" "" & {Nachname}";
+"*" \ "Geburts-jahr" \ "Geburtsdatum" \ "FORMEL" \ "YEAR({Geburtsdatum})";
+"*" \ "Wohnort_Land" \ "Bundesland" \ "FORMEL" \ "";
+"*" \ "Teilgenommen als" \ "Funktion" \ "KOMBINIERT" \ "";
+"*" \ "Eigenschaften" \ "-" \ "KOMBINIERT" \ "";
+"*" \ "Anwesenheitstage" \ "Anwesenheit" \ "DIREKT" \ "";
+"*" \ "PLZ, Wohnort" \ "-" \ "KOMBINIERT" \ "";
+"*" \ "Veranst.-Tage" \ "Anwesenheit" \ "DIREKT" \ ""
+}

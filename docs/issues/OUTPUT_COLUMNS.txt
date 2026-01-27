@@ -1,0 +1,59 @@
+Experten-Diskussion: Runde 2 - Fokus "Data Flow"
+Neue Prämisse des Users:
+
+"Warum brauchen wir Original-Header?" (Implikation: Output-Header-Namen sind zweitrangig oder ergeben sich von selbst).
+"Wir nutzen OUTPUT_COLUMNS." (Das definiert die Ziel-Struktur).
+"Feste Werte aus TN_LISTE verwenden." (Basis sind TN-Daten).
+"Spaltenwechsel für die Daten erzeugen." (Mapping).
+Analyse der Experten
+Dr. Architect: "Der User hat einen entscheidenden Punkt gemacht. Wenn wir in RULES definieren: OUTPUT_COLUMNS = A; B; C Dann definieren wir damit: Spalte 1 = A, Spalte 2 = B, Spalte 3 = C. Wir müssen A, B, C also so formulieren, dass sie Daten liefern. Wir müssen nicht unbedingt sagen Label=Daten, sondern einfach nur Daten."
+
+Mike (Parser): "Genau. Wenn ich in der Config sage: {Vorname} {Nachname}, dann ist das die Definition für Spalte 1. Der Header im Output ist dann vielleicht einfach {Vorname} {Nachname}, aber die Daten stimmen. Und darum geht es."
+
+Diskussion: Wie sehen "Kombinationen" konkret aus?
+Szenario: Wir wollen "Vorname Nachname" in einer Spalte.
+
+Option A (Excel-Formel-Style): Vorname & " " & Nachname
+
+Pro: Bekannt für Excel-User.
+Contra: Anführungszeichen in einem String (der selbst in einer Zelle steht) sind die Hölle beim Parsen ("" "" ).
+Option B (Template-Style / Platzhalter): {Vorname} {Nachname}
+
+Pro: Extrem sauber. Keine Anführungszeichen-Probleme.
+Contra: Braucht eine Konvention ({}).
+Lisa (UX): "Der User sagte: 'Sonderfälle beachten... Kombination von Spalten'. Wenn wir Option B nehmen, ist das sehr intuitiv. {PLZ} {Wohnort} ist selbsterklärend."
+
+Bob (Data Integrity): "Und was ist mit festen Werten aus der TN_LISTE? Der User sagte 'feste Werte aus der TN_LISTE angeben'. Das heißt, wir nutzen die exakten Spaltennamen als Bausteine."
+
+Die Lösung: "Direct Data Definition"
+Wir definieren in OUTPUT_COLUMNS einfach eine Liste von Inhalts-Definitionen.
+
+Regelwerk:
+
+Jedes Element in der Liste (getrennt durch ;) erzeugt eine Spalte.
+Alles in {...} ist ein Spaltenname aus der TN_LISTE.
+Alles außerhalb ist Text/Trennzeichen.
+Funktionen wie YEAR(...) sind erlaubt.
+Beispiel Konfiguration: {Vorname} {Nachname}; {Wohnort}; {Landkreis}; YEAR({Geburtsdatum}); {Anwesenheit}
+
+Ergebnis im Output (Daten):
+
+Spalte 1: "Max Mustermann"
+Spalte 2: "Berlin"
+Spalte 3: "Rhein-Erft-Kreis"
+Spalte 4: "2005"
+Spalte 5: "5"
+Lisa: "Das beantwortet die Frage 'Wie erzeugen wir den Spaltenwechsel?'. Wir definieren einfach Spalte für Spalte den Inhalt."
+
+Dr. Architect: "Und wir sparen uns das Labeling (Name=...). Wenn der User schöne Header will, kann er die erste Zeile der generierten Tabelle manuell überschreiben oder wir nutzen den Definitions-String als Header."
+
+Ergebnis der Runde
+Die Syntax für OUTPUT_COLUMNS wird auf das Daten-Erzeugen reduziert.
+
+Format: Definition1; Definition2; Definition3
+
+Einfaches Feld: {Wohnort}
+Kombination: {Vorname} {Nachname}
+Mit Komma: {Nachname}, {Vorname}
+Formel: YEAR({Geburtsdatum})
+Das erfüllt "Keine Hilfsspalten", "Einfache Ergebnisse", "Feste Werte aus TN_LISTE nutzen".

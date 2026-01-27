@@ -1,0 +1,255 @@
+=LET(
+  filename_full; CELL("filename"; A1);
+  blattname; MID(filename_full; FIND("]"; filename_full) + 1; 100);
+  gebiet; IFERROR(VLOOKUP(blattname; CONFIG!A:B; 2; 0); "BLATT_NICHT_KONFIGURIERT");
+  event_typ_clean; SUBSTITUTE(TRIM(event_typ); " "; "_");
+  rule_key; gebiet & "_" & event_typ_clean;
+  target_lk; gebiet;
+  headers; INDEX(tn_range; 1);
+  data_rows; FILTER(tn_range; ROW(tn_range) > MIN(ROW(tn_range)));
+  get_col; LAMBDA(name; IFERROR(MATCH(name; headers; 0); 0));
+  get_col_def; LAMBDA(schluessel;
+    LET(
+      exact; FILTER(COL_DEF!A:E; (COL_DEF!A:A=rule_key)*(COL_DEF!B:B=schluessel));
+      wildcard; FILTER(COL_DEF!A:E; (COL_DEF!A:A="*")*(COL_DEF!B:B=schluessel));
+      IFERROR(INDEX(exact;1); IFERROR(INDEX(wildcard;1); ""))
+    )
+  );
+  get_rule; LAMBDA(col; IFERROR(VLOOKUP(rule_key; CACHE_RULES!A:X; col; 0); "NOT_FOUND"));
+  rule_check; get_rule(1);
+  min_tn; LET(v; get_rule(5); IF(OR(v=""; v="--"; v="NOT_FOUND"); 0; VALUE(v)));
+  min_alter; LET(v; get_rule(6); IF(OR(v=""; v="--"; v="NOT_FOUND"); 0; VALUE(v)));
+  max_alter; LET(v; get_rule(7); IF(OR(v=""; v="--"; v="NOT_FOUND"); 999; VALUE(v)));
+  min_alter_soft; LET(v; get_rule(8); IF(OR(v=""; v="--"; v="NOT_FOUND"); min_alter; VALUE(v)));
+  min_tage; LET(v; get_rule(9); IF(OR(v=""; v="--"; v="NOT_FOUND"); 0; VALUE(v)));
+  min_quote_raw; LET(v; get_rule(10); IF(OR(v=""; v="--"; v="NOT_FOUND"); 0; VALUE(v)));
+  min_quote; IF(min_quote_raw > 1; min_quote_raw / 100; min_quote_raw);
+  quote_modus; LET(v; get_rule(11); IF(OR(v=""; v="--"; v="NOT_FOUND"); "MEHRHEIT"; UPPER(TRIM(v))));
+  quote_aktion; LET(v; get_rule(12); IF(OR(v=""; v="--"; v="NOT_FOUND"); "NUR_LOKALE"; UPPER(TRIM(v))));
+  target_groups; LET(v; get_rule(13); IF(OR(v=""; v="--"; v="NOT_FOUND"); "TN;MA;LEITUNG;REF"; TRIM(v)));
+  tg_local_only; LET(v; get_rule(14); IF(OR(v=""; v="--"; v="NOT_FOUND"); "TN"; TRIM(v)));
+  quote_bezug; LET(v; get_rule(15); IF(OR(v=""; v="--"; v="NOT_FOUND"); "TN"; TRIM(v)));
+  alter_config; LET(v; get_rule(16); IF(OR(v=""; v="--"; v="NOT_FOUND"); ""; TRIM(v)));
+  label_map; LET(v; get_rule(17); IF(OR(v=""; v="--"; v="NOT_FOUND"); ""; TRIM(v)));
+  status_filter; LET(v; get_rule(22); IF(OR(v=""; v="--"; v="NOT_FOUND"); "Angemeldet"; TRIM(v)));
+  min_anwesenheit; LET(v; get_rule(23); IF(OR(v=""; v="--"; v="NOT_FOUND"); 0; VALUE(v)));
+  sort_order; LET(v; get_rule(19); IF(OR(v=""; v="--"; v="NOT_FOUND"); "LOKAL_FIRST;ALPHA"; TRIM(v)));
+  output_cols; LET(v; get_rule(18); IF(OR(v=""; v="--"; v="NOT_FOUND"); "Name;Vorname;PLZ;Ort"; TRIM(v)));
+  zonen_config; LET(v; get_rule(24); IF(OR(v=""; v="--"; v="NOT_FOUND"); ""; TRIM(v)));
+  event_tage; LET(
+    start_num; IF(ISNUMBER(event_start); event_start; IFERROR(DATEVALUE(event_start); 0));
+    ende_num; IF(ISNUMBER(event_end); event_end; IFERROR(DATEVALUE(event_end); 0));
+    IF(AND(start_num > 0; ende_num > 0); ende_num - start_num + 1; 0)
+  );
+  col_idx_status; get_col("Status");
+  col_idx_funktion; get_col("Funktion");
+  col_idx_anwesenheit; get_col("Anwesenheit");
+  col_idx_alter; get_col("Alter");
+  col_idx_landkreis; get_col("Landkreis");
+  col_idx_bundesland; get_col("Bundesland");
+  col_idx_nachname; get_col("Nachname");
+  col_idx_vorname; get_col("Vorname");
+  col_idx_plz; get_col("PLZ");
+  col_idx_wohnort; get_col("Wohnort");
+  col_idx_gebdatum; get_col("Geburtsdatum");
+  status_ok; LAMBDA(row; INDEX(row; ; col_idx_status) = status_filter);
+  active_rows; FILTER(data_rows; MAP(SEQUENCE(ROWS(data_rows)); LAMBDA(r; status_ok(INDEX(data_rows; r)))));
+  fn_filter; LAMBDA(row;
+    LET(fn; INDEX(row; ; col_idx_funktion);
+      ISNUMBER(SEARCH(fn; target_groups))
+    )
+  );
+  filtered_fn; FILTER(active_rows; MAP(SEQUENCE(ROWS(active_rows)); LAMBDA(r; fn_filter(INDEX(active_rows; r)))));
+  filtered_fn_final; IF(OR(filter_function=""; filter_function=0);
+    filtered_fn;
+    FILTER(filtered_fn; 
+      MAP(SEQUENCE(ROWS(filtered_fn)); 
+        LAMBDA(r; INDEX(filtered_fn; r; col_idx_funktion) = filter_function)
+      )
+    )
+  );
+  get_age_range; LAMBDA(fn;
+    LET(
+      pattern; fn & ":";
+      found_pos; IFERROR(SEARCH(pattern; alter_config); 0);
+      IF(found_pos = 0; 
+        HSTACK(min_alter_soft; max_alter);
+        LET(
+          after_colon; MID(alter_config; found_pos + LEN(pattern); 20);
+          next_semi; IFERROR(SEARCH(";"; after_colon); 99);
+          range_str; LEFT(after_colon; next_semi - 1);
+          dash_pos; SEARCH("-"; range_str);
+          fn_min; VALUE(LEFT(range_str; dash_pos - 1));
+          fn_max; VALUE(MID(range_str; dash_pos + 1; 10));
+          HSTACK(fn_min; fn_max)
+        )
+      )
+    )
+  );
+  age_filter; LAMBDA(row;
+    LET(
+      fn; INDEX(row; ; col_idx_funktion);
+      age; INDEX(row; ; col_idx_alter);
+      age_range; get_age_range(fn);
+      fn_min; INDEX(age_range; 1);
+      fn_max; INDEX(age_range; 2);
+      IF(fn = "TN";
+        IF(OR(age=""; NOT(ISNUMBER(age))); TRUE;
+          AND(age >= min_alter_soft; age <= max_alter)
+        );
+        IF(OR(age=""; NOT(ISNUMBER(age))); TRUE;
+          AND(age >= fn_min; age <= fn_max)
+        )
+      )
+    )
+  );
+  filtered_age; FILTER(filtered_fn_final; MAP(SEQUENCE(ROWS(filtered_fn_final)); LAMBDA(r; age_filter(INDEX(filtered_fn_final; r)))));
+  anw_filter; LAMBDA(row;
+    LET(anw; INDEX(row; ; col_idx_anwesenheit);
+      IF(min_anwesenheit = 0; TRUE;
+        IF(OR(anw=""; NOT(ISNUMBER(anw))); FALSE;
+          anw >= min_anwesenheit
+        )
+      )
+    )
+  );
+  filtered_anw; FILTER(filtered_age; MAP(SEQUENCE(ROWS(filtered_age)); LAMBDA(r; anw_filter(INDEX(filtered_age; r)))));
+  quote_relevant; FILTER(filtered_anw; 
+    MAP(SEQUENCE(ROWS(filtered_anw)); 
+      LAMBDA(r; ISNUMBER(SEARCH(INDEX(filtered_anw; r; col_idx_funktion); quote_bezug)))
+    )
+  );
+  quote_total; IFERROR(ROWS(quote_relevant); 0);
+  quote_lokal; IFERROR(
+    ROWS(FILTER(quote_relevant; 
+      MAP(SEQUENCE(ROWS(quote_relevant)); 
+        LAMBDA(r; INDEX(quote_relevant; r; col_idx_landkreis) = target_lk)
+      )
+    )); 0
+  );
+  quote_pct; IF(quote_total > 0; quote_lokal / quote_total; 0);
+  quote_erfuellt; IF(min_quote = 0; TRUE; 
+    IF(quote_modus = "PROZENT"; quote_pct >= min_quote; quote_lokal > quote_total - quote_lokal)
+  );
+  use_all; OR(
+    quote_aktion = "ALLE_IMMER";
+    AND(quote_aktion = "ALLE_WENN_ERFUELLT"; quote_erfuellt)
+  );
+  wohnort_filter; LAMBDA(row;
+    LET(
+      fn; INDEX(row; ; col_idx_funktion);
+      lk; INDEX(row; ; col_idx_landkreis);
+      needs_local; ISNUMBER(SEARCH(fn; tg_local_only));
+      IF(use_all; TRUE;
+        IF(needs_local; lk = target_lk; TRUE)
+      )
+    )
+  );
+  filtered_wohnort; FILTER(filtered_anw; MAP(SEQUENCE(ROWS(filtered_anw)); LAMBDA(r; wohnort_filter(INDEX(filtered_anw; r)))));
+  sorted_data; IF(ISNUMBER(SEARCH("LOKAL_FIRST"; sort_order));
+    LET(
+      lokale; IFERROR(FILTER(filtered_wohnort; 
+        MAP(SEQUENCE(ROWS(filtered_wohnort)); 
+          LAMBDA(r; INDEX(filtered_wohnort; r; col_idx_landkreis) = target_lk)
+        )
+      ); "");
+      ausw; IFERROR(FILTER(filtered_wohnort; 
+        MAP(SEQUENCE(ROWS(filtered_wohnort)); 
+          LAMBDA(r; INDEX(filtered_wohnort; r; col_idx_landkreis) <> target_lk)
+        )
+      ); "");
+      lok_sorted; IF(INDEX(lokale;1;1)=""; lokale; SORT(lokale; col_idx_nachname; TRUE));
+      aus_sorted; IF(INDEX(ausw;1;1)=""; ausw; SORT(ausw; col_idx_nachname; TRUE));
+      has_lok; AND(INDEX(lok_sorted;1;1)<>""; IFERROR(ROWS(lok_sorted)>0; FALSE));
+      has_aus; AND(INDEX(aus_sorted;1;1)<>""; IFERROR(ROWS(aus_sorted)>0; FALSE));
+      IF(has_lok; IF(has_aus; VSTACK(lok_sorted; aus_sorted); lok_sorted); IF(has_aus; aus_sorted; "LEER"))
+    );
+    SORT(filtered_wohnort; col_idx_nachname; TRUE)
+  );
+  cnt_final; IF(INDEX(sorted_data;1;1)="LEER"; 0; ROWS(sorted_data));
+  paginated; IF(OR(zone=""; zone=0); sorted_data;
+    IF(zonen_config = ""; sorted_data;
+      LET(
+        zone_sizes; TEXTSPLIT(zonen_config; ";");
+        page_size; VALUE(INDEX(zone_sizes; MIN(zone; COLUMNS(zone_sizes))));
+        cumulative; IF(zone = 1; 0; SUM(MAP(SEQUENCE(zone-1); LAMBDA(z; VALUE(INDEX(zone_sizes; z))))));
+        page_start; cumulative + 1;
+        page_end; cumulative + page_size;
+        IF(page_start > cnt_final; "";
+          CHOOSEROWS(sorted_data; SEQUENCE(MIN(page_size; cnt_final - page_start + 1); 1; page_start))
+        )
+      )
+    )
+  );
+  apply_label; LAMBDA(fn;
+    LET(
+      pattern; fn & "="";
+      found_pos; IFERROR(SEARCH(pattern; label_map); 0);
+      IF(found_pos = 0; fn;
+        LET(
+          after_eq; MID(label_map; found_pos + LEN(pattern); 50);
+          next_semi; IFERROR(SEARCH(";"; after_eq); 99);
+          LEFT(after_eq; next_semi - 1)
+        )
+      )
+    )
+  );
+  output_col_list; TEXTSPLIT(output_cols; ";");
+  num_output_cols; COLUMNS(output_col_list);
+  formatted_output; IF(INDEX(paginated;1;1)="LEER"; "LEER";
+    IF(INDEX(paginated;1;1)=""; "";
+      LET(
+        num_rows; ROWS(paginated);
+        MAKEARRAY(num_rows; num_output_cols; LAMBDA(r; c;
+          LET(
+            row; INDEX(paginated; r);
+            col_name; INDEX(output_col_list; c);
+            col_def; get_col_def(col_name);
+            tn_header; IFERROR(INDEX(col_def; 3); "");
+            col_typ; IFERROR(INDEX(col_def; 4); "DIREKT");
+            IF(col_typ = "DIREKT";
+              LET(
+                val; INDEX(row; ; get_col(tn_header));
+                IF(col_name = "Funktion"; apply_label(val); val)
+              );
+              IF(col_typ = "LEER"; "";
+                IF(col_typ = "FORMEL";
+                  IF(col_name = "Jahr"; 
+                    IFERROR(TEXT(INDEX(row; ; col_idx_gebdatum); "yyyy"); "");
+                    INDEX(row; ; get_col(tn_header))
+                  );
+                  IF(col_typ = "KOMBINIERT";
+                    IF(col_name = "PLZ+Ort";
+                      INDEX(row; ; col_idx_plz) & ", " & INDEX(row; ; col_idx_wohnort);
+                      IF(col_name = "Name+Vorname";
+                        INDEX(row; ; col_idx_nachname) & ", " & INDEX(row; ; col_idx_vorname);
+                        IF(col_name = "Vorname+Name";
+                          INDEX(row; ; col_idx_vorname) & " " & INDEX(row; ; col_idx_nachname);
+                          ""
+                        )
+                      )
+                    );
+                    IFERROR(INDEX(row; ; get_col(col_name)); "")
+                  )
+                )
+              )
+            )
+          )
+        ))
+      )
+    )
+  );
+  final_output; formatted_output;
+  IF(rule_check = "NOT_FOUND"; IF(debug; "❌ Key nicht gefunden: " & setup_key; "");
+    IF(AND(min_tage > 0; event_tage < min_tage); IF(debug; "⚠️ Mindestdauer nicht erreicht: " & event_tage & "/" & min_tage; "");
+      IF(cnt_final = 0; IF(debug; "⚠️ Keine Personen nach Filter"; "");
+        IF(cnt_final < min_tn; IF(debug; "⚠️ Min TN nicht erreicht: " & cnt_final & "/" & min_tn; "");
+          IF(debug; 
+            "✅ Key: " & setup_key & " | Quote: " & ROUND(quote_pct*100;1) & "% | UseAll: " & use_all & " | Count: " & cnt_final;
+            final_output
+          )
+        )
+      )
+    )
+  )
+)

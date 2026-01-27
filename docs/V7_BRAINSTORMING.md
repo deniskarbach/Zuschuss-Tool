@@ -365,3 +365,168 @@ Falls später Zuschussbeträge berechnet werden sollen, können folgende Spalten
 | FOERDER_TYP_MA=PAUSCHAL, SATZ_MA=50€ | 50€ |
 | **Gesamt** | **350€** |
 
+---
+
+## 9. Named Function API: ZUSCHUSS_ENGINE
+
+### 9.1 Konzept
+
+Eine zentrale **Named Function** ersetzt alle regionsspezifischen V6-Formeln. Änderungen an der Logik wirken sofort in allen 20+ Blättern.
+
+```
+┌─────────────────────────────────────┐
+│         ZUSCHUSS_ENGINE             │
+│    (Single Source of Truth)         │
+└──────────────┬──────────────────────┘
+               │
+    ┌──────────┼──────────┬──────────────┐
+    ▼          ▼          ▼              ▼
+  RLK        NRW     Westerwaldkreis   [...]
+```
+
+### 9.2 Architektur: Hybride Lösung
+
+**Eine Hauptfunktion** mit internen `LAMBDA`-Modulen:
+
+| Aspekt | Lösung |
+|--------|--------|
+| Deployment | 1× `ZUSCHUSS_ENGINE` registrieren |
+| Modularität | Interne LAMBDAs für Filter, Quote, Sort |
+| Debugging | Optional: `ZE_DEBUG` als zweite Funktion |
+
+### 9.3 Funktionssignatur
+
+| Feld | Wert |
+|------|------|
+| **Name** | `ZUSCHUSS_ENGINE` |
+| **Registrierung** | `Daten` → `Benannte Funktionen` → `Neue Funktion hinzufügen` |
+
+#### Parameter
+
+| # | Name | Typ | Pflicht | Beispiel |
+|---|------|-----|---------|----------|
+| 1 | `tn_range` | Range | ✅ | `TN_LISTE!B3:AP1710` |
+| 2 | `setup_key` | Text | ✅ | `SETUP!B18` |
+| 3 | `target_lk` | Text | ✅ | `SETUP!B16` |
+| 4 | `event_start` | Datum | ✅ | `SETUP!B23` |
+| 5 | `event_end` | Datum | ⬜ | `SETUP!H23` |
+| 6 | `zone` | Zahl | ⬜ | `1` |
+| 7 | `debug` | Bool | ⬜ | `FALSCH` |
+
+### 9.4 Aufruf-Beispiele
+
+```excel
+/* Minimal */
+=ZUSCHUSS_ENGINE(TN_LISTE!B3:AP1710; SETUP!B18; SETUP!B16; SETUP!B23)
+
+/* Mit Paginierung (Zone 2) */
+=ZUSCHUSS_ENGINE(TN_LISTE!B3:AP1710; SETUP!B18; SETUP!B16; SETUP!B23; SETUP!H23; 2)
+
+/* Debug-Modus */
+=ZUSCHUSS_ENGINE(TN_LISTE!B3:AP1710; SETUP!B18; SETUP!B16; SETUP!B23; ; ; WAHR)
+```
+
+### 9.5 Interne Module (als LAMBDA)
+
+```excel
+=LET(
+  /* ═══ INTERNE MODULE ═══ */
+  _load_rules; LAMBDA(key; 
+    SVERWEIS(key; CACHE_RULES!A:X; SEQUENZ(1;24;1); 0)
+  );
+  
+  _filter_base; LAMBDA(data; rules;
+    LET(
+      status_filter; INDEX(rules; 22);
+      target_groups; INDEX(rules; 13);
+      FILTER(data; 
+        (INDEX(data;;1) = status_filter) *
+        (ISTFEHLER(SUCHEN(INDEX(data;;2); target_groups)) = FALSCH)
+      )
+    )
+  );
+  
+  _calc_quote; LAMBDA(data; rules; target_lk;
+    LET(
+      quote_bezug; INDEX(rules; 15);
+      min_quote; INDEX(rules; 10);
+      quote_modus; INDEX(rules; 11);
+      relevant; FILTER(data; ISTFEHLER(SUCHEN(INDEX(data;;2); quote_bezug)) = FALSCH);
+      lokale; SUMMENPRODUKT((INDEX(relevant;;41) = target_lk) * 1);
+      gesamt; ZEILEN(relevant);
+      quote_pct; WENN(gesamt = 0; 0; lokale / gesamt * 100);
+      is_fulfilled; WENN(quote_modus = "MEHRHEIT"; lokale > gesamt - lokale; quote_pct >= min_quote);
+      HSTACK(quote_pct; is_fulfilled)
+    )
+  );
+  
+  _filter_wohnort; LAMBDA(data; rules; target_lk; use_all;
+    LET(
+      tg_local_only; INDEX(rules; 14);
+      FILTER(data;
+        (use_all = WAHR) +
+        (ISTFEHLER(SUCHEN(INDEX(data;;2); tg_local_only))) +
+        (INDEX(data;;41) = target_lk)
+      )
+    )
+  );
+  
+  _sort; LAMBDA(data; rules; target_lk;
+    LET(
+      sort_order; INDEX(rules; 19);
+      is_lokal; MAP(INDEX(data;;41); LAMBDA(lk; WENN(lk = target_lk; 0; 1)));
+      WENN(ISTFEHLER(SUCHEN("LOKAL_FIRST"; sort_order));
+        SORT(data; 13; 1);
+        SORT(HSTACK(is_lokal; data); 1; 1; 14; 1)
+      )
+    )
+  );
+
+  /* ═══ REGELN LADEN ═══ */
+  rules; _load_rules(setup_key);
+  quote_aktion; INDEX(rules; 12);
+  
+  /* ═══ FILTER-KETTE ═══ */
+  step1; _filter_base(tn_range; rules);
+  quote_result; _calc_quote(step1; rules; target_lk);
+  use_all; ODER(quote_aktion = "ALLE_IMMER"; 
+               UND(quote_aktion = "ALLE_WENN_ERFUELLT"; INDEX(quote_result; 2)));
+  step2; _filter_wohnort(step1; rules; target_lk; use_all);
+  step3; _sort(step2; rules; target_lk);
+  
+  /* ═══ OUTPUT ═══ */
+  WENN(debug;
+    "Key: " & setup_key & " | Quote: " & RUNDEN(INDEX(quote_result;1);1) & "% | UseAll: " & use_all;
+    step3
+  )
+)
+```
+
+### 9.6 V7-Spalten → Rules-Index
+
+| V7 Spalte | Feld | Index |
+|-----------|------|-------|
+| J | MIN_QUOTE | 10 |
+| K | QUOTE_MODUS | 11 |
+| L | QUOTE_AKTION | 12 |
+| M | TARGET_GROUPS | 13 |
+| N | TG_LOCAL_ONLY | 14 |
+| O | QUOTE_BEZUG | 15 |
+| S | SORT_ORDER | 19 |
+| V | STATUS_FILTER | 22 |
+
+### 9.7 Migration V6 → V7
+
+| Schritt | Aktion |
+|---------|--------|
+| 1 | Named Function registrieren |
+| 2 | CACHE_RULES auf 24 Spalten erweitern |
+| 3 | Alte V6-Formeln durch `=ZUSCHUSS_ENGINE(...)` ersetzen |
+
+### 9.8 Umsetzungs-Checkliste (Ergänzung zu Phase 4)
+
+- [ ] Named Function `ZUSCHUSS_ENGINE` registrieren
+- [ ] Optional: `ZE_DEBUG` für Entwicklung
+- [ ] Alle Zielblätter auf neuen Aufruf umstellen
+- [ ] V6-Formeln archivieren
+
