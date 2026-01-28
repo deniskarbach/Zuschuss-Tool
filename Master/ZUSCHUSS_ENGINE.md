@@ -1,12 +1,12 @@
 =LET(
-  /* 1. PARAMETER MAPPING */
   config_lk; IFERROR(VLOOKUP(target_lk; CONFIG!A:B; 2; 0); target_lk);
   setup_event_typ; TRIM(setup_key);
   rule_key; config_lk & "_" & SUBSTITUTE(setup_event_typ; " "; "_");
   
   get_rule; LAMBDA(idx; IFERROR(VLOOKUP(rule_key; CACHE_RULES!A:X; idx; 0); ""));
   
-  /* 2. RULES MAPPING */
+  kuerzel; get_rule(4);
+  
   min_tn; LET(v; get_rule(5); IF(v=""; 0; VALUE(v)));
   min_alter_tn; LET(v; get_rule(6); IF(v=""; 0; VALUE(v)));
   max_alter_tn; LET(v; get_rule(7); IF(v=""; 999; VALUE(v)));
@@ -33,7 +33,6 @@
   min_anwesenheit; LET(v; get_rule(23); IF(v=""; 0; VALUE(v)));
   zonen_config; LET(z; get_rule(24); IF(z=""; "3-749;754-1454;1459-1710"; z));
   
-  /* 3. SETUP & CHECKS */
   event_dauer; IFERROR(DATEDIF(event_start; event_end; "D") + 1; 0);
   tage_check_ok; OR(min_tage = 0; event_dauer >= min_tage);
   
@@ -71,7 +70,6 @@
   
   critical_missing; OR(idx_status=0; idx_fn=0; idx_lk=0);
   
-  /* 4. FILTER CHAIN */
   base_mask; MAP(INDEX(data_zone;;idx_status); INDEX(data_zone;;idx_fn); LAMBDA(s; f;
      AND(
        s = status_filter;
@@ -102,7 +100,7 @@
       LET(
         alter; IFERROR(VALUE(alter_val); 0);
         IF(fn = "TN";
-          AND(alter >= min_alter_tn; alter <= max_alter_tn);
+          AND(alter >= min_alter_soft; alter <= max_alter_tn);
           IF(alter_config = ""; TRUE;
             LET(
               pattern; fn & ":([0-9]+)-([0-9]+)";
@@ -131,7 +129,6 @@
   );
   anwesenheit_filtered; FILTER(alter_filtered; anwesenheit_mask);
 
-  /* 5. QUOTE LOGIC */
   quote_relevant_mask; MAP(INDEX(anwesenheit_filtered;;idx_fn); LAMBDA(fn;
     ISNUMBER(SEARCH(fn; quote_bezug))
   ));
@@ -155,7 +152,6 @@
     AND(quote_aktion = "ALLE_WENN_ERFUELLT"; quote_erfuellt)
   );
 
-  /* 6. WOHNORT FILTER */
   wohnort_mask; MAP(INDEX(anwesenheit_filtered;;idx_fn); INDEX(anwesenheit_filtered;;idx_lk); LAMBDA(fn; lk;
     OR(
       use_all;
@@ -165,7 +161,6 @@
   ));
   wohnort_filtered; FILTER(anwesenheit_filtered; wohnort_mask);
 
-  /* 7. SORTING */
   has_lokal_first; ISNUMBER(SEARCH("LOKAL_FIRST"; sort_order));
   has_fn_sort; ISNUMBER(SEARCH("FUNKTION"; sort_order));
   
@@ -193,11 +188,9 @@
     )
   );
 
-  /* 8. FINAL VALIDATION */
   final_tn_count; ROWS(sorted_data);
   min_tn_ok; OR(min_tn = 0; final_tn_count >= min_tn);
 
-  /* 9. OUTPUT GENERATION */
   out_cols_list; SPLIT(output_cols_def; ";");
   num_out_cols; COLUMNS(out_cols_list);
   cnt_rows; ROWS(sorted_data);
@@ -261,9 +254,19 @@
     LET(
       t_trim; TRIM(tmpl);
       is_year; ISNUMBER(SEARCH("YEAR("; t_trim));
+      is_text; ISNUMBER(SEARCH("TEXT("; t_trim));
+      
+      text_fmt; IF(is_text; 
+        IFERROR(REGEXEXTRACT(t_trim; ",\s*""(.*)""\)$"); "DD.MM.YYYY"); 
+        ""
+      );
+      
       base_tmpl; IF(is_year; 
         MID(t_trim; 6; LEN(t_trim)-6); 
-        t_trim
+        IF(is_text;
+           IFERROR(REGEXEXTRACT(t_trim; "TEXT\((.*?),"); t_trim);
+           t_trim
+        )
       );
       
       val_vn; get_val_by_header(row_data; "Vorname");
@@ -310,7 +313,15 @@
            y_final; IF(y_from_serial > 0; y_from_serial; y_from_date);
            IF(y_final < 1920; ""; "" & y_final)
          );
-         repl_15
+         IF(is_text;
+           LET(
+             raw; repl_15;
+             v_num; IFERROR(VALUE(raw); 0);
+             d_val; IF(v_num > 10000; v_num; IFERROR(DATEVALUE(raw); 0));
+             IF(d_val > 0; TEXT(d_val; text_fmt); raw)
+           );
+           repl_15
+         )
       );
       final_res
     )
@@ -326,8 +337,7 @@
   
   debug_output; VSTACK(
     HSTACK("Rule Key:"; rule_key);
-    HSTACK("Config LK:"; config_lk);
-    HSTACK("Event Dauer:"; event_dauer & " Tage");
+    HSTACK("Kuerzel:"; kuerzel);
     HSTACK("Quote:"; ROUND(quote_pct; 1) & "% (" & lokale_for_quote & "/" & total_for_quote & ")");
     HSTACK("Quote erfüllt:"; IF(quote_erfuellt; "JA"; "NEIN"));
     HSTACK("Use All:"; IF(use_all; "JA"; "NEIN"));
