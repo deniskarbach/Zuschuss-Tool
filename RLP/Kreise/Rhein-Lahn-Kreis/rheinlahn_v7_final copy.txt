@@ -1,0 +1,150 @@
+=LET(
+  debug_mode; TRUE;
+  
+  headers; TN_LISTE!A1:AZ1; 
+  find_col; LAMBDA(name; IFERROR(MATCH(name; headers; 0); 0));
+  
+  idx_status; find_col("Status");
+  idx_funktion; find_col("Funktion");
+  idx_alter; find_col("Alter");
+  idx_lk; find_col("Landkreis");
+  idx_nn; find_col("Nachname");
+  idx_vn; find_col("Vorname");
+  
+  /* Fallback search for Anwesenheit */
+  idx_anw_search; find_col("Anwesenheit");
+  idx_tage_search; find_col("Tage");
+  idx_anw_force; IF(idx_anw_search>0; idx_anw_search; idx_tage_search);
+  
+  raw_data; TN_LISTE!A3:AZ2000;
+  
+  setup_lk_name; "Landkreis Rhein-Lahn-Kreis";
+  setup_event_typ; TRIM(SETUP!B18);
+  rule_key; setup_lk_name & "_" & SUBSTITUTE(setup_event_typ; " "; "_");
+  
+  IF(OR(idx_status=0; idx_funktion=0; idx_alter=0); "CRITICAL: Columns Missing (Status/Funktion/Alter)";
+    LET(
+      c_stat; CHOOSECOLS(raw_data; idx_status);
+      c_func; CHOOSECOLS(raw_data; idx_funktion);
+      c_alter; CHOOSECOLS(raw_data; idx_alter);
+      c_lk; CHOOSECOLS(raw_data; idx_lk);
+      c_nn; CHOOSECOLS(raw_data; idx_nn);
+      c_vn; CHOOSECOLS(raw_data; idx_vn);
+      c_days; IF(idx_anw_force>0; CHOOSECOLS(raw_data; idx_anw_force); SEQUENCE(ROWS(raw_data);1;0;0));
+      
+      r_lookup; LAMBDA(col_idx; IFERROR(VLOOKUP(rule_key; CACHE_RULES!A:X; col_idx; 0); ""));
+      r_val; LAMBDA(idx; IFERROR(VALUE(r_lookup(idx)); 0));
+      r_clean; LAMBDA(idx; TRIM(SUBSTITUTE(CLEAN(r_lookup(idx)); CHAR(34); ""))); 
+      
+      min_tn; r_val(5);
+      min_quote; r_val(10);
+      quote_modus; r_clean(11);
+      quote_aktion; r_clean(12);
+      target_groups; r_clean(13);
+      tg_local_only; LET(s; r_clean(14); IF(s=""; "TN"; s));
+      quote_bezug; LET(s; r_clean(15); IF(s=""; "TN"; s));
+      
+      output_config_raw; r_clean(18);
+      sort_config; r_clean(19);
+
+      min_alter_config; r_val(6);
+      max_alter_config; LET(v; r_val(7); IF(v=0; 999; v));
+      min_alter_soft; LET(v; r_val(8); IF(v=0; min_alter_config; v));
+      min_anwesenheit; r_val(23);
+      
+      mask_status; ARRAYFORMULA(IFERROR(ISNUMBER(SEARCH("Angemeldet"; c_stat)); FALSE));
+      
+      regex_tg; SUBSTITUTE(target_groups; ";"; "|");
+      mask_tg; ARRAYFORMULA(REGEXMATCH(c_func; regex_tg));
+      
+      val_age; ARRAYFORMULA(IFERROR(VALUE(REGEXEXTRACT(TO_TEXT(c_alter); "\d+")); 0));
+      val_days; ARRAYFORMULA(IFERROR(VALUE(REGEXEXTRACT(TO_TEXT(c_days); "\d+")); 0));
+      
+      is_tn; ARRAYFORMULA(c_func="TN");
+      
+      age_ok_raw; ARRAYFORMULA(
+         IF(is_tn; 
+            IF(val_age > 100; TRUE; 
+               IF(val_age = 0; TRUE; (val_age >= min_alter_soft) * (val_age <= max_alter_config))
+            ); 
+            TRUE)
+      );
+      mask_age; ARRAYFORMULA(N(age_ok_raw)); 
+      
+      mask_days; ARRAYFORMULA(IF(val_days=0; 1; N(val_days >= min_anwesenheit)));
+      
+      mask_candidates; ARRAYFORMULA(mask_status * mask_tg * mask_age * mask_days);
+      
+      regex_quote; SUBSTITUTE(quote_bezug; ";"; "|");
+      mask_quote_relevant; ARRAYFORMULA(REGEXMATCH(c_func; regex_quote));
+      
+      target_lk; TRIM(CLEAN(setup_lk_name));
+      is_local; ARRAYFORMULA(c_lk = target_lk);
+      
+      cnt_base; SUM(ARRAYFORMULA(N(mask_candidates * mask_quote_relevant)));
+      cnt_loc; SUM(ARRAYFORMULA(N(mask_candidates * mask_quote_relevant * is_local)));
+      
+      quote_pct; IF(cnt_base=0; 0; cnt_loc/cnt_base);
+      quote_ok; IF(quote_modus="MEHRHEIT"; cnt_loc > (cnt_base - cnt_loc); quote_pct >= (min_quote/100));
+      use_all; OR(quote_aktion="ALLE_IMMER"; AND(quote_aktion="ALLE_WENN_ERFUELLT"; quote_ok));
+      
+      regex_local_force; SUBSTITUTE(tg_local_only; ";"; "|");
+      mask_must_be_local; ARRAYFORMULA(REGEXMATCH(c_func; regex_local_force));
+      
+      mask_geo; ARRAYFORMULA(
+          IF(use_all; 1;
+             (is_local) + (mask_must_be_local=0)
+          )
+      );
+      
+      mask_final; ARRAYFORMULA(mask_candidates * mask_geo);
+      count_final; SUM(ARRAYFORMULA(N(mask_final)));
+      
+      IF(debug_mode;
+          VSTACK(
+             HSTACK("DEBUG V7 FINAL (Template Improved)"; "MinAge: " & min_alter_soft & " / Max: " & max_alter_config);
+             HSTACK("1. Candidates:"; SUM(ARRAYFORMULA(N(mask_candidates))));
+             HSTACK("2. Quota Check:"; IF(quote_ok;"OK";"FAIL") & " (" & cnt_loc & "/" & cnt_base & ")");
+             HSTACK("3. FINAL Matches:"; count_final);
+             HSTACK("Headers Found:"; TEXTJOIN(";"; TRUE; TRIM(headers)));
+             HSTACK("Output Config:"; output_config_raw)
+          );
+          
+          IF(count_final = 0; REPT(""; 5);
+             LET(
+                filtered_indices; FILTER(SEQUENCE(ROWS(raw_data)); mask_final);
+                res_nn; INDEX(c_nn; filtered_indices);
+                res_vn; INDEX(c_vn; filtered_indices);
+                res_func; INDEX(c_func; filtered_indices);
+                res_loc; INDEX(is_local; filtered_indices);
+                
+                sort_indices; IF(ISNUMBER(SEARCH("LOKAL_FIRST"; sort_config));
+                   SORT(HSTACK(SEQUENCE(count_final); res_loc; res_nn; res_vn); 2; FALSE; 3; TRUE; 4; TRUE);
+                   SORT(HSTACK(SEQUENCE(count_final); res_nn; res_vn); 2; TRUE; 3; TRUE)
+                );
+                sorted_ids; INDEX(filtered_indices; INDEX(sort_indices;;1));
+                
+                templates; SPLIT(output_config_raw; ";");
+                clean_headers; TRIM(headers);
+                
+                MAKEARRAY(count_final; COLUMNS(templates); LAMBDA(r; c;
+                   LET(
+                      row_id; INDEX(sorted_ids; r);
+                      tpl; TRIM(INDEX(templates; 1; c));
+                      REDUCE(tpl; SEQUENCE(COLUMNS(clean_headers)); LAMBDA(str; hi;
+                         LET(
+                            hname; INDEX(clean_headers; 1; hi);
+                            val; INDEX(raw_data; row_id; hi);
+                            date_fix; IF(AND(ISNUMBER(val); val>20000); TEXT(val; "dd.MM.YY"); TO_TEXT(val));
+                            ph; "\{" & hname & "\}";
+                            IFERROR(REGEXREPLACE(str; "(?i)"&ph; date_fix); str)
+                         )
+                      ))
+                   )
+                ))
+             )
+          )
+      )
+    )
+  )
+)

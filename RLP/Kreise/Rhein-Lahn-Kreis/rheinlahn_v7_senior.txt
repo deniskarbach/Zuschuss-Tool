@@ -1,0 +1,147 @@
+=LET(
+  debug_mode; IFERROR(SETUP!B69="Ja"; TRUE);
+  
+
+  ziel_landkreis; CACHE_RULES!B29; 
+  setup_event_typ; TRIM(SETUP!B18);
+  rule_key; ziel_landkreis & "_" & SUBSTITUTE(setup_event_typ; " "; "_");
+
+  event_start; SETUP!B23;
+  event_end; SETUP!H23;
+  event_dauer; IFERROR(DATEDIF(event_start; event_end; "D") + 1; 0);
+  
+  get_rule; LAMBDA(idx; IFERROR(VLOOKUP(rule_key; CACHE_RULES!A:X; idx; 0); ""));
+  
+  min_tn; IFERROR(VALUE(get_rule(5)); 0);
+  min_alter_tn; IFERROR(VALUE(get_rule(6)); 0);
+  max_alter_tn; IFERROR(VALUE(get_rule(7)); 999);
+  min_alter_soft; IFERROR(VALUE(get_rule(8)); min_alter_tn);
+  min_tage; IFERROR(VALUE(get_rule(9)); 0);
+  
+  min_quote; IFERROR(VALUE(get_rule(10)); 0);
+  quote_modus; IF(get_rule(11)=""; "MEHRHEIT"; get_rule(11));
+  quote_aktion; IF(get_rule(12)=""; "NUR_LOKALE"; get_rule(12));
+  
+  target_groups; IF(get_rule(13)=""; "TN;MA;LEITUNG;REF"; get_rule(13));
+  tg_local_only; IF(get_rule(14)=""; "TN"; get_rule(14));
+  quote_bezug; IF(get_rule(15)=""; "TN"; get_rule(15));
+  
+  range_full; TN_LISTE!B3:AC1710; 
+  col_status; INDEX(range_full;;1);
+  col_fn; INDEX(range_full;;2);
+  col_anw; INDEX(range_full;;6);
+  col_vn; INDEX(range_full;;13);
+  col_nn; INDEX(range_full;;12);
+  col_geb; INDEX(range_full;;14);
+  col_plz; INDEX(range_full;;16);
+  col_ort; INDEX(range_full;;17);
+  col_alter; INDEX(range_full;;26);
+  col_lk; INDEX(range_full;;27);
+  
+  mask_tn; (col_status="Angemeldet") * (col_lk<>"");
+  
+  check_target; LAMBDA(f; ISNUMBER(SEARCH(f; target_groups)));
+  
+  f1_indices; FILTER(SEQUENCE(ROWS(range_full)); mask_tn * MAP(col_fn; check_target));
+  
+  result_matrix; IF(IFERROR(INDEX(f1_indices;1;1);0)=0; "KEINE_DATEN_NACH_BASISFILTER";
+    LET(
+       d_fn; INDEX(col_fn; f1_indices);
+       d_alter; INDEX(col_alter; f1_indices);
+       d_anw; INDEX(col_anw; f1_indices);
+       d_lk; INDEX(col_lk; f1_indices);
+       d_vn; INDEX(col_vn; f1_indices);
+       d_nn; INDEX(col_nn; f1_indices);
+       d_geb; INDEX(col_geb; f1_indices);
+       d_plz; INDEX(col_plz; f1_indices);
+       d_ort; INDEX(col_ort; f1_indices);
+       
+       mask_alter; MAP(d_fn; d_alter; LAMBDA(f; a;
+          IF(f="TN"; 
+             LET(av; IFERROR(VALUE(a);0); AND(av>=min_alter_soft; av<=max_alter_tn));
+             TRUE
+          )
+       ));
+       
+       f2_indices; FILTER(SEQUENCE(ROWS(d_fn)); mask_alter);
+       
+       IF(IFERROR(INDEX(f2_indices;1;1);0)=0; "KEINE_DATEN_NACH_ALTERSFILTER";
+          LET(
+             d2_fn; INDEX(d_fn; f2_indices);
+             d2_lk; INDEX(d_lk; f2_indices);
+             d2_vn; INDEX(d_vn; f2_indices);
+             d2_nn; INDEX(d_nn; f2_indices);
+             d2_geb; INDEX(d_geb; f2_indices);
+             d2_plz; INDEX(d_plz; f2_indices);
+             d2_ort; INDEX(d_ort; f2_indices);
+             
+             check_quote_rel; LAMBDA(f; ISNUMBER(SEARCH(f; quote_bezug)));
+             cnt_total; SUM(IF(MAP(d2_fn; check_quote_rel); 1; 0));
+             cnt_local; SUM(IF(MAP(d2_fn; check_quote_rel) * (d2_lk=ziel_landkreis); 1; 0));
+             
+             quote_ok; IF(quote_modus="MEHRHEIT"; 
+                 cnt_local > (cnt_total - cnt_local);
+                 (cnt_total>0) * ((cnt_local/cnt_total) >= min_quote)
+             );
+             
+             check_local_only; LAMBDA(f; ISNUMBER(SEARCH(f; tg_local_only)));
+             
+             mask_final; MAP(d2_fn; d2_lk; LAMBDA(f; l;
+                OR(
+                   quote_aktion="ALLE_IMMER";
+                   AND(quote_aktion="ALLE_WENN_ERFUELLT"; quote_ok);
+                   NOT(check_local_only(f));
+                   l=ziel_landkreis
+                )
+             ));
+             
+             f3_indices; FILTER(SEQUENCE(ROWS(d2_fn)); mask_final);
+             
+             IF(IFERROR(INDEX(f3_indices;1;1);0)=0; "KEINE_DATEN_NACH_QUOTENFILTER";
+                LET(
+                   res_vn; INDEX(d2_vn; f3_indices);
+                   res_nn; INDEX(d2_nn; f3_indices);
+                   res_plz; INDEX(d2_plz; f3_indices);
+                   res_ort; INDEX(d2_ort; f3_indices);
+                   res_lk; INDEX(d2_lk; f3_indices);
+                   res_geb; INDEX(d2_geb; f3_indices);
+                   res_fn; INDEX(d2_fn; f3_indices);
+                   
+                   is_local; IF(res_lk=ziel_landkreis; 0; 1);
+                   
+                   sorted_indices; SORTBY(SEQUENCE(ROWS(res_fn)); is_local; 1; res_nn; 1);
+                   
+                   out_name; INDEX(res_vn; sorted_indices) & " " & INDEX(res_nn; sorted_indices);
+                   out_plz; INDEX(res_plz; sorted_indices);
+                   out_ort; INDEX(res_lk; sorted_indices); 
+                   out_jahr; MAP(INDEX(res_geb; sorted_indices); LAMBDA(g; IFERROR(YEAR(VALUE(g)); IFERROR(YEAR(DATEVALUE(g)); g))));
+                   
+                   HSTACK(out_name; out_plz; out_ort; out_jahr)
+                )
+             )
+          )
+       )
+    )
+  );
+
+  cnt_final; IF(ISTEXT(result_matrix); 0; ROWS(result_matrix));
+  min_tn_ok; OR(min_tn=0; cnt_final>=min_tn);
+  tage_check; OR(min_tage=0; event_dauer>=min_tage);
+
+  IF(debug_mode;
+      VSTACK(
+         HSTACK("=== SENIOR DEBUG ==="; "");
+         HSTACK("Ziel LK:"; ziel_landkreis);
+         HSTACK("Event:"; setup_event_typ);
+         HSTACK("Min TN:"; min_tn);
+         HSTACK("Final Rows:"; cnt_final);
+         HSTACK("Status:"; IF(ISTEXT(result_matrix); result_matrix; "OK"));
+         IF(ISTEXT(result_matrix); result_matrix; result_matrix)
+      );
+      IF(NOT(tage_check); "FEHLER: Zu kurz";
+         IF(NOT(min_tn_ok); "HINWEIS: Zu wenige TN";
+            result_matrix
+         )
+      )
+  )
+)
