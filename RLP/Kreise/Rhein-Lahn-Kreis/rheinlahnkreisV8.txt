@@ -56,14 +56,14 @@
       c_func; CHOOSECOLS(raw_data; idx_func);
       c_stat; CHOOSECOLS(raw_data; idx_stat);
       c_lk; CHOOSECOLS(raw_data; idx_lk);
-      c_age; CHOOSECOLS(raw_data; idx_age);
+      c_geb; CHOOSECOLS(raw_data; idx_geb);
       c_days; CHOOSECOLS(raw_data; idx_days);
       c_vn; CHOOSECOLS(raw_data; idx_vn);
       c_nn; CHOOSECOLS(raw_data; idx_nn);
       c_ort; CHOOSECOLS(raw_data; idx_ort);
       
       parse_date; LAMBDA(v; IFERROR(DATEVALUE(v); IFERROR(VALUE(REGEXEXTRACT(TO_TEXT(v); "\d+")); 0)));
-      val_ages; ARRAYFORMULA(parse_date(c_age));
+      val_ages; ARRAYFORMULA(IFERROR(DATEDIF(parse_date(c_geb); setup_end; "Y"); 0));
       val_days; ARRAYFORMULA(parse_date(c_days));
       
       regex_tg; SUBSTITUTE(tg_list; ";"; "|");

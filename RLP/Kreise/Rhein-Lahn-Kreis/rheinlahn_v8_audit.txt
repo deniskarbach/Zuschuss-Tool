@@ -37,7 +37,7 @@
       idx_func; fn_col("Funktion");
       idx_stat; fn_col("Status");
       idx_lk; fn_col("Landkreis");
-      idx_age; fn_col("Alter");
+      idx_geb; fn_col("Geburtsdatum");
       idx_vn; fn_col("Vorname");
       idx_nn; fn_col("Nachname");
       idx_days; IF(fn_col("Anwesenheit")>0; fn_col("Anwesenheit"); fn_col("Tage"));
@@ -45,13 +45,16 @@
       c_func; CHOOSECOLS(raw_data; idx_func);
       c_stat; CHOOSECOLS(raw_data; idx_stat);
       c_lk; CHOOSECOLS(raw_data; idx_lk);
-      c_age; CHOOSECOLS(raw_data; idx_age);
+      c_geb; CHOOSECOLS(raw_data; idx_geb);
       c_days; CHOOSECOLS(raw_data; idx_days);
       c_vn; CHOOSECOLS(raw_data; idx_vn);
       c_nn; CHOOSECOLS(raw_data; idx_nn);
       
+      setup_start; IFERROR(VALUE(SETUP!B23); 0);
+      setup_end; IFERROR(VALUE(SETUP!H23); 0);
+      
       parse_date; LAMBDA(v; IFERROR(DATEVALUE(v); IFERROR(VALUE(REGEXEXTRACT(TO_TEXT(v); "\d+")); 0)));
-      val_ages; ARRAYFORMULA(parse_date(c_age));
+      val_ages; ARRAYFORMULA(IFERROR(DATEDIF(parse_date(c_geb); setup_end; "Y"); 0));
       val_days; ARRAYFORMULA(parse_date(c_days));
       
       regex_tg; SUBSTITUTE(tg_list; ";"; "|");
@@ -62,8 +65,6 @@
       is_tn; ARRAYFORMULA(c_func="TN");
       is_ma; ARRAYFORMULA(REGEXMATCH(c_func; "MA|LEITUNG"));
       
-      setup_start; IFERROR(VALUE(SETUP!B23); 0);
-      setup_end; IFERROR(VALUE(SETUP!H23); 0);
       measure_duration; IF((setup_end > 0) * (setup_start > 0); setup_end - setup_start + 1; 1);
       check_measure_duration; IF(min_tage=0; TRUE; measure_duration >= min_tage);
       
@@ -132,7 +133,7 @@
                   IF(NOT(check_min_anzahl); "❌ Min Teilnehmer nicht erreicht";
                    IF(NOT(r_stat_ok); "Status: " & INDEX(c_stat; i);
                     IF(NOT(r_tg_ok); "Funktion";
-                     IF(NOT(r_age_ok); "Alter (" & INDEX(val_ages; i) & " J.)";
+                      IF(NOT(r_age_ok); IF(INDEX(val_ages; i)=0; "Geburtsdatum fehlt"; "Alter (" & INDEX(val_ages; i) & " J.)");
                       IF(NOT(r_days_ok); "Nur " & INDEX(val_days; i) & " Tage";
                        IF(NOT(r_local_hard_ok); "Muss Lokal sein";
                         IF(force_local_filter * NOT(r_local); "Quote (" & TEXT(quote_pct;"0%") & ")";
