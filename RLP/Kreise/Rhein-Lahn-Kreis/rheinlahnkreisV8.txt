@@ -76,8 +76,10 @@
       
       check_measure_duration; IF(min_tage=0; TRUE; measure_duration >= min_tage);
       
+      eff_min_alter_tn; IF((min_alter_tn_soft > 0) * (min_alter_tn_soft < min_alter_tn_hard); min_alter_tn_soft; min_alter_tn_hard);
+      
       age_ok; ARRAYFORMULA(
-        IF(is_tn; (val_ages >= min_alter_tn_soft) * (val_ages >= min_alter_tn_hard) * (val_ages <= IF(max_alter_tn_hard=0;999;max_alter_tn_hard));
+        IF(is_tn; (val_ages >= eff_min_alter_tn) * (val_ages <= IF(max_alter_tn_hard=0;999;max_alter_tn_hard));
           IF(c_func="LEITUNG"; val_ages >= min_alter_leit;
             IF(is_ma; val_ages >= min_alter_ma; TRUE)
           )
