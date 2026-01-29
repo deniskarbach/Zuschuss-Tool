@@ -13,26 +13,27 @@
   r_val; LAMBDA(idx; IFERROR(VALUE(INDEX(CACHE_RULES!B:AB; r_row; idx)); 0));
   r_txt; LAMBDA(idx; TRIM(CLEAN(INDEX(CACHE_RULES!B:AB; r_row; idx))));
   
-  min_tn; r_val(5);
-  min_tage; r_val(6);
-  min_anw; r_val(7);
-  min_alter_tn_hard; r_val(8);
-  max_alter_tn_hard; r_val(9);
-  min_alter_tn_soft; r_val(10);
-  min_alter_ma; r_val(11);
-  min_alter_leit; r_val(12);
+  min_anzahl; r_val(5);
+  min_anzahl_bezug; r_txt(6);
+  min_tage; r_val(7);
+  min_anw; r_val(8);
+  min_alter_tn_hard; r_val(9);
+  max_alter_tn_hard; r_val(10);
+  min_alter_tn_soft; r_val(11);
+  min_alter_ma; r_val(12);
+  min_alter_leit; r_val(13);
   
-  tg_list; r_txt(13);
-  tg_must_be_local; r_txt(14);
+  tg_list; r_txt(14);
+  tg_must_be_local; r_txt(15);
   
-  min_quote; r_val(15);
-  quote_mode; r_txt(16);
-  quote_bezug; r_txt(17);
-  quote_action; r_txt(18);
+  min_quote; r_val(16);
+  quote_mode; r_txt(17);
+  quote_bezug; r_txt(18);
+  quote_action; r_txt(19);
   
-  output_cols_raw; r_txt(19);
-  label_map_raw; r_txt(20);
-  sort_order_raw; r_txt(21);
+  output_cols_raw; r_txt(20);
+  label_map_raw; r_txt(21);
+  sort_order_raw; r_txt(22);
   
   IF(r_row=0; "❌ Rule Key not found: " & rule_key;
    IF(output_cols_raw=""; "❌ Config fehlt: OUTPUT_COLUMNS";
@@ -86,58 +87,67 @@
       
       mask_candidates; ARRAYFORMULA(mask_tg * mask_stat * age_ok * days_ok * mask_local_hard);
       
-      regex_quote_bezug; SUBSTITUTE(quote_bezug; ";"; "|");
-      mask_quote_relevant; ARRAYFORMULA(REGEXMATCH(c_func; regex_quote_bezug));
+      raw_min_bezug; IF(min_anzahl_bezug=""; "TN"; min_anzahl_bezug);
+      regex_min_anzahl; IF(raw_min_bezug="ALLE"; ".+"; SUBSTITUTE(raw_min_bezug; ";"; "|"));
       
-      cnt_base; SUM(ARRAYFORMULA(N(mask_candidates * mask_quote_relevant)));
-      cnt_loc; SUM(ARRAYFORMULA(N(mask_candidates * mask_quote_relevant * is_local)));
+      mask_in_min_anzahl; ARRAYFORMULA(REGEXMATCH(c_func; regex_min_anzahl));
+      cnt_min_check; SUM(ARRAYFORMULA(N(mask_candidates * mask_in_min_anzahl)));
+      check_min_anzahl; IF(min_anzahl=0; TRUE; cnt_min_check >= min_anzahl);
       
-      quote_pct; IF(cnt_base=0; 0; cnt_loc/cnt_base);
-      quote_ok; IF(quote_mode="MEHRHEIT"; cnt_loc > (cnt_base - cnt_loc); quote_pct >= min_quote);
-      
-      force_local_filter; IF(quote_action="SOLIDARISCH"; NOT(quote_ok);
-        IF(quote_action="STRIKT_LOKAL"; TRUE;
-         IF(quote_action="KEINE_QUOTE"; FALSE; NOT(quote_ok))
-        )
-      );
-      
-      mask_final; ARRAYFORMULA(mask_candidates * IF(force_local_filter; is_local; TRUE));
-      
-      filtered_indices; FILTER(SEQUENCE(ROWS(raw_data)); mask_final);
-      filtered_data; CHOOSEROWS(raw_data; filtered_indices);
-      
-      sort_keys; SPLIT(sort_order_raw; ";");
-      s_key_1; IFERROR(INDEX(sort_keys; 1); "");
-      s_key_2; IFERROR(INDEX(sort_keys; 2); "");
-      
-      func_rank_col; ARRAYFORMULA(
-         IF(c_func="TN"; 1;
-          IF(c_func="LEITUNG"; 2;
-           IF(REGEXMATCH(c_func; "MA"); 3;
-            IF(c_func="REF"; 4; 99)
-           )
-          )
-         )
-      );
-
-      get_s_col; LAMBDA(k; IF(k="LOKAL_FIRST"; CHOOSEROWS(is_local; filtered_indices);
-         IF(k="ALPHA"; CHOOSEROWS(c_nn; filtered_indices);
-          IF(k="FUNKTION_ALPHA"; CHOOSEROWS(func_rank_col; filtered_indices);
-           IF(k="LANDKREIS_ALPHA"; CHOOSEROWS(c_lk; filtered_indices);
-            IF(k="ALTER"; CHOOSEROWS(val_ages; filtered_indices);
-             SEQUENCE(ROWS(filtered_data))
+      IF(NOT(check_min_anzahl); "❌ Zu wenige Teilnehmer (" & cnt_min_check & " von Soll " & min_anzahl & ")";
+        LET(
+          regex_quote_bezug; SUBSTITUTE(quote_bezug; ";"; "|");
+          mask_quote_relevant; ARRAYFORMULA(REGEXMATCH(c_func; regex_quote_bezug));
+          
+          cnt_base; SUM(ARRAYFORMULA(N(mask_candidates * mask_quote_relevant)));
+          cnt_loc; SUM(ARRAYFORMULA(N(mask_candidates * mask_quote_relevant * is_local)));
+          
+          quote_pct; IF(cnt_base=0; 0; cnt_loc/cnt_base);
+          quote_ok; IF(quote_mode="MEHRHEIT"; cnt_loc > (cnt_base - cnt_loc); quote_pct >= min_quote);
+          
+          force_local_filter; IF(quote_action="SOLIDARISCH"; NOT(quote_ok);
+            IF(quote_action="STRIKT_LOKAL"; TRUE;
+             IF(quote_action="KEINE_QUOTE"; FALSE; NOT(quote_ok))
             )
-           )
-          )
-         )
-      ));
-      
-      get_s_asc; LAMBDA(k; IF(k="LOKAL_FIRST"; FALSE;
-         IF(k="ALPHA_DESC"; FALSE; TRUE)
-      ));
+          );
+          
+          mask_final; ARRAYFORMULA(mask_candidates * IF(force_local_filter; is_local; TRUE));
+          
+          filtered_indices; FILTER(SEQUENCE(ROWS(raw_data)); mask_final);
+          filtered_data; CHOOSEROWS(raw_data; filtered_indices);
+          
+          sort_keys; SPLIT(sort_order_raw; ";");
+          s_key_1; IFERROR(INDEX(sort_keys; 1); "");
+          s_key_2; IFERROR(INDEX(sort_keys; 2); "");
+          
+          func_rank_col; ARRAYFORMULA(
+             IF(c_func="TN"; 1;
+              IF(c_func="LEITUNG"; 2;
+               IF(REGEXMATCH(c_func; "MA"); 3;
+                IF(c_func="REF"; 4; 99)
+               )
+              )
+             )
+          );
 
-      sorted_data; IF(sort_order_raw=""; filtered_data;
-         SORT(filtered_data; 
+          get_s_col; LAMBDA(k; IF(k="LOKAL_FIRST"; CHOOSEROWS(is_local; filtered_indices);
+             IF(k="ALPHA"; CHOOSEROWS(c_nn; filtered_indices);
+              IF(k="FUNKTION_ALPHA"; CHOOSEROWS(func_rank_col; filtered_indices);
+               IF(k="LANDKREIS_ALPHA"; CHOOSEROWS(c_lk; filtered_indices);
+                IF(k="ALTER"; CHOOSEROWS(val_ages; filtered_indices);
+                 SEQUENCE(ROWS(filtered_data))
+                )
+               )
+              )
+             )
+          ));
+          
+          get_s_asc; LAMBDA(k; IF(k="LOKAL_FIRST"; FALSE;
+             IF(k="ALPHA_DESC"; FALSE; TRUE)
+          ));
+
+          sorted_data; IF(sort_order_raw=""; filtered_data;
+             SORT(filtered_data; 
               get_s_col(s_key_1); get_s_asc(s_key_1);
               get_s_col(s_key_2); get_s_asc(s_key_2)
          )
@@ -171,12 +181,12 @@
       
       IF(debug_mode;
          VSTACK(
-           "V8 BETA TYPE-AWARE";
-           "Quote: " & TEXT(quote_pct; "0%") & " (OK: " & quote_ok & ")";
-           "Action: " & quote_action;
+           "V8 BETA (FINAL)";
+           "Input: " & COUNTA(c_nn) & " -> Final: " & ROWS(sorted_data);
+           "MinAnzahl: " & cnt_min_check & " (Limit " & min_anzahl & ") -> OK: " & check_min_anzahl;
+           "Quote: " & TEXT(quote_pct; "0%") & " (OK: " & quote_ok & ") Action: " & quote_action;
            "Sorted By: " & sort_order_raw;
            "---";
-           ROWS(sorted_data) & " Rows Filtered";
            res_table
          );
          res_table

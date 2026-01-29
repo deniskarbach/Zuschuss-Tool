@@ -1,25 +1,26 @@
 
 // V8 Rules Mapping (Relative to Col B)
-// Based on implementation_plan_v8.md v1.2
+// Based on implementation_plan_v8.md v1.5 (UX Reorder)
 
 IDX_KEY             = 1  // B
 IDX_LANDKREIS       = 2  // C
 IDX_TYP             = 3  // D
 IDX_KUERZEL         = 4  // E
-IDX_MIN_TN          = 5  // F
-IDX_MIN_TAGE        = 6  // G
-IDX_MIN_ANWESENHEIT = 7  // H
-IDX_MIN_ALTER_TN    = 8  // I
-IDX_MAX_ALTER_TN    = 9  // J
-IDX_MIN_ALTER_SOFT  = 10 // K
-IDX_MIN_ALTER_MA    = 11 // L
-IDX_MIN_ALTER_LEIT  = 12 // M
-IDX_TARGET_GROUPS   = 13 // N
-IDX_GRUPPEN_LOCAL   = 14 // O
-IDX_MIN_QUOTE       = 15 // P
-IDX_QUOTE_MODUS     = 16 // Q
-IDX_QUOTE_BEZUG     = 17 // R (Swapped UX)
-IDX_QUOTE_AKTION    = 18 // S (Swapped UX)
-IDX_OUTPUT_COLS     = 19 // T
-IDX_LABEL_MAP       = 20 // U
-IDX_SORT_ORDER      = 21 // V
+IDX_MIN_ANZAHL      = 5  // F
+IDX_MIN_ANZAHL_BEZ  = 6  // G (Neu platziert)
+IDX_MIN_TAGE        = 7  // H
+IDX_MIN_ANWESENHEIT = 8  // I
+IDX_MIN_ALTER_TN    = 9  // J
+IDX_MAX_ALTER_TN    = 10 // K
+IDX_MIN_ALTER_SOFT  = 11 // L
+IDX_MIN_ALTER_MA    = 12 // M
+IDX_MIN_ALTER_LEIT  = 13 // N
+IDX_TARGET_GROUPS   = 14 // O
+IDX_GRUPPEN_LOCAL   = 15 // P
+IDX_MIN_QUOTE       = 16 // Q
+IDX_QUOTE_MODUS     = 17 // R
+IDX_QUOTE_BEZUG     = 18 // S
+IDX_QUOTE_AKTION    = 19 // T
+IDX_OUTPUT_COLS     = 20 // U
+IDX_LABEL_MAP       = 21 // V
+IDX_SORT_ORDER      = 22 // W
