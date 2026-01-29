@@ -1,0 +1,187 @@
+=LET(
+  raw_debug; IFERROR(TRIM(SETUP!B69); "Nein");
+  debug_mode; (raw_debug="Ja");
+  
+  setup_lk_name; "Landkreis Rhein-Lahn-Kreis";
+  setup_event_typ; TRIM(SETUP!B18);
+  rule_key; setup_lk_name & "_" & SUBSTITUTE(setup_event_typ; " "; "_");
+  
+  headers; TN_LISTE!A1:AZ1; 
+  raw_data; TN_LISTE!A3:AZ2000;
+  
+  r_row; IFERROR(MATCH(rule_key; CACHE_RULES!B:B; 0); 0);
+  r_val; LAMBDA(idx; IFERROR(VALUE(INDEX(CACHE_RULES!B:AB; r_row; idx)); 0));
+  r_txt; LAMBDA(idx; TRIM(CLEAN(INDEX(CACHE_RULES!B:AB; r_row; idx))));
+  
+  min_tn; r_val(5);
+  min_tage; r_val(6);
+  min_anw; r_val(7);
+  min_alter_tn_hard; r_val(8);
+  max_alter_tn_hard; r_val(9);
+  min_alter_tn_soft; r_val(10);
+  min_alter_ma; r_val(11);
+  min_alter_leit; r_val(12);
+  
+  tg_list; r_txt(13);
+  tg_must_be_local; r_txt(14);
+  
+  min_quote; r_val(15);
+  quote_mode; r_txt(16);
+  quote_bezug; r_txt(17);
+  quote_action; r_txt(18);
+  
+  output_cols_raw; r_txt(19);
+  label_map_raw; r_txt(20);
+  sort_order_raw; r_txt(21);
+  
+  IF(r_row=0; "❌ Rule Key not found: " & rule_key;
+   IF(output_cols_raw=""; "❌ Config fehlt: OUTPUT_COLUMNS";
+    LET(
+      fn_col; LAMBDA(n; IFERROR(MATCH(n; headers; 0); 0));
+      idx_func; fn_col("Funktion");
+      idx_stat; fn_col("Status");
+      idx_lk; fn_col("Landkreis");
+      idx_age; fn_col("Alter");
+      idx_vn; fn_col("Vorname");
+      idx_nn; fn_col("Nachname");
+      idx_ort; fn_col("Wohnort");
+      idx_geb; fn_col("Geburtsdatum");
+      idx_days; IF(fn_col("Anwesenheit")>0; fn_col("Anwesenheit"); fn_col("Tage"));
+      
+      c_func; CHOOSECOLS(raw_data; idx_func);
+      c_stat; CHOOSECOLS(raw_data; idx_stat);
+      c_lk; CHOOSECOLS(raw_data; idx_lk);
+      c_age; CHOOSECOLS(raw_data; idx_age);
+      c_days; CHOOSECOLS(raw_data; idx_days);
+      c_vn; CHOOSECOLS(raw_data; idx_vn);
+      c_nn; CHOOSECOLS(raw_data; idx_nn);
+      c_ort; CHOOSECOLS(raw_data; idx_ort);
+      
+      parse_date; LAMBDA(v; IFERROR(DATEVALUE(v); IFERROR(VALUE(REGEXEXTRACT(TO_TEXT(v); "\d+")); 0)));
+      val_ages; ARRAYFORMULA(parse_date(c_age));
+      val_days; ARRAYFORMULA(parse_date(c_days));
+      
+      regex_tg; SUBSTITUTE(tg_list; ";"; "|");
+      mask_tg; ARRAYFORMULA(REGEXMATCH(c_func; regex_tg));
+      
+      mask_stat; ARRAYFORMULA(IFERROR(ISNUMBER(SEARCH("Angemeldet"; c_stat)); FALSE));
+      
+      is_tn; ARRAYFORMULA(c_func="TN");
+      is_ma; ARRAYFORMULA(REGEXMATCH(c_func; "MA|LEITUNG"));
+      
+      age_ok; ARRAYFORMULA(
+        IF(is_tn; (val_ages >= min_alter_tn_soft) * (val_ages <= IF(max_alter_tn_hard=0;999;max_alter_tn_hard));
+          IF(is_ma; val_ages >= min_alter_ma; TRUE)
+        )
+      );
+      
+      days_ok; ARRAYFORMULA(IF(min_tage=0; TRUE; val_days >= min_tage));
+      
+      regex_must_local; SUBSTITUTE(tg_must_be_local; ";"; "|");
+      is_must_local_group; ARRAYFORMULA(REGEXMATCH(c_func; regex_must_local));
+      target_lk; TRIM(CLEAN(setup_lk_name));
+      is_local; ARRAYFORMULA(c_lk = target_lk);
+      
+      mask_local_hard; ARRAYFORMULA(IF(is_must_local_group; is_local; TRUE));
+      
+      mask_candidates; ARRAYFORMULA(mask_tg * mask_stat * age_ok * days_ok * mask_local_hard);
+      
+      regex_quote_bezug; SUBSTITUTE(quote_bezug; ";"; "|");
+      mask_quote_relevant; ARRAYFORMULA(REGEXMATCH(c_func; regex_quote_bezug));
+      
+      cnt_base; SUM(ARRAYFORMULA(N(mask_candidates * mask_quote_relevant)));
+      cnt_loc; SUM(ARRAYFORMULA(N(mask_candidates * mask_quote_relevant * is_local)));
+      
+      quote_pct; IF(cnt_base=0; 0; cnt_loc/cnt_base);
+      quote_ok; IF(quote_mode="MEHRHEIT"; cnt_loc > (cnt_base - cnt_loc); quote_pct >= min_quote);
+      
+      force_local_filter; IF(quote_action="SOLIDARISCH"; NOT(quote_ok);
+        IF(quote_action="STRIKT_LOKAL"; TRUE;
+         IF(quote_action="KEINE_QUOTE"; FALSE; NOT(quote_ok))
+        )
+      );
+      
+      mask_final; ARRAYFORMULA(mask_candidates * IF(force_local_filter; is_local; TRUE));
+      
+      filtered_indices; FILTER(SEQUENCE(ROWS(raw_data)); mask_final);
+      filtered_data; CHOOSEROWS(raw_data; filtered_indices);
+      
+      sort_keys; SPLIT(sort_order_raw; ";");
+      s_key_1; IFERROR(INDEX(sort_keys; 1); "");
+      s_key_2; IFERROR(INDEX(sort_keys; 2); "");
+      
+      func_rank_col; ARRAYFORMULA(
+         IF(c_func="TN"; 1;
+          IF(c_func="LEITUNG"; 2;
+           IF(REGEXMATCH(c_func; "MA"); 3;
+            IF(c_func="REF"; 4; 99)
+           )
+          )
+         )
+      );
+
+      get_s_col; LAMBDA(k; IF(k="LOKAL_FIRST"; CHOOSEROWS(is_local; filtered_indices);
+         IF(k="ALPHA"; CHOOSEROWS(c_nn; filtered_indices);
+          IF(k="FUNKTION_ALPHA"; CHOOSEROWS(func_rank_col; filtered_indices);
+           IF(k="LANDKREIS_ALPHA"; CHOOSEROWS(c_lk; filtered_indices);
+            IF(k="ALTER"; CHOOSEROWS(val_ages; filtered_indices);
+             SEQUENCE(ROWS(filtered_data))
+            )
+           )
+          )
+         )
+      ));
+      
+      get_s_asc; LAMBDA(k; IF(k="LOKAL_FIRST"; FALSE;
+         IF(k="ALPHA_DESC"; FALSE; TRUE)
+      ));
+
+      sorted_data; IF(sort_order_raw=""; filtered_data;
+         SORT(filtered_data; 
+              get_s_col(s_key_1); get_s_asc(s_key_1);
+              get_s_col(s_key_2); get_s_asc(s_key_2)
+         )
+      );
+      
+      label_blob; SPLIT(label_map_raw; ";");
+      label_keys; ARRAYFORMULA(REGEXEXTRACT(label_blob;"^(.*)="));
+      label_vals; ARRAYFORMULA(REGEXEXTRACT(label_blob;"=(.*)$"));
+      
+      col_map; SPLIT(output_cols_raw; ";");
+      num_out_cols; COLUMNS(col_map);
+      
+      res_table; MAKEARRAY(ROWS(sorted_data); num_out_cols; LAMBDA(r; c;
+        LET(
+          tpl; TRIM(INDEX(col_map; c));
+          single_token; REGEXEXTRACT(tpl; "^\{([^}]+)\}$");
+          
+          val; IF(ISERROR(single_token);
+             REDUCE(tpl; SEQUENCE(COLUMNS(headers)); LAMBDA(curr; i; 
+                SUBSTITUTE(curr; "{" & INDEX(headers; i) & "}"; INDEX(sorted_data; r; i))
+             ));
+             LET(
+               h_idx; IFERROR(MATCH(single_token; headers; 0); 0);
+               raw_v; IF(h_idx=0; tpl; INDEX(sorted_data; r; h_idx));
+               IFERROR(XLOOKUP(single_token & ":" & raw_v; label_keys; label_vals; raw_v); raw_v)
+             )
+          );
+          val
+        )
+      ));
+      
+      IF(debug_mode;
+         VSTACK(
+           "V8 BETA TYPE-AWARE";
+           "Quote: " & TEXT(quote_pct; "0%") & " (OK: " & quote_ok & ")";
+           "Action: " & quote_action;
+           "Sorted By: " & sort_order_raw;
+           "---";
+           ROWS(sorted_data) & " Rows Filtered";
+           res_table
+         );
+         res_table
+      )
+    )
+   )
+  )
+)
