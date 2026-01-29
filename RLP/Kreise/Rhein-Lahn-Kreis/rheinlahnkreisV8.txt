@@ -6,8 +6,12 @@
   setup_event_typ; TRIM(SETUP!B18);
   rule_key; setup_lk_name & "_" & SUBSTITUTE(setup_event_typ; " "; "_");
   
+  setup_start; IFERROR(VALUE(SETUP!B23); 0);
+  setup_end; IFERROR(VALUE(SETUP!H23); 0);
+  measure_duration; IF((setup_end > 0) * (setup_start > 0); setup_end - setup_start + 1; 1);
+  
   headers; TN_LISTE!A1:AZ1; 
-  raw_data; TN_LISTE!A3:AZ2000;
+  raw_data; TN_LISTE!A2:AZ2000;
   
   r_row; IFERROR(MATCH(rule_key; CACHE_RULES!B:B; 0); 0);
   r_val; LAMBDA(idx; IFERROR(VALUE(INDEX(CACHE_RULES!B:AB; r_row; idx)); 0));
@@ -70,13 +74,17 @@
       is_tn; ARRAYFORMULA(c_func="TN");
       is_ma; ARRAYFORMULA(REGEXMATCH(c_func; "MA|LEITUNG"));
       
+      check_measure_duration; IF(min_tage=0; TRUE; measure_duration >= min_tage);
+      
       age_ok; ARRAYFORMULA(
-        IF(is_tn; (val_ages >= min_alter_tn_soft) * (val_ages <= IF(max_alter_tn_hard=0;999;max_alter_tn_hard));
-          IF(is_ma; val_ages >= min_alter_ma; TRUE)
+        IF(is_tn; (val_ages >= min_alter_tn_soft) * (val_ages >= min_alter_tn_hard) * (val_ages <= IF(max_alter_tn_hard=0;999;max_alter_tn_hard));
+          IF(c_func="LEITUNG"; val_ages >= min_alter_leit;
+            IF(is_ma; val_ages >= min_alter_ma; TRUE)
+          )
         )
       );
       
-      days_ok; ARRAYFORMULA(IF(min_tage=0; TRUE; val_days >= min_tage));
+      days_ok; ARRAYFORMULA(IF(min_anw=0; TRUE; val_days >= min_anw));
       
       regex_must_local; SUBSTITUTE(tg_must_be_local; ";"; "|");
       is_must_local_group; ARRAYFORMULA(REGEXMATCH(c_func; regex_must_local));
@@ -94,7 +102,8 @@
       cnt_min_check; SUM(ARRAYFORMULA(N(mask_candidates * mask_in_min_anzahl)));
       check_min_anzahl; IF(min_anzahl=0; TRUE; cnt_min_check >= min_anzahl);
       
-      IF(NOT(check_min_anzahl); "❌ Zu wenige Teilnehmer (" & cnt_min_check & " von Soll " & min_anzahl & ")";
+      IF(NOT(check_measure_duration); "❌ Maßnahme zu kurz (" & measure_duration & " Tage / Soll " & min_tage & ")";
+       IF(NOT(check_min_anzahl); "❌ Zu wenige Teilnehmer (" & cnt_min_check & " von Soll " & min_anzahl & ")";
         LET(
           regex_quote_bezug; SUBSTITUTE(quote_bezug; ";"; "|");
           mask_quote_relevant; ARRAYFORMULA(REGEXMATCH(c_func; regex_quote_bezug));
@@ -181,8 +190,9 @@
       
       IF(debug_mode;
          VSTACK(
-           "V8 BETA (FINAL)";
+           "V8 BETA (LOGIC COMPLETED)";
            "Input: " & COUNTA(c_nn) & " -> Final: " & ROWS(sorted_data);
+           "Measure: " & measure_duration & " Tage (Min " & min_tage & ")";
            "MinAnzahl: " & cnt_min_check & " (Limit " & min_anzahl & ") -> OK: " & check_min_anzahl;
            "Quote: " & TEXT(quote_pct; "0%") & " (OK: " & quote_ok & ") Action: " & quote_action;
            "Sorted By: " & sort_order_raw;
@@ -191,6 +201,7 @@
          );
          res_table
       )
+     )
     )
    )
   )
