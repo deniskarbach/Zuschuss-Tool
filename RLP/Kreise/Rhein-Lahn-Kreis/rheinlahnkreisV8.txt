@@ -122,8 +122,11 @@
           
           mask_final; ARRAYFORMULA(mask_candidates * IF(force_local_filter; is_local; TRUE));
           
-          filtered_indices; FILTER(SEQUENCE(ROWS(raw_data)); mask_final);
-          filtered_data; CHOOSEROWS(raw_data; filtered_indices);
+          filtered_indices; IFERROR(FILTER(SEQUENCE(ROWS(raw_data)); mask_final); 0);
+          
+          IF(ROWS(filtered_indices)=1 * (INDEX(filtered_indices;1)=0); "✅ Keine Personen nach aktuellen Kriterien.";
+           LET(
+             filtered_data; CHOOSEROWS(raw_data; filtered_indices);
           
           sort_keys; SPLIT(sort_order_raw; ";");
           s_key_1; IFERROR(INDEX(sort_keys; 1); "");
@@ -199,10 +202,12 @@
            "---";
            res_table
          );
-         res_table
+          res_table
+       )
       )
      )
     )
    )
   )
-)
+ )
+)))
