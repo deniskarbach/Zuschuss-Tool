@@ -81,7 +81,7 @@
       days_ok; ARRAYFORMULA(IF(min_anw=0; TRUE; val_days >= min_anw));
       
       regex_must_local; SUBSTITUTE(tg_must_be_local; ";"; "|");
-      is_must_local_group; ARRAYFORMULA(REGEXMATCH(c_func; regex_must_local));
+      is_must_local_group; ARRAYFORMULA(IF(tg_must_be_local=""; FALSE; REGEXMATCH(c_func; regex_must_local)));
       target_lk; TRIM(CLEAN(selected_lk));
       is_local; ARRAYFORMULA(c_lk = target_lk);
       

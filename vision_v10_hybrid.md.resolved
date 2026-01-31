@@ -1,0 +1,95 @@
+# 🚀 Vision V10: Hybrid-Architektur
+
+*Erstellt: 30.01.2026*
+*Status: Konzept / Zukunftsvision*
+
+---
+
+## Die Erkenntnis aus V8
+
+Die V8-Formel funktioniert, aber sie hat strukturelle Grenzen:
+- LET-Formeln werden komplex und schwer wartbar.
+- Debugging in Google Sheets ist mühsam.
+- Testautomatisierung erfordert externe Tools (Python-Simulator).
+
+**Die Lösung:** Ein Hybrid-System, das die Stärken beider Welten kombiniert.
+
+---
+
+## Architektur-Diagramm
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                    FRONTEND (Web-App)                   │
+│  ┌─────────────┐   ┌─────────────┐   ┌──────────────┐  │
+│  │ Audit-View  │   │ Liste-View  │   │ Konfigurator │  │
+│  └─────────────┘   └─────────────┘   └──────────────┘  │
+└────────────────────────┬────────────────────────────────┘
+                         │ REST API
+┌────────────────────────▼────────────────────────────────┐
+│                  PYTHON BACKEND (Logik)                 │
+│  ┌─────────────┐   ┌─────────────┐   ┌──────────────┐  │
+│  │ V8Validator │   │ Rules-Engine│   │ PDF-Export   │  │
+│  └─────────────┘   └─────────────┘   └──────────────┘  │
+└────────────────────────┬────────────────────────────────┘
+                         │ Google Sheets API
+┌────────────────────────▼────────────────────────────────┐
+│                GOOGLE SHEETS (Daten)                    │
+│  ┌─────────────┐   ┌─────────────┐   ┌──────────────┐  │
+│  │  TN_LISTE   │   │    RULES    │   │    SETUP     │  │
+│  └─────────────┘   └─────────────┘   └──────────────┘  │
+└─────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Expertenrunde (30.01.2026)
+
+### Teilnehmer
+
+| Experte | Rolle | Kernaussage |
+| :--- | :--- | :--- |
+| **Dr. Ada** | Backend | "Python-Logik ist präzise. Als REST-API bereitstellen." |
+| **Grace** | DevOps | "Hosting trivial (5€-VPS). OAuth für Sheets-Zugriff nötig." |
+| **Linus** | UX | "Sheets bleibt als Eingabemaske. Nutzer kennen es." |
+| **Margaret** | QA | "Validierung im Backend. Sheets nur Datenhaltung." |
+
+### Konsens
+
+> "Die V8-Formel hat ihre Grenzen erreicht. Die nächste Stufe ist ein Hybrid-System, das die Einfachheit von Sheets mit der Präzision von Python kombiniert."
+
+---
+
+## Vorgeschlagener Workflow (V10)
+
+1. **Nutzer** trägt Teilnehmer in Google Sheets ein (bekannte Oberfläche).
+2. **Frontend** (Web-App) ruft Backend auf: `POST /api/validate?sheet_id=xyz`.
+3. **Backend** liest Sheet via Google Sheets API, validiert mit Python (V8Validator).
+4. **Frontend** zeigt Audit-Dashboard: Wer ist drin, wer fliegt raus, warum.
+5. **Nutzer** klickt "PDF exportieren" → Backend generiert druckfertige Liste.
+
+---
+
+## Technologie-Stack (Vorschlag)
+
+| Komponente | Technologie | Begründung |
+| :--- | :--- | :--- |
+| Frontend | Svelte / React | Schnell, modern, einfach. |
+| Backend | FastAPI (Python) | Async, schnell, gute Doku. |
+| Daten | Google Sheets API | Bestehende Infrastruktur nutzen. |
+| Hosting | Vercel / Railway | Kostenlos/günstig, einfach. |
+| PDF-Export | WeasyPrint / ReportLab | Python-native Lösungen. |
+
+---
+
+## Nächste Schritte (Wenn V10 gestartet wird)
+
+1. [ ] FastAPI-Grundgerüst erstellen.
+2. [ ] Google Sheets API-Integration (OAuth).
+3. [ ] V8Validator-Klasse aus Simulator übernehmen.
+4. [ ] Frontend: Audit-Dashboard als erste View.
+5. [ ] PDF-Export implementieren.
+
+---
+
+*Dieses Dokument wird wieder relevant, wenn V8 vollständig ausgerollt ist und die Zeit für V10 gekommen ist.*
