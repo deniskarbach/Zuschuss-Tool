@@ -139,6 +139,7 @@
           sort_keys; SPLIT(sort_order_raw; ";");
           s_key_1; IFERROR(INDEX(sort_keys; 1); "");
           s_key_2; IFERROR(INDEX(sort_keys; 2); "");
+          s_key_3; IFERROR(INDEX(sort_keys; 3); "");
           
           func_rank_col; ARRAYFORMULA(
              IF(c_func="TN"; 1;
@@ -169,7 +170,8 @@
       sorted_data; IF(sort_order_raw=""; filtered_data;
              SORT(filtered_data; 
               get_s_col(s_key_1); get_s_asc(s_key_1);
-              get_s_col(s_key_2); get_s_asc(s_key_2)
+              get_s_col(s_key_2); get_s_asc(s_key_2);
+              get_s_col(s_key_3); get_s_asc(s_key_3)
          )
       );
       
@@ -205,6 +207,9 @@
       
       col_wohnort_land; MAP(sorted_bl; LAMBDA(bl; IF(bl<>""; "Deutschland"; "Ausland")));
       
+      sorted_geb; CHOOSECOLS(sorted_data; idx_geb);
+      col_geburtsjahr; MAP(sorted_geb; LAMBDA(d; IFERROR(YEAR(d); IFERROR(YEAR(DATEVALUE(d)); d))));
+      
       label_blob; SPLIT(label_map_raw; ";");
       label_keys; ARRAYFORMULA(REGEXEXTRACT(label_blob;"^(.*)="));
       label_vals; ARRAYFORMULA(REGEXEXTRACT(label_blob;"=(.*)$"));
@@ -224,10 +229,12 @@
              IF(single_token="_F_LOGIK"; INDEX(col_f_logik; r);
                IF(single_token="_G_LOGIK"; INDEX(col_g_logik; r);
                  IF(single_token="_WOHNORT_LAND"; INDEX(col_wohnort_land; r);
-                   LET(
-                     h_idx; IFERROR(MATCH(single_token; headers; 0); 0);
-                     raw_v; IF(h_idx=0; tpl; INDEX(sorted_data; r; h_idx));
-                     IFERROR(XLOOKUP(single_token & ":" & raw_v; label_keys; label_vals; raw_v); raw_v)
+                   IF(single_token="_GEBURTSJAHR"; INDEX(col_geburtsjahr; r);
+                     LET(
+                       h_idx; IFERROR(MATCH(single_token; headers; 0); 0);
+                       raw_v; IF(h_idx=0; tpl; INDEX(sorted_data; r; h_idx));
+                       IFERROR(XLOOKUP(single_token & ":" & raw_v; label_keys; label_vals; raw_v); raw_v)
+                     )
                    )
                  )
                )
