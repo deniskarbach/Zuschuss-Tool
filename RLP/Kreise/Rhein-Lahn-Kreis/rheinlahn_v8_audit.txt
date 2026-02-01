@@ -1,6 +1,7 @@
 =LET(
-  raw_debug; IFERROR(TRIM(SETUP!B69); "Nein");
-  debug_mode; (raw_debug="Ja");
+  raw_debug; IFERROR(TRIM(SETUP!B69); "Normal");
+  debug_mode; (raw_debug="Debug");
+  print_mode; (raw_debug="Drucken");
   
   selected_lk; C4;
   setup_event_typ; TRIM(SETUP!B18);

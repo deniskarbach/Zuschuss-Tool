@@ -1,6 +1,7 @@
 =LET(
-  raw_debug; IFERROR(TRIM(SETUP!B69); "Nein");
-  debug_mode; (raw_debug="Ja");
+  raw_debug; IFERROR(TRIM(SETUP!B69); "Normal");
+  debug_mode; (raw_debug="Debug");
+  print_mode; (raw_debug="Drucken");
   
   page; 2;
   page_size; 20;
@@ -44,8 +45,8 @@
   label_map_raw; r_txt(21);
   sort_order_raw; r_txt(22);
   
-  IF(r_row=0; IF(page=1; "❌ Rule Key not found: " & rule_key; "");
-   IF(output_cols_raw=""; IF(page=1; "❌ Config fehlt: OUTPUT_COLUMNS"; "");
+  IF(r_row=0; IF(print_mode; ""; IF(page=1; "❌ Rule Key not found: " & rule_key; ""));
+   IF(output_cols_raw=""; IF(print_mode; ""; IF(page=1; "❌ Config fehlt: OUTPUT_COLUMNS"; ""));
     LET(
       fn_col; LAMBDA(n; IFERROR(MATCH(n; headers; 0); 0));
       idx_func; fn_col("Funktion");
@@ -115,8 +116,8 @@
       cnt_min_check; SUM(ARRAYFORMULA(N(mask_candidates * mask_in_min_anzahl)));
       check_min_anzahl; IF(min_anzahl=0; TRUE; cnt_min_check >= min_anzahl);
       
-      IF(AND(page=1; NOT(check_measure_duration)); "❌ Maßnahme zu kurz (" & measure_duration & " Tage / Soll " & min_tage & ")";
-       IF(AND(page=1; NOT(check_min_anzahl)); "❌ Zu wenige Teilnehmer (" & cnt_min_check & " von Soll " & min_anzahl & ")";
+      IF(AND(page=1; NOT(check_measure_duration)); IF(print_mode; ""; "❌ Maßnahme zu kurz (" & measure_duration & " Tage / Soll " & min_tage & ")");
+       IF(AND(page=1; NOT(check_min_anzahl)); IF(print_mode; ""; "❌ Zu wenige Teilnehmer (" & cnt_min_check & " von Soll " & min_anzahl & ")");
         IF(NOT(check_measure_duration); "";
          IF(NOT(check_min_anzahl); "";
           LET(
@@ -139,7 +140,7 @@
             
             filtered_indices; IFERROR(FILTER(SEQUENCE(ROWS(raw_data)); mask_final); 0);
             
-            IF(ROWS(filtered_indices)=1 * (INDEX(filtered_indices;1)=0); IF(page=1; "✅ Keine Personen nach aktuellen Kriterien."; "");
+            IF(ROWS(filtered_indices)=1 * (INDEX(filtered_indices;1)=0); IF(print_mode; ""; IF(page=1; "✅ Keine Personen nach aktuellen Kriterien."; ""));
              LET(
                filtered_data; CHOOSEROWS(raw_data; filtered_indices);
             

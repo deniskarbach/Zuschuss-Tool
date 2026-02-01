@@ -1,6 +1,7 @@
 =LET(
-  raw_debug; IFERROR(TRIM(SETUP!B69); "Nein");
-  debug_mode; (raw_debug="Ja");
+  raw_debug; IFERROR(TRIM(SETUP!B69); "Normal");
+  debug_mode; (raw_debug="Debug");
+  print_mode; (raw_debug="Drucken");
   
   filter_function; "MA";
   max_rows; 12;
@@ -43,8 +44,8 @@
   label_map_raw; r_txt(21);
   sort_order_raw; r_txt(22);
   
-  IF(r_row=0; "❌ Rule Key not found: " & rule_key;
-   IF(output_cols_raw=""; "❌ Config fehlt: OUTPUT_COLUMNS";
+  IF(r_row=0; IF(print_mode; ""; "❌ Rule Key not found: " & rule_key);
+   IF(output_cols_raw=""; IF(print_mode; ""; "❌ Config fehlt: OUTPUT_COLUMNS");
     LET(
       fn_col; LAMBDA(n; IFERROR(MATCH(n; headers; 0); 0));
       idx_func; fn_col("Funktion");
@@ -116,8 +117,8 @@
       cnt_min_check; SUM(ARRAYFORMULA(N(mask_all_candidates * mask_in_min_anzahl)));
       check_min_anzahl; IF(min_anzahl=0; TRUE; cnt_min_check >= min_anzahl);
       
-      IF(NOT(check_measure_duration); "❌ Maßnahme zu kurz (" & measure_duration & " Tage / Soll " & min_tage & ")";
-       IF(NOT(check_min_anzahl); "❌ Zu wenige Teilnehmer (" & cnt_min_check & " von Soll " & min_anzahl & ")";
+      IF(NOT(check_measure_duration); IF(print_mode; ""; "❌ Maßnahme zu kurz (" & measure_duration & " Tage / Soll " & min_tage & ")");
+       IF(NOT(check_min_anzahl); IF(print_mode; ""; "❌ Zu wenige Teilnehmer (" & cnt_min_check & " von Soll " & min_anzahl & ")");
         LET(
           regex_quote_bezug; SUBSTITUTE(quote_bezug; ";"; "|");
           mask_quote_relevant; ARRAYFORMULA(REGEXMATCH(c_func; regex_quote_bezug));
@@ -138,7 +139,7 @@
           
           filtered_indices; IFERROR(FILTER(SEQUENCE(ROWS(raw_data)); mask_final); 0);
           
-          IF(ROWS(filtered_indices)=1 * (INDEX(filtered_indices;1)=0); "✅ Keine Personen nach aktuellen Kriterien.";
+          IF(ROWS(filtered_indices)=1 * (INDEX(filtered_indices;1)=0); IF(print_mode; ""; "✅ Keine Personen nach aktuellen Kriterien.");
            LET(
              filtered_data; CHOOSEROWS(raw_data; filtered_indices);
           
@@ -186,10 +187,10 @@
       limited_data; IF(actual_rows=total_rows; sorted_data; CHOOSEROWS(sorted_data; SEQUENCE(actual_rows)));
       limited_indices; IF(actual_rows=total_rows; filtered_indices; CHOOSEROWS(filtered_indices; SEQUENCE(actual_rows)));
       
-      sorted_func; CHOOSEROWS(c_func; limited_indices);
-      sorted_beh; CHOOSEROWS(c_beh; limited_indices);
-      sorted_soz; CHOOSEROWS(c_soz; limited_indices);
-      sorted_bl; CHOOSEROWS(c_bl; limited_indices);
+      sorted_func; CHOOSECOLS(limited_data; idx_func);
+      sorted_beh; IF(idx_beh>0; CHOOSECOLS(limited_data; idx_beh); ARRAYFORMULA(IF(SEQUENCE(ROWS(limited_data));"")));
+      sorted_soz; IF(idx_soz>0; CHOOSECOLS(limited_data; idx_soz); ARRAYFORMULA(IF(SEQUENCE(ROWS(limited_data));"")));
+      sorted_bl; IF(idx_bl>0; CHOOSECOLS(limited_data; idx_bl); ARRAYFORMULA(IF(SEQUENCE(ROWS(limited_data));""))); 
       
       col_f_logik; MAP(sorted_func; sorted_beh; LAMBDA(fn; beh;
         IF(fn="TN"; "Teilnehmer:in";
