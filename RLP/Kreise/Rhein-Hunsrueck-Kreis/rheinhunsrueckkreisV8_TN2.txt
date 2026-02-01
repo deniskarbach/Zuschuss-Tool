@@ -203,7 +203,7 @@
       col_f_logik; MAP(sorted_func; sorted_beh; LAMBDA(fn; beh;
         IF(fn="TN"; "Teilnehmer:in";
           IF(fn="MA";
-            IF(OR(beh="BEGLEITPERSON"; beh="MmB_BEGLEITPERSON");
+            IF(OR(beh="BEGLEITPERSON"; beh="MmB_BEGLEITPERSON"; beh="GL_BEGLEITPERSON");
               "Betreuer:in für Teilnehmende mit Behinderung";
               "Betreuer:in für Teilnehmende ohne Behinderung"
             );
@@ -214,7 +214,7 @@
       
       col_g_logik; MAP(sorted_func; sorted_beh; sorted_soz; LAMBDA(fn; beh; soz;
         LET(
-          has_mmb; OR(beh="MmB"; beh="MmB_BEGLEITPERSON");
+          has_mmb; OR(beh="MmB"; beh="MmB_BEGLEITPERSON"; beh="GL"; beh="GL_BEGLEITPERSON");
           has_arb; soz="Arbeitslos";
           has_eink; soz="Einkommensschwach";
           role_txt; IF(fn="TN"; "Teilnehmer:in"; IF(fn="MA"; "Betreuer:in"; IF(fn="REF"; "Referent:in"; IF(fn="LEITUNG"; "Leitung"; fn))));

@@ -3,13 +3,12 @@
   debug_mode; (raw_debug="Debug");
   print_mode; (raw_debug="Drucken");
   
-  page; 4;
-  page_size_1; 25;
-  page_size_next; 31;
-  start_idx; IF(page=1; 1; page_size_1 + (page-2)*page_size_next + 1);
-  end_idx; IF(page=1; page_size_1; page_size_1 + (page-1)*page_size_next);
+  page; 3;
+  page_size; 20;
+  start_idx; (page - 1) * page_size + 1;
+  end_idx; page * page_size;
   
-  setup_lk_name; "Landkreis Bernkastel-Wittlich";
+  setup_lk_name; "Landkreis Alzey-Worms";
   setup_event_typ; TRIM(SETUP!B18);
   rule_key; setup_lk_name & "_" & SUBSTITUTE(setup_event_typ; " "; "_");
   
@@ -267,7 +266,7 @@
         
         IF(AND(page=1; debug_mode);
            VSTACK(
-             "V8 PAGED (Page " & page & " of " & CEILING(total_rows/page_size_1) & ")";
+             "V8 PAGED (Page " & page & " of " & CEILING(total_rows/page_size) & ")";
              "Input: " & COUNTA(c_nn) & " -> Final: " & total_rows;
              "Showing: " & actual_start & "-" & actual_end;
              "---";
