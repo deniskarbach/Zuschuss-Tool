@@ -3,11 +3,11 @@
   debug_mode; (raw_debug="Debug");
   print_mode; (raw_debug="Drucken");
   
-  filter_function; "REF";
-  max_rows; 5;
+  filter_function; "TN";
+  max_rows; 150;
 
   
-  setup_lk_name; "Landkreis Bad Kreuznach";
+  setup_lk_name; "Stadt Bad Kreuznach";
   setup_event_typ; TRIM(SETUP!B18);
   rule_key; setup_lk_name & "_" & SUBSTITUTE(setup_event_typ; " "; "_");
   

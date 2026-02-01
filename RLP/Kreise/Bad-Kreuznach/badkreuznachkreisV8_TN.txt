@@ -141,7 +141,9 @@
           
           IF(ROWS(filtered_indices)=1 * (INDEX(filtered_indices;1)=0); IF(print_mode; ""; "✅ Keine Personen nach aktuellen Kriterien.");
            LET(
-             filtered_data; CHOOSEROWS(raw_data; filtered_indices);
+             filtered_is_local; ARRAYFORMULA(N(CHOOSEROWS(is_local; filtered_indices)));
+             filtered_data_with_local; HSTACK(CHOOSEROWS(raw_data; filtered_indices); filtered_is_local);
+             idx_is_local; COLUMNS(raw_data) + 1;
           
           sort_keys; SPLIT(sort_order_raw; ";");
           s_key_1; IFERROR(INDEX(sort_keys; 1); "");
@@ -158,12 +160,12 @@
              )
           );
 
-          get_s_col; LAMBDA(k; IF(k="LOKAL_FIRST"; CHOOSEROWS(is_local; filtered_indices);
-             IF(k="ALPHA"; CHOOSEROWS(c_nn; filtered_indices);
-              IF(k="FUNKTION_ALPHA"; CHOOSEROWS(func_rank_col; filtered_indices);
-               IF(k="LANDKREIS_ALPHA"; CHOOSEROWS(c_lk; filtered_indices);
-                IF(k="ALTER"; CHOOSEROWS(val_ages; filtered_indices);
-                 SEQUENCE(ROWS(filtered_data))
+          get_s_col; LAMBDA(k; IF(k="LOKAL_FIRST"; idx_is_local;
+             IF(k="ALPHA"; idx_nn;
+              IF(k="FUNKTION_ALPHA"; idx_func;
+               IF(k="LANDKREIS_ALPHA"; idx_lk;
+                IF(k="ALTER"; idx_age;
+                 1
                 )
                )
               )
@@ -174,13 +176,14 @@
              IF(k="ALPHA_DESC"; FALSE; TRUE)
           ));
 
-      sorted_data; IF(sort_order_raw=""; filtered_data;
-             SORT(filtered_data; 
+      sorted_data_with_local; IF(sort_order_raw=""; filtered_data_with_local;
+             SORT(filtered_data_with_local; 
               get_s_col(s_key_1); get_s_asc(s_key_1);
               get_s_col(s_key_2); get_s_asc(s_key_2);
               get_s_col(s_key_3); get_s_asc(s_key_3)
          )
       );
+      sorted_data; CHOOSECOLS(sorted_data_with_local; SEQUENCE(COLUMNS(raw_data)));
       
       total_rows; ROWS(sorted_data);
       actual_rows; IF(max_rows=0; total_rows; MIN(total_rows; max_rows));
