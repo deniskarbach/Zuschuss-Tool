@@ -77,7 +77,8 @@
       val_days; ARRAYFORMULA(parse_date(c_days));
       
       regex_tg; SUBSTITUTE(tg_list; ";"; "|");
-      mask_tg; ARRAYFORMULA(IF(filter_function=""; REGEXMATCH(c_func; regex_tg); c_func=filter_function));
+      mask_tg_all; ARRAYFORMULA(IF(tg_list=""; TRUE; REGEXMATCH(c_func; regex_tg)));
+      mask_tg_func; ARRAYFORMULA(c_func = filter_function);
       
       mask_stat; ARRAYFORMULA(IFERROR(ISNUMBER(SEARCH("Angemeldet"; c_stat)); FALSE));
       
@@ -105,13 +106,14 @@
       
       mask_local_hard; ARRAYFORMULA(IF(is_must_local_group; is_local; TRUE));
       
-      mask_candidates; ARRAYFORMULA(mask_tg * mask_stat * age_ok * days_ok * mask_local_hard);
+      mask_all_candidates; ARRAYFORMULA(mask_tg_all * mask_stat * age_ok * days_ok * mask_local_hard);
+      mask_func_candidates; ARRAYFORMULA(mask_tg_func * mask_stat * age_ok * days_ok * mask_local_hard);
       
       raw_min_bezug; IF(min_anzahl_bezug=""; "TN"; min_anzahl_bezug);
       regex_min_anzahl; IF(raw_min_bezug="ALLE"; ".+"; SUBSTITUTE(raw_min_bezug; ";"; "|"));
       
       mask_in_min_anzahl; ARRAYFORMULA(REGEXMATCH(c_func; regex_min_anzahl));
-      cnt_min_check; SUM(ARRAYFORMULA(N(mask_candidates * mask_in_min_anzahl)));
+      cnt_min_check; SUM(ARRAYFORMULA(N(mask_all_candidates * mask_in_min_anzahl)));
       check_min_anzahl; IF(min_anzahl=0; TRUE; cnt_min_check >= min_anzahl);
       
       IF(NOT(check_measure_duration); "❌ Maßnahme zu kurz (" & measure_duration & " Tage / Soll " & min_tage & ")";
@@ -120,8 +122,8 @@
           regex_quote_bezug; SUBSTITUTE(quote_bezug; ";"; "|");
           mask_quote_relevant; ARRAYFORMULA(REGEXMATCH(c_func; regex_quote_bezug));
           
-          cnt_base; SUM(ARRAYFORMULA(N(mask_candidates * mask_quote_relevant)));
-          cnt_loc; SUM(ARRAYFORMULA(N(mask_candidates * mask_quote_relevant * is_local)));
+          cnt_base; SUM(ARRAYFORMULA(N(mask_func_candidates * mask_quote_relevant)));
+          cnt_loc; SUM(ARRAYFORMULA(N(mask_func_candidates * mask_quote_relevant * is_local)));
           
           quote_pct; IF(cnt_base=0; 0; cnt_loc/cnt_base);
           quote_ok; IF(quote_mode="MEHRHEIT"; cnt_loc > (cnt_base - cnt_loc); quote_pct >= min_quote);
@@ -132,7 +134,7 @@
             )
           );
           
-          mask_final; ARRAYFORMULA(mask_candidates * IF(force_local_filter; is_local; TRUE));
+          mask_final; ARRAYFORMULA(mask_func_candidates * IF(force_local_filter; is_local; TRUE));
           
           filtered_indices; IFERROR(FILTER(SEQUENCE(ROWS(raw_data)); mask_final); 0);
           
@@ -179,10 +181,15 @@
          )
       );
       
-      sorted_func; CHOOSEROWS(c_func; filtered_indices);
-      sorted_beh; CHOOSEROWS(c_beh; filtered_indices);
-      sorted_soz; CHOOSEROWS(c_soz; filtered_indices);
-      sorted_bl; CHOOSEROWS(c_bl; filtered_indices);
+      total_rows; ROWS(sorted_data);
+      actual_rows; IF(max_rows=0; total_rows; MIN(total_rows; max_rows));
+      limited_data; IF(actual_rows=total_rows; sorted_data; CHOOSEROWS(sorted_data; SEQUENCE(actual_rows)));
+      limited_indices; IF(actual_rows=total_rows; filtered_indices; CHOOSEROWS(filtered_indices; SEQUENCE(actual_rows)));
+      
+      sorted_func; CHOOSEROWS(c_func; limited_indices);
+      sorted_beh; CHOOSEROWS(c_beh; limited_indices);
+      sorted_soz; CHOOSEROWS(c_soz; limited_indices);
+      sorted_bl; CHOOSEROWS(c_bl; limited_indices);
       
       col_f_logik; MAP(sorted_func; sorted_beh; LAMBDA(fn; beh;
         IF(fn="TN"; "Teilnehmer:in";
@@ -211,7 +218,7 @@
       
       col_wohnort_land; MAP(sorted_bl; LAMBDA(bl; IF(bl<>""; "Deutschland"; "Ausland")));
       
-      sorted_geb; CHOOSECOLS(sorted_data; idx_geb);
+      sorted_geb; CHOOSECOLS(limited_data; idx_geb);
       col_geburtsjahr; MAP(sorted_geb; LAMBDA(d; IFERROR(YEAR(d); IFERROR(YEAR(DATEVALUE(d)); d))));
       
       label_blob; SPLIT(label_map_raw; ";");
@@ -221,14 +228,14 @@
       col_map; SPLIT(output_cols_raw; ";");
       num_out_cols; COLUMNS(col_map);
       
-      res_table; MAKEARRAY(ROWS(sorted_data); num_out_cols; LAMBDA(r; c;
+      res_table; MAKEARRAY(ROWS(limited_data); num_out_cols; LAMBDA(r; c;
         LET(
           tpl; TRIM(INDEX(col_map; c));
           single_token; REGEXEXTRACT(tpl; "^\{([^}]+)\}$");
           
           val; IF(ISERROR(single_token);
              REDUCE(tpl; SEQUENCE(COLUMNS(headers)); LAMBDA(curr; i; 
-                SUBSTITUTE(curr; "{" & INDEX(headers; i) & "}"; INDEX(sorted_data; r; i))
+                SUBSTITUTE(curr; "{" & INDEX(headers; i) & "}"; INDEX(limited_data; r; i))
              ));
              IF(single_token="_F_LOGIK"; INDEX(col_f_logik; r);
                IF(single_token="_G_LOGIK"; INDEX(col_g_logik; r);
@@ -236,7 +243,7 @@
                    IF(single_token="_GEBURTSJAHR"; INDEX(col_geburtsjahr; r);
                      LET(
                        h_idx; IFERROR(MATCH(single_token; headers; 0); 0);
-                       raw_v; IF(h_idx=0; tpl; INDEX(sorted_data; r; h_idx));
+                       raw_v; IF(h_idx=0; tpl; INDEX(limited_data; r; h_idx));
                        IFERROR(XLOOKUP(single_token & ":" & raw_v; label_keys; label_vals; raw_v); raw_v)
                      )
                    )
@@ -251,7 +258,7 @@
       IF(debug_mode;
          VSTACK(
            "V8 BETA (LOGIC COMPLETED)";
-           "Input: " & COUNTA(c_nn) & " -> Final: " & ROWS(sorted_data);
+           "Input: " & COUNTA(c_nn) & " -> Final: " & ROWS(limited_data);
            "Measure: " & measure_duration & " Tage (Min " & min_tage & ")";
            "MinAnzahl: " & cnt_min_check & " (Limit " & min_anzahl & ") -> OK: " & check_min_anzahl;
            "Quote: " & TEXT(quote_pct; "0%") & " (OK: " & quote_ok & ") Action: " & quote_action;
