@@ -46,7 +46,7 @@
       fn_col; LAMBDA(n; IFERROR(MATCH(n; headers; 0); 0));
       idx_func; fn_col("Funktion");
       idx_stat; fn_col("Status");
-      idx_lk; fn_col("Landkreis");
+      idx_tags; fn_col("Zuschuss-Tags");
       idx_age; fn_col("Alter");
       idx_vn; fn_col("Vorname");
       idx_nn; fn_col("Nachname");
@@ -59,7 +59,7 @@
       
       c_func; CHOOSECOLS(raw_data; idx_func);
       c_stat; CHOOSECOLS(raw_data; idx_stat);
-      c_lk; CHOOSECOLS(raw_data; idx_lk);
+      c_tags; CHOOSECOLS(raw_data; idx_tags);
       c_geb; CHOOSECOLS(raw_data; idx_geb);
       c_days; CHOOSECOLS(raw_data; idx_days);
       c_vn; CHOOSECOLS(raw_data; idx_vn);

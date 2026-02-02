@@ -51,7 +51,7 @@
       fn_col; LAMBDA(n; IFERROR(MATCH(n; headers; 0); 0));
       idx_func; fn_col("Funktion");
       idx_stat; fn_col("Status");
-      idx_lk; fn_col("Landkreis");
+      idx_tags; fn_col("Zuschuss-Tags");
       idx_age; fn_col("Alter");
       idx_vn; fn_col("Vorname");
       idx_nn; fn_col("Nachname");
@@ -64,7 +64,7 @@
       
       c_func; CHOOSECOLS(raw_data; idx_func);
       c_stat; CHOOSECOLS(raw_data; idx_stat);
-      c_lk; CHOOSECOLS(raw_data; idx_lk);
+      c_tags; CHOOSECOLS(raw_data; idx_tags);
       c_geb; CHOOSECOLS(raw_data; idx_geb);
       c_days; CHOOSECOLS(raw_data; idx_days);
       c_vn; CHOOSECOLS(raw_data; idx_vn);
@@ -103,7 +103,7 @@
       regex_must_local; SUBSTITUTE(tg_must_be_local; ";"; "|");
       is_must_local_group; ARRAYFORMULA(IF(tg_must_be_local=""; FALSE; REGEXMATCH(c_func; regex_must_local)));
       target_lk; TRIM(CLEAN(setup_lk_name));
-      is_local; ARRAYFORMULA(c_lk = target_lk);
+      is_local; ARRAYFORMULA(REGEXMATCH(c_tags; "(^|;)" & target_lk & "(;|$)"));
       
       mask_local_hard; ARRAYFORMULA(IF(is_must_local_group; is_local; TRUE));
       
