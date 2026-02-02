@@ -157,7 +157,7 @@
           get_s_col; LAMBDA(k; IF(k="LOKAL_FIRST"; idx_is_local;
              IF(k="ALPHA"; idx_nn;
               IF(k="FUNKTION_ALPHA"; idx_func;
-               IF(k="LANDKREIS_ALPHA"; idx_lk;
+               IF(k="LANDKREIS_ALPHA"; idx_tags;
                 IF(k="ALTER"; idx_age;
                  1
                 )

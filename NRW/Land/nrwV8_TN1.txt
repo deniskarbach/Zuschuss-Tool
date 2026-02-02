@@ -3,11 +3,12 @@
   debug_mode; (raw_debug="Debug");
   print_mode; (raw_debug="Drucken");
   
-  filter_function; "MA";
-  max_rows; 6;
+  filter_function; "TN|MA|LEITUNG|REF";
+  max_rows; 14;
+  start_offset; 0;
 
   
-  setup_lk_name; "Landkreis Rhein-Hunsrück-Kreis";
+  setup_lk_name; "Nordrhein-Westfalen";
   setup_event_typ; TRIM(SETUP!B18);
   rule_key; setup_lk_name & "_" & SUBSTITUTE(setup_event_typ; " "; "_");
   
@@ -79,7 +80,7 @@
       
       regex_tg; SUBSTITUTE(tg_list; ";"; "|");
       mask_tg_all; ARRAYFORMULA(IF(tg_list=""; TRUE; REGEXMATCH(c_func; regex_tg)));
-      mask_tg_func; ARRAYFORMULA(c_func = filter_function);
+      mask_tg_func; ARRAYFORMULA(REGEXMATCH(c_func; filter_function));
       
       mask_stat; ARRAYFORMULA(IFERROR(ISNUMBER(SEARCH("Angemeldet"; c_stat)); FALSE));
       
@@ -163,11 +164,9 @@
           get_s_col; LAMBDA(k; IF(k="LOKAL_FIRST"; idx_is_local;
              IF(k="ALPHA"; idx_nn;
               IF(k="FUNKTION_ALPHA"; idx_func;
-               IF(k="LANDKREIS_ALPHA"; idx_tags;
-                IF(k="ALTER"; idx_age;
-                 1
-                )
-               )
+                 IF(k="ALTER"; idx_age;
+                  1
+                 )
               )
              )
           ));
@@ -186,10 +185,13 @@
       sorted_data; CHOOSECOLS(sorted_data_with_local; SEQUENCE(COLUMNS(raw_data)));
       
       total_rows; ROWS(sorted_data);
-      actual_rows; IF(max_rows=0; total_rows; MIN(total_rows; max_rows));
-      limited_data; IF(actual_rows=total_rows; sorted_data; CHOOSEROWS(sorted_data; SEQUENCE(actual_rows)));
-      limited_indices; IF(actual_rows=total_rows; filtered_indices; CHOOSEROWS(filtered_indices; SEQUENCE(actual_rows)));
+      start_row; IF(start_offset=0; 1; IF(start_offset >= total_rows; 0; start_offset + 1));
+      remaining_rows; IF(start_row=0; 0; total_rows - start_offset);
+      actual_rows; IF(remaining_rows=0; 0; IF(max_rows=0; remaining_rows; MIN(remaining_rows; max_rows)));
+      limited_data; IF(actual_rows=0; ""; CHOOSEROWS(sorted_data; SEQUENCE(actual_rows; 1; start_row)));
       
+      IF(actual_rows=0; "";
+       LET(
       sorted_func; CHOOSECOLS(limited_data; idx_func);
       sorted_beh; IF(idx_beh>0; CHOOSECOLS(limited_data; idx_beh); ARRAYFORMULA(IF(SEQUENCE(ROWS(limited_data));"")));
       sorted_soz; IF(idx_soz>0; CHOOSECOLS(limited_data; idx_soz); ARRAYFORMULA(IF(SEQUENCE(ROWS(limited_data));"")));
@@ -234,7 +236,7 @@
       
       res_table; MAKEARRAY(ROWS(limited_data); num_out_cols; LAMBDA(r; c;
         LET(
-          tpl; TRIM(INDEX(col_map; c));
+          tpl; TRIM(INDEX(col_map; 1; c));
           single_token; REGEXEXTRACT(tpl; "^\{([^}]+)\}$");
           
           val; IF(ISERROR(single_token);
@@ -272,7 +274,8 @@
          );
           res_table
        )
-      )
+       )
+      ))
      )
     )
    )
