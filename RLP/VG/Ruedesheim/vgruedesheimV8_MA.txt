@@ -79,7 +79,7 @@
       
       regex_tg; SUBSTITUTE(tg_list; ";"; "|");
       mask_tg_all; ARRAYFORMULA(IF(tg_list=""; TRUE; REGEXMATCH(c_func; regex_tg)));
-      mask_tg_func; ARRAYFORMULA(c_func = filter_function);
+      mask_tg_func; ARRAYFORMULA(REGEXMATCH(c_func; filter_function) * mask_tg_all);
       
       mask_stat; ARRAYFORMULA(IFERROR(ISNUMBER(SEARCH("Angemeldet"; c_stat)); FALSE));
       
