@@ -44,6 +44,8 @@
   output_cols_raw; r_txt(20);
   label_map_raw; r_txt(21);
   sort_order_raw; r_txt(22);
+  display_mode_raw; r_txt(23);
+  display_mode; IF(display_mode_raw=""; "FILTERED"; display_mode_raw);
   
   IF(r_row=0; IF(print_mode; ""; IF(page=1; "❌ Rule Key not found: " & rule_key; ""));
    IF(output_cols_raw=""; IF(print_mode; ""; IF(page=1; "❌ Config fehlt: OUTPUT_COLUMNS"; ""));
@@ -103,11 +105,13 @@
       regex_must_local; SUBSTITUTE(tg_must_be_local; ";"; "|");
       is_must_local_group; ARRAYFORMULA(IF(tg_must_be_local=""; FALSE; REGEXMATCH(c_func; regex_must_local)));
       target_lk; TRIM(CLEAN(setup_lk_name));
-      is_local; ARRAYFORMULA(REGEXMATCH(c_tags; "(^|;)" & target_lk & "(;|$)"));
+      check_val; ARRAYFORMULA(IF(c_tags=""; c_lk; c_tags));
+      is_local; ARRAYFORMULA(REGEXMATCH(check_val; "(^|;)" & target_lk & "(;|$)"));
       
       mask_local_hard; ARRAYFORMULA(IF(is_must_local_group; is_local; TRUE));
       
-      mask_candidates; ARRAYFORMULA(mask_tg * mask_stat * age_ok * days_ok * mask_local_hard);
+      mask_base_pool; ARRAYFORMULA(mask_tg * mask_stat);
+      mask_candidates; ARRAYFORMULA(mask_base_pool * age_ok * days_ok * mask_local_hard);
       
       raw_min_bezug; IF(min_anzahl_bezug=""; "TN"; min_anzahl_bezug);
       regex_min_anzahl; IF(raw_min_bezug="ALLE"; ".+"; SUBSTITUTE(raw_min_bezug; ";"; "|"));
@@ -136,9 +140,14 @@
               )
             );
             
-            mask_final; ARRAYFORMULA(mask_candidates * IF(force_local_filter; is_local; TRUE));
+            mask_eligible; ARRAYFORMULA(mask_candidates * IF(force_local_filter; is_local; TRUE));
+      
+            is_show_all; (display_mode="SHOW_ALL");
+            is_filtered; (display_mode="FILTERED");
             
-            filtered_indices; IFERROR(FILTER(SEQUENCE(ROWS(raw_data)); mask_final); 0);
+            mask_display; IF(is_show_all; mask_base_pool; mask_eligible);
+            
+            filtered_indices; IFERROR(FILTER(SEQUENCE(ROWS(raw_data)); mask_display); 0);
             
             IF(ROWS(filtered_indices)=1 * (INDEX(filtered_indices;1)=0); IF(print_mode; ""; IF(page=1; "✅ Keine Personen nach aktuellen Kriterien."; ""));
               LET(

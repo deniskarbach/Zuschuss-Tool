@@ -156,7 +156,7 @@ Jeder Datensatz durchläuft diese Prüfung:
 ### 3.2 Die Intelligente Orts-Prüfung ("Local Check")
 Die Formel ermittelt automatisch, ob eine Person aus dem Landkreis kommt. Dabei gilt folgende Priorität:
 1.  **Zuschuss-Tags (Spalte AS):** Wenn hier ein Wert steht, wird dieser genutzt (für manuelle Zuweisungen bei Stadt/Kreis-Listen).
-2.  **Landkreis/Bundesland (Spalte AQ):** Wenn die Tags leer sind, nutzt die Formel den Wert aus dieser Spalte (Fallback).
+2.  **Landkreis (Spalte AQ):** Wenn die Tags leer sind, nutzt die Formel den Wert aus dieser Spalte (Fallback).
 *Dieses Verfahren garantiert, dass sowohl Datenbank-Imports als auch manuelle Korrekturen korrekt erkannt werden.*
 
 ### 3.3 Die Quoten-Logik (Aktions-Matrix)
