@@ -39,6 +39,9 @@
   output_cols_raw; r_txt(20);
   label_map_raw; r_txt(21);
   sort_order_raw; r_txt(22);
+  display_mode_raw; r_txt(23);
+  display_mode; IF(display_mode_raw=""; "FILTERED"; display_mode_raw);
+
   
   IF(r_row=0; IF(print_mode; ""; "❌ Rule Key not found: " & rule_key);
    IF(output_cols_raw=""; IF(print_mode; ""; "❌ Config fehlt: OUTPUT_COLUMNS");
@@ -55,7 +58,7 @@
       idx_days; IF(fn_col("Anwesenheit")>0; fn_col("Anwesenheit"); fn_col("Tage"));
       idx_beh; fn_col("Behinderung");
       idx_soz; fn_col("Sozial");
-      idx_bl; fn_col("Bundesland");
+      idx_lk; fn_col("Landkreis");
       
       c_func; CHOOSECOLS(raw_data; idx_func);
       c_stat; CHOOSECOLS(raw_data; idx_stat);
@@ -67,7 +70,7 @@
       c_ort; CHOOSECOLS(raw_data; idx_ort);
       c_beh; IF(idx_beh>0; CHOOSECOLS(raw_data; idx_beh); ARRAYFORMULA(IF(SEQUENCE(ROWS(raw_data));"")));
       c_soz; IF(idx_soz>0; CHOOSECOLS(raw_data; idx_soz); ARRAYFORMULA(IF(SEQUENCE(ROWS(raw_data));"")));
-      c_bl; IF(idx_bl>0; CHOOSECOLS(raw_data; idx_bl); ARRAYFORMULA(IF(SEQUENCE(ROWS(raw_data));""))); 
+      c_lk; IF(idx_lk>0; CHOOSECOLS(raw_data; idx_lk); ARRAYFORMULA(IF(SEQUENCE(ROWS(raw_data));""))); 
       
       parse_date; LAMBDA(v; IFERROR(DATEVALUE(v); IFERROR(VALUE(REGEXEXTRACT(TO_TEXT(v); "\d+"));0)));
       val_ages; ARRAYFORMULA(IFERROR(DATEDIF(parse_date(c_geb); setup_end; "Y"); 0));
@@ -98,17 +101,19 @@
       regex_must_local; SUBSTITUTE(tg_must_be_local; ";"; "|");
       is_must_local_group; ARRAYFORMULA(IF(tg_must_be_local=""; FALSE; REGEXMATCH(c_func; regex_must_local)));
       target_lk; TRIM(CLEAN(setup_lk_name));
-      is_local; ARRAYFORMULA(REGEXMATCH(c_tags; "(^|;)" & target_lk & "(;|$)"));
+      check_val; ARRAYFORMULA(IF(c_tags=""; c_lk; c_tags));
+      is_local; ARRAYFORMULA(REGEXMATCH(check_val; "(^|;)" & target_lk & "(;|$)"));
       
       mask_local_hard; ARRAYFORMULA(IF(is_must_local_group; is_local; TRUE));
       
-      mask_candidates; ARRAYFORMULA(mask_tg * mask_stat * age_ok * days_ok * mask_local_hard);
+      mask_base_pool; ARRAYFORMULA(mask_tg * mask_stat);
+      mask_pre_quote; ARRAYFORMULA(mask_base_pool * age_ok * days_ok * mask_local_hard);
       
       raw_min_bezug; IF(min_anzahl_bezug=""; "TN"; min_anzahl_bezug);
       regex_min_anzahl; IF(raw_min_bezug="ALLE"; ".+"; SUBSTITUTE(raw_min_bezug; ";"; "|"));
       
       mask_in_min_anzahl; ARRAYFORMULA(REGEXMATCH(c_func; regex_min_anzahl));
-      cnt_min_check; SUM(ARRAYFORMULA(N(mask_candidates * mask_in_min_anzahl)));
+      cnt_min_check; SUM(ARRAYFORMULA(N(mask_pre_quote * mask_in_min_anzahl)));
       check_min_anzahl; IF(min_anzahl=0; TRUE; cnt_min_check >= min_anzahl);
       
       IF(NOT(check_measure_duration); IF(print_mode; ""; "❌ Maßnahme zu kurz (" & measure_duration & " Tage / Soll " & min_tage & ")");
@@ -117,8 +122,8 @@
           regex_quote_bezug; SUBSTITUTE(quote_bezug; ";"; "|");
           mask_quote_relevant; ARRAYFORMULA(REGEXMATCH(c_func; regex_quote_bezug));
           
-          cnt_base; SUM(ARRAYFORMULA(N(mask_candidates * mask_quote_relevant)));
-          cnt_loc; SUM(ARRAYFORMULA(N(mask_candidates * mask_quote_relevant * is_local)));
+          cnt_base; SUM(ARRAYFORMULA(N(mask_pre_quote * mask_quote_relevant)));
+          cnt_loc; SUM(ARRAYFORMULA(N(mask_pre_quote * mask_quote_relevant * is_local)));
           
           quote_pct; IF(cnt_base=0; 0; cnt_loc/cnt_base);
           quote_ok; IF(quote_mode="MEHRHEIT"; cnt_loc > (cnt_base - cnt_loc); quote_pct >= min_quote);
@@ -129,11 +134,19 @@
             )
           );
           
-          mask_final; ARRAYFORMULA(mask_candidates * IF(force_local_filter; is_local; TRUE));
+          mask_eligible; ARRAYFORMULA(mask_pre_quote * IF(force_local_filter; is_local; TRUE));
           
-          filtered_indices; IFERROR(FILTER(SEQUENCE(ROWS(raw_data)); mask_final); 0);
+          is_show_all; (display_mode="SHOW_ALL");
+          is_filtered; (display_mode="FILTERED");
           
-          IF(ROWS(filtered_indices)=1 * (INDEX(filtered_indices;1)=0); IF(print_mode; ""; "✅ Keine Personen nach aktuellen Kriterien.");
+          
+          mask_display; IF(is_show_all; mask_base_pool; mask_eligible);
+
+          
+          filtered_indices; IFERROR(FILTER(SEQUENCE(ROWS(raw_data)); mask_display); 0);
+          
+          IF(ROWS(filtered_indices)=1 * (INDEX(filtered_indices;1)=0); 
+           IF(print_mode; ""; "✅ Keine Personen nach aktuellen Kriterien. (Stats -> BasePool: " & SUM(mask_base_pool*1) & " | Eligible: " & SUM(mask_eligible*1) & " | Local: " & SUM(is_local*1) & " | Stat: " & SUM(mask_stat*1) & ")");
            LET(
              filtered_is_local; ARRAYFORMULA(N(CHOOSEROWS(is_local; filtered_indices)));
              filtered_data_with_local; HSTACK(CHOOSEROWS(raw_data; filtered_indices); filtered_is_local);
@@ -182,7 +195,7 @@
       sorted_func; CHOOSECOLS(sorted_data; idx_func);
       sorted_beh; IF(idx_beh>0; CHOOSECOLS(sorted_data; idx_beh); ARRAYFORMULA(IF(SEQUENCE(ROWS(sorted_data));"")));
       sorted_soz; IF(idx_soz>0; CHOOSECOLS(sorted_data; idx_soz); ARRAYFORMULA(IF(SEQUENCE(ROWS(sorted_data));"")));
-      sorted_bl; IF(idx_bl>0; CHOOSECOLS(sorted_data; idx_bl); ARRAYFORMULA(IF(SEQUENCE(ROWS(sorted_data));""))); 
+      sorted_lk; IF(idx_lk>0; CHOOSECOLS(sorted_data; idx_lk); ARRAYFORMULA(IF(SEQUENCE(ROWS(sorted_data));""))); 
       
       col_f_logik; MAP(sorted_func; sorted_beh; LAMBDA(fn; beh;
         IF(fn="TN"; "Teilnehmer:in";
@@ -209,7 +222,7 @@
         )
       ));
       
-      col_wohnort_land; MAP(sorted_bl; LAMBDA(bl; IF(bl<>""; "Deutschland"; "Ausland")));
+      col_wohnort_land; MAP(sorted_lk; LAMBDA(lk; IF(lk<>""; "Deutschland"; "Ausland")));
       
       sorted_geb; CHOOSECOLS(sorted_data; idx_geb);
       col_geburtsjahr; MAP(sorted_geb; LAMBDA(d; IFERROR(YEAR(d); IFERROR(YEAR(DATEVALUE(d)); d))));

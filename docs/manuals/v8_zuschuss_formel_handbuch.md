@@ -48,6 +48,7 @@ Das Blatt `RULES` (bzw. `CACHE_RULES`) steuert das Verhalten der Formel. Die Kon
 | **U** | `OUTPUT_COLUMNS` | Text | Semikolon-Liste der Ausgabespalten (z.B. `Name;Vorname;Geburtsdatum`). |
 | **V** | `LABEL_MAP` | Text | Mapping für Header-Umbenennung (z.B. `Name:Nachname|Geburtsdatum:Geburtsjahr`). |
 | **W** | `SORT_ORDER` | Text | Sortierung (z.B. `LOKAL_FIRST;ALPHA`). |
+| **X** | `DISPLAY_MODE` | Text | Anzeigemodus: `FILTERED` (nur Förderfähige) oder `SHOW_ALL` (alle Angemeldeten). |
 
 ---
 
@@ -112,6 +113,34 @@ Wenn `QUOTE_BEZUG` auf `--` oder leer gesetzt wird, zählt die Formel **niemande
 
 ---
 
+### 2.5 Anzeigemodus (Spalte X)
+
+Der Parameter `DISPLAY_MODE` steuert ausschließlich die **Darstellung** der berechneten Liste, nicht die Förderfähigkeit der Maßnahme an sich.
+> **Wichtig:** Eine ungültige Maßnahme (z.B. zu wenige Teilnehmer) gibt aus Sicherheitsgründen **niemals** eine Liste aus, egal welcher Modus gewählt ist.
+
+| Wert | Beschreibung |
+| :--- | :--- |
+| **`FILTERED`** (Standard) | Zeigt streng nur die Personen an, die **individuell förderfähig** sind (Alter, Wohnort, Quote erfüllt). |
+| **`SHOW_ALL`** | Zeigt **alle gültigen Anmeldungen** der Zielgruppe (Basis-Pool). <br>Dient der Vollständigkeit für die Sachbearbeitung, addiert also auch nicht-förderfähige Personen zur Liste dazu (solange die Maßnahme als Ganzes gültig ist). |
+
+---
+
+### 2.6 Definition: Die "Zielgruppe" (Basis-Pool)
+Die "Zielgruppe" (technisch `mask_base_pool`) definiert die Menge an Personen, die für die aktuelle Liste überhaupt in Frage kommen – **noch vor** jeder Prüfung auf Förderfähigkeit (Alter, Wohnort, etc.).
+Nur wer zur Zielgruppe gehört, wird im Modus `SHOW_ALL` angezeigt.
+
+Eine Person gehört zur Zielgruppe, wenn sie **alle drei** folgenden Bedingungen erfüllt (UND-Verknüpfung):
+
+1.  **Gültiger Status:** Die Person muss den Status "Angemeldet" haben. (Stornierte oder auf Warteliste befindliche Personen werden sofort ignoriert).
+2.  **Dateikompatibilität (`filter_function`):** Die Person muss zur Art der Datei passen.
+    *   *Beispiel:* Eine reine Teilnehmer-Liste (`...TN1.txt`) hat intern den Filter auf "TN". Mitarbeiter (MA) gehören hier **nicht** zur Zielgruppe, selbst wenn sie angemeldet sind.
+3.  **Regelkonformität (`TARGET_GROUPS`):** Die Funktion der Person muss im Regelsatz (Spalte O) erlaubt sein.
+    *   *Beispiel:* Wenn Spalte O nur `TN;MA` enthält, gehören Referenten (`REF`) **nicht** zur Zielgruppe.
+
+> **Zusammengefasst:** Die Zielgruppe ist die Schnittmenge aus **Anmeldung** + **Dateityp** + **Erlaubnis**.
+
+---
+
 ## 3. Logik-Ketten im Detail
 
 ### 3.1 Die Kaskade der Altersprüfung
@@ -124,7 +153,13 @@ Jeder Datensatz durchläuft diese Prüfung:
     *   Für MA: Nutze `MIN_ALTER_MA`.
 3.  **Prüfung:** `Alter >= Untergrenze` UND `Alter <= Obergrenze`.
 
-### 3.2 Die Quoten-Logik (Aktions-Matrix)
+### 3.2 Die Intelligente Orts-Prüfung ("Local Check")
+Die Formel ermittelt automatisch, ob eine Person aus dem Landkreis kommt. Dabei gilt folgende Priorität:
+1.  **Zuschuss-Tags (Spalte AS):** Wenn hier ein Wert steht, wird dieser genutzt (für manuelle Zuweisungen bei Stadt/Kreis-Listen).
+2.  **Landkreis/Bundesland (Spalte AQ):** Wenn die Tags leer sind, nutzt die Formel den Wert aus dieser Spalte (Fallback).
+*Dieses Verfahren garantiert, dass sowohl Datenbank-Imports als auch manuelle Korrekturen korrekt erkannt werden.*
+
+### 3.3 Die Quoten-Logik (Aktions-Matrix)
 Wenn die Quote (Prozent oder Mehrheit) **NICHT** erfüllt ist, greift `QUOTE_AKTION`:
 
 1.  **`KEINE_QUOTE`**: Keine Aktion. Die Quote wird ignoriert. Alle externen Teilnehmer verbleiben auf der Liste. (Typisch für Schulungen).
@@ -133,7 +168,7 @@ Wenn die Quote (Prozent oder Mehrheit) **NICHT** erfüllt ist, greift `QUOTE_AKT
     *   Ist die Quote erfüllt? → Keine Aktion (Externe dürfen bleiben).
     *   Ist die Quote **nicht** erfüllt? → Alle externen Teilnehmer werden entfernt. Damit verbleiben nur Einheimische, womit die Quote (jetzt 100%) formal erfüllt ist und die Förderung für die Einheimischen gesichert wird.
 
-### 3.3 Die Sortier-Logik
+### 3.4 Die Sortier-Logik
 Die Ausgabe wird gesteuert durch `SORT_ORDER` (Spalte W).
 *   **Format:** `KEY1;KEY2` (Primär- und Sekundärschlüssel).
 *   **Schlüssel `LOKAL_FIRST`:** Sortiert Einheimische nach oben, Externe nach unten.
@@ -150,7 +185,8 @@ Dies sind **globale Sperren**. Die V8 gibt keine Namensliste aus, um zu verhinde
 
 ### Fall B: "✅ Keine Personen nach aktuellen Kriterien."
 Die Filterung war zu strikt – niemand ist übrig geblieben.
-*Ursache:* Oft falsche Datumsangaben (Freizeit in Vergangenheit/Zukunft) oder zu strenge Altersgrenzen.
+In neueren Versionen (ab V8.1) enthält diese Meldung eine Statistik (`Stats -> BasePool | Eligible | Local`), die verrät, an welcher Stelle die Filter greifen.
+*   `Local: 0` -> Prüfen Sie die Schreibweise von Landkreis in `SETUP` und `TN_LISTE` (Spalte AQ).
 
 ### Fall C: Leere Felder in der Ausgabe
 *Ursache:* Die Spaltennamen in der V8-Konfiguration (`OUTPUT_COLUMNS`) stimmen nicht exakt mit den Headern in `TN_LISTE` überein.
