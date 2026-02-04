@@ -1,9 +1,17 @@
 =LET(
-  raw_debug; IFERROR(TRIM(SETUP!B69); "Normal");
-  debug_mode; (raw_debug="Debug");
-  print_mode; (raw_debug="Drucken");
+
   
   setup_lk_name; "Landkreis Rhein-Lahn-Kreis";
+  
+  global_mode_raw; IFERROR(TRIM(SETUP!B69); "Normal");
+  local_mode_raw; IFERROR(TRIM(VLOOKUP(setup_lk_name; SETUP!$B$48:$Z$100; 4; FALSE)); "");
+  active_mode; IF(local_mode_raw <> ""; local_mode_raw; global_mode_raw);
+  
+  run_audit; (active_mode="Audit");
+  run_debug; (active_mode="Debug");
+  print_mode; (active_mode="Drucken");
+  
+  debug_mode; run_debug;
   setup_event_typ; TRIM(SETUP!B18);
   rule_key; setup_lk_name & "_" & SUBSTITUTE(setup_event_typ; " "; "_");
   
@@ -260,10 +268,58 @@
           val
         )
       ));
-      
-      IF(debug_mode;
-         VSTACK(
+       res_audit_table; IF(run_audit;
+          LET(
+             reasons_col; MAP(SEQUENCE(ROWS(raw_data)); LAMBDA(i;
+               LET(
+                 s_stat; INDEX(mask_stat; i);
+                 s_tg; INDEX(mask_tg); i);
+                 s_age; INDEX(age_ok; i);
+                 s_days; INDEX(days_ok; i);
+                 s_loc; INDEX(is_local; i);
+                 s_nn; INDEX(c_nn; i);
+                 
+                 IF(s_nn=""; "OK";
+                   IF(NOT(s_stat); "Status-Fehler (" & INDEX(c_stat;i) & ")";
+                    IF(NOT(s_tg); "Falsche Zielgruppe/Tags";
+                     IF(NOT(s_age); "Alter ungültig (" & INDEX(val_ages;i) & "J)";
+                      IF(NOT(s_days); "Zu kurz da (" & INDEX(val_days;i) & "T)";
+                       IF(NOT(s_loc); "Nicht Lokal";
+                        "OK"
+                       )
+                      )
+                     )
+                    )
+                   )
+                 )
+               )
+             ));
+             
+             header_row; HSTACK("Nachname"; "Vorname"; "AUDIT-STATUS"; "Geburtsdatum"; "Ort");
+             data_rows; HSTACK(
+                CHOOSECOLS(raw_data; idx_nn); 
+                CHOOSECOLS(raw_data; idx_vn);
+                reasons_col;
+                CHOOSECOLS(raw_data; idx_geb);
+                CHOOSECOLS(raw_data; idx_ort)
+             );
+             
+             pad; LAMBDA(t; HSTACK(t; ""; ""; ""; ""));
+             
+             VSTACK(
+               pad("=== INTEGRIERTER AUDIT REPORT (POC) ===");
+               pad("Zeigt alle Zeilen, die NICHT auf der Liste stehen:");
+               header_row;
+               FILTER(data_rows; reasons_col <> "OK")
+             )
+          )
+       ; "");
+       
+       IF(run_audit; res_audit_table;
+        IF(debug_mode;
+          VSTACK(
            "V8 BETA (LOGIC COMPLETED)";
+           "Sheet: " & setup_lk_name & " | Mode: " & active_mode & " (Global: " & global_mode_raw & " / Local: '" & local_mode_raw & "')";
            "Input: " & COUNTA(c_nn) & " -> Final: " & ROWS(sorted_data);
            "Measure: " & measure_duration & " Tage (Min " & min_tage & ")";
            "MinAnzahl: " & cnt_min_check & " (Limit " & min_anzahl & ") -> OK: " & check_min_anzahl;
@@ -271,8 +327,9 @@
            "Sorted By: " & sort_order_raw;
            "---";
            res_table
-         );
-          res_table
+          );
+           res_table
+        )
        )
       )
      )
