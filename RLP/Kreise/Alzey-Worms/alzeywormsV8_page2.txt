@@ -8,8 +8,8 @@
   
   setup_lk_name; "Landkreis Alzey-Worms";
   
-  global_mode_raw; IFERROR(TRIM(SETUP!B69); "Normal");
-  local_mode_raw; IFERROR(TRIM(VLOOKUP(setup_lk_name; SETUP!$B$48:$Z$100; 4; FALSE)); "");
+  global_mode_raw; IFERROR(TRIM(SETUP!B54); "Normal");
+  local_mode_raw; IFERROR(TRIM(VLOOKUP(setup_lk_name; SETUP!$B$60:$Z$100; 4; FALSE)); "");
   active_mode; IF(local_mode_raw <> ""; local_mode_raw; global_mode_raw);
   
   run_audit; (active_mode="Audit");

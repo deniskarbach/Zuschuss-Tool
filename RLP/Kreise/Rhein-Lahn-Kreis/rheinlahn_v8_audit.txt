@@ -1,5 +1,5 @@
 =LET(
-  raw_debug; IFERROR(TRIM(SETUP!B69); "Normal");
+  raw_debug; IFERROR(TRIM(SETUP!B54); "Normal");
   debug_mode; (raw_debug="Debug");
   print_mode; (raw_debug="Drucken");
   

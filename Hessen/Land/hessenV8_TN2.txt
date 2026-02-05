@@ -1,5 +1,5 @@
 =LET(
-  raw_debug; IFERROR(TRIM(SETUP!B69); "Normal");
+  raw_debug; IFERROR(TRIM(SETUP!B54); "Normal");
   debug_mode; (raw_debug="Debug");
   print_mode; (raw_debug="Drucken");
   
@@ -14,7 +14,7 @@
   setup_end; IFERROR(VALUE(SETUP!H23); 0);
   measure_duration; IF((setup_end > 0) * (setup_start > 0); setup_end - setup_start + 1; 1);
   
-  local_mode_raw; IFERROR(TRIM(VLOOKUP(setup_lk_name; SETUP!$B$48:$Z$100; 4; FALSE)); "");
+  local_mode_raw; IFERROR(TRIM(VLOOKUP(setup_lk_name; SETUP!$B$60:$Z$100; 4; FALSE)); "");
   active_mode; IF(local_mode_raw <> ""; local_mode_raw; raw_debug);
   run_audit; (active_mode="Audit");
   
