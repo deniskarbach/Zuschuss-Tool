@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Zuschuss Export Sidebar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1773cf",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#111921",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 20px;
+        }
+    </style>
+</head>
+
+<body
+    class="font-display bg-background-light dark:bg-background-dark text-slate-900 dark:text-white antialiased overflow-hidden">
+    <div class="flex h-screen w-full items-start justify-center bg-gray-100 dark:bg-gray-900 p-4">
+        <div
+            class="relative flex h-full max-h-[800px] w-full flex-col bg-white dark:bg-[#1e293b] shadow-xl rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
+            <header
+                class="flex items-center justify-between border-b border-solid border-gray-100 dark:border-gray-700 px-4 py-3 bg-white dark:bg-[#1e293b] shrink-0 z-10">
+                <div class="flex items-center gap-3">
+                    <div class="flex items-center justify-center text-primary">
+                        <span class="material-symbols-outlined text-[24px]">table_view</span>
+                    </div>
+                    <h2 class="text-slate-900 dark:text-white text-base font-bold leading-tight tracking-tight">Zuschuss
+                        Export</h2>
+                </div>
+                <button
+                    class="flex size-8 cursor-pointer items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 transition-colors"
+                    onclick="google.script.host.close()">
+                    <span class="material-symbols-outlined text-[20px]">close</span>
+                </button>
+            </header>
+            <div class="flex-1 overflow-y-auto px-4 py-6 space-y-6">
+                <div class="flex flex-col items-center justify-center py-4 opacity-90">
+                    <div class="bg-primary/10 rounded-full p-4 mb-3">
+                        <span class="material-symbols-outlined text-primary text-[40px]">upload_file</span>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-4">
+                    <div>
+                        <h3 class="text-slate-900 dark:text-white text-lg font-bold leading-tight mb-2">Export starten
+                        </h3>
+                        <p class="text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal">
+                            Wählen Sie die Listen für den Export aus, um fortzufahren.
+                        </p>
+                    </div>
+                    <div class="relative">
+                        <label class="sr-only">Wählen Sie Listen</label>
+                        <div
+                            class="w-full bg-white dark:bg-gray-800 border border-primary dark:border-primary rounded-lg shadow-sm overflow-hidden transition-all ring-1 ring-primary/10">
+                            <div class="flex items-center justify-between px-3 py-2.5 bg-gray-50 dark:bg-gray-900/50 border-b border-gray-100 dark:border-gray-700 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors"
+                                id="dropdownHeader">
+                                <div class="flex items-center gap-2">
+                                    <span
+                                        class="bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm"
+                                        id="selectedCount">0</span>
+                                    <span class="text-sm font-medium text-slate-700 dark:text-slate-200">Listen
+                                        ausgewählt</span>
+                                </div>
+                                <span class="material-symbols-outlined text-primary text-[20px]">expand_less</span>
+                            </div>
+                            <div class="max-h-[200px] overflow-y-auto custom-scrollbar p-1 bg-white dark:bg-gray-800"
+                                id="sheetListContainer">
+                                <!-- Dynamic Sheets will be injected here -->
+                                <label
+                                    class="flex items-center gap-3 px-2 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md cursor-pointer group transition-colors">
+                                    <input
+                                        class="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary dark:focus:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600 transition-all cursor-pointer"
+                                        type="checkbox" id="selectAll" />
+                                    <span
+                                        class="text-sm font-semibold text-slate-800 dark:text-white group-hover:text-primary transition-colors">Alle
+                                        auswählen</span>
+                                </label>
+                                <div class="h-px bg-gray-100 dark:bg-gray-700 my-1 mx-2"></div>
+                                <div class="flex flex-col gap-0.5" id="sheetCheckboxes">
+                                    <!-- Checkboxes generated by JS -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-lg p-3 flex gap-3 items-start">
+                    <span class="material-symbols-outlined text-primary text-[20px] shrink-0 mt-0.5">info</span>
+                    <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                        Stellen Sie sicher, dass alle Daten in den ausgewählten Blättern aktuell sind, bevor Sie den
+                        Export starten.
+                    </p>
+                </div>
+            </div>
+            <div class="border-t border-gray-100 dark:border-gray-700 p-4 bg-white dark:bg-[#1e293b] shrink-0">
+                <button onclick="startExport()"
+                    class="w-full flex items-center justify-center gap-2 cursor-pointer overflow-hidden rounded-lg h-10 bg-primary hover:bg-blue-700 text-white text-sm font-bold leading-normal tracking-wide shadow-sm transition-colors focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                    <span>Export vorbereiten</span>
+                    <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+                </button>
+                <div class="mt-4 flex justify-center">
+                    <p class="text-gray-400 dark:text-gray-600 text-xs font-medium">Version 1.0.0</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function loadSheets() {
+            google.script.run.withSuccessHandler(populateSheets).getSheetNames();
+        }
+
+        function populateSheets(sheets) {
+            const container = document.getElementById('sheetCheckboxes');
+            container.innerHTML = '';
+            sheets.forEach(sheet => {
+                const label = document.createElement('label');
+                label.className = 'flex items-center gap-3 px-2 py-2 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-md cursor-pointer transition-colors';
+                label.innerHTML = `
+        <input class="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary dark:focus:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600 cursor-pointer sheet-checkbox" type="checkbox" value="${sheet}"/>
+        <span class="text-sm text-slate-700 dark:text-slate-200">${sheet}</span>
+      `;
+                container.appendChild(label);
+            });
+            updateCount();
+            addListeners();
+        }
+
+        function addListeners() {
+            const checkboxes = document.querySelectorAll('.sheet-checkbox');
+            const selectAll = document.getElementById('selectAll');
+
+            checkboxes.forEach(cb => cb.addEventListener('change', updateCount));
+
+            selectAll.addEventListener('change', (e) => {
+                checkboxes.forEach(cb => cb.checked = e.target.checked);
+                updateCount();
+            });
+        }
+
+        function updateCount() {
+            const checked = document.querySelectorAll('.sheet-checkbox:checked').length;
+            document.getElementById('selectedCount').textContent = checked;
+        }
+
+        function startExport() {
+            const selected = Array.from(document.querySelectorAll('.sheet-checkbox:checked')).map(cb => cb.value);
+            if (selected.length === 0) return alert("Bitte w\u00e4hlen Sie mindestens eine Liste aus.");
+            google.script.run.openExportDialog(selected);
+        }
+
+        window.onload = loadSheets;
+    </script>
+</body>
+
+</html>
