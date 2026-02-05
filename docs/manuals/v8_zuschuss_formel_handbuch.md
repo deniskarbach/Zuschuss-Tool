@@ -1,193 +1,164 @@
-# 📘 V8 Zuschuss-System: Technisches Handbuch (Version 8)
+# 📘 V8 Zuschuss-System: Benutzerhandbuch & Technische Referenz
 
-*Version: 8.1.0*
-*Datum: 04.02.2026*
-
----
-
-## 1. Einführung und Funktionsweise
-
-Die "V8"-Formel ist ein vollständig konfigurierbares, regelbasiertes System zur automatisierten Berechnung von Zuschusslisten für Jugendfreizeiten. Sie arbeitet nach dem Prinzip der **dynamischen Regel-Injektion**: Die Logik ist in einer einzigen Formel gekapselt, während die Parameter (Regeln) extern im Blatt `RULES` (technisch `CACHE_RULES`) verwaltet werden.
-
-### Der Prozess im Überblick
-1.  **Datenerfassung:** Die Formel liest die Rohdaten aus dem Blatt `TN_LISTE` (Zeile 2 bis Ende).
-2.  **Kontext-Bestimmung:** Anhand von `SETUP!B18` (Veranstaltungstyp, z.B. "Freizeit") und dem voreingestellten Landkreis wird der korrekte Datensatz aus `CACHE_RULES` geladen.
-3.  **Filterung (Individuell):** Jeder Datensatz wird gegen definierte Kriterien (Alter, Status, Dauer) geprüft.
-4.  **Logik-Prüfung (Gruppe):** Die verbleibende Menge wird gegen Gruppenkriterien geprüft (Mindestteilnehmerzahl, Quote).
-5.  **Output-Generierung:** Die qualifizierten Datensätze werden sortiert, formatiert und ausgegeben.
+*Version: 8.2.0*
+*Datum: 05.02.2026*
 
 ---
 
-## 2. Detaillierte Parameter-Dokumentation (RULES)
+# Teil 1: Schritt-für-Schritt Anleitung (Für Nutzer)
 
-Das Blatt `RULES` (bzw. `CACHE_RULES`) steuert das Verhalten der Formel. Die Konfiguration erfolgt spaltenweise von B bis W.
+Diese Anleitung führt Sie durch den Prozess der Erstellung einer Zuschussliste, von der Datenpflege bis zum fertigen PDF.
 
-### 2.1 Master-Tabelle (Spalten-Übersicht)
+## Schritt 1: Teilnehmer-Daten pflegen (`TN_LISTE`)
+Alle Berechnungen basieren auf der zentralen Liste im Blatt `TN_LISTE`.
+1.  Tragen Sie alle Personen (Teilnehmende und Mitarbeitende) in die Liste ein.
+2.  **Pflichtfelder:** Stellen Sie sicher, dass folgende Spalten korrekt gefüllt sind:
+    *   **Funktion:** `TN`, `MA`, `LEITUNG` oder `REF`.
+    *   **Status:** Muss `Angemeldet` sein. (Personen auf "Warteliste" oder "Storniert" werden ignoriert).
+    *   **Wohnort & PLZ:** Wichtig für die Orts-Prüfung.
+    *   **Landkreis (Spalte AQ):** Muss exakt der offiziellen Schreibweise entsprechen (z.B. "Landkreis Mainz-Bingen").
+    *   **Geburtsdatum:** Für die Altersprüfung.
+    *   **Anwesenheit:** (Optional) Anzahl der Tage, falls abweichend von der Gesamtdauer.
 
-| Spalte | Parameter | Datentyp | Beschreibung |
-| :--- | :--- | :--- | :--- |
-| **B** | `KEY` | Text | Eindeutiger Identifikator des Regelsatzes (z.B. `Main-Taunus-Kreis_Freizeit`). Wird aus `Gebietskörperschaft` + `TYP` gebildet. |
-| **C** | `Gebietskörperschaft` | Text | Name des Landkreises oder der Stadt (muss exakt mit Dropdown übereinstimmen). |
-| **D** | `TYP` | Text | Veranstaltungstyp (z.B. `Freizeit`, `Schulung`, `Seminar`). |
-| **E** | `KUERZEL` | Text | Internes Kürzel (optional, für Berichte). |
-| **F** | `MIN_ANZAHL` | Ganzzahl | **Mindestanzahl Personen.** Unterschreitung sperrt die Liste. |
-| **G** | `MIN_ANZAHL_BEZUG` | Text | Wer zählt zur Mindestanzahl? (`TN`, `MA`, `LEITUNG` oder `ALLE`). Default: `TN`. |
-| **H** | `MIN_TAGE` | Ganzzahl | **Mindestdauer der Maßnahme.** Vergleicht `(Ende - Start + 1)` mit diesem Wert. |
-| **I** | `MIN_ANWESENHEIT` | Ganzzahl | **Mindestanwesenheit pro Person.** Personen mit weniger Tagen werden gefiltert. |
-| **J** | `MIN_ALTER_TN` | Ganzzahl | **Reguläres Mindestalter TN.** (Harte Grenze, wenn kein Soft-Wert gesetzt). |
-| **K** | `MAX_ALTER_TN` | Ganzzahl | **Höchstalter TN.** (`0` = inaktiv). |
-| **L** | `MIN_ALTER_SOFT_TN` | Ganzzahl | **Weiches Mindestalter TN.** Wenn gesetzt (`>0`), überschreibt dies `MIN_ALTER_TN`. |
-| **M** | `MIN_ALTER_MA` | Ganzzahl | **Mindestalter Mitarbeiter (MA).** |
-| **N** | `MIN_ALTER_LEITUNG` | Ganzzahl | **Mindestalter Leitung.** Prioritär vor `MIN_ALTER_MA`. |
-| **O** | `TARGET_GROUPS` | Text | **Positiv-Liste.** Welche Funktionen werden betrachtet? (z.B. `TN;MA;LEITUNG`). |
-| **P** | `GRUPPEN_NUR_LOKAL` | Text | Welche Gruppen müssen **zwingend** aus dem Landkreis kommen? (z.B. `TN`). |
-| **Q** | `MIN_QUOTE` | Dezimal | **Quote.** Anteil Einheimische (z.B. `0,5` für 50%). |
-| **R** | `QUOTE_MODUS` | Text | Modus: `PROZENT` oder `MEHRHEIT`. |
-| **S** | `QUOTE_BEZUG` | Text | Wer zählt in die Quote? (z.B. `TN`). Wichtig! |
-| **T** | `QUOTE_AKTION` | Text | Konsequenz bei Nichterfüllung: `KEINE_QUOTE`, `SOLIDARISCH`, `STRIKT_LOKAL`. |
-| **U** | `OUTPUT_COLUMNS` | Text | Semikolon-Liste der Ausgabespalten (z.B. `Name;Vorname;Geburtsdatum`). |
-| **V** | `LABEL_MAP` | Text | Mapping für Header-Umbenennung (z.B. `Name:Nachname|Geburtsdatum:Geburtsjahr`). |
-| **W** | `SORT_ORDER` | Text | Sortierung (z.B. `LOKAL_FIRST;ALPHA`). |
-| **X** | `DISPLAY_MODE` | Text | Anzeigemodus: `FILTERED` (nur Förderfähige) oder `SHOW_ALL` (alle Angemeldeten). |
+## Schritt 2: Maßnahme konfigurieren (`SETUP`)
+Wechseln Sie in das Blatt `SETUP`. Hier steuern Sie die globale Konfiguration für die aktuelle Freizeit.
+1.  **Veranstaltungstyp (B18):** Wählen Sie den Typ (z.B. "Freizeit", "Schulung"). *Dies bestimmt, welche Regeln geladen werden.*
+2.  **Zeitraum (B23/H23):** Prüfen Sie Start- und Enddatum. *Dies bestimmt die Dauer und das Stichtags-Alter.*
+3.  **Local Mode / Audit Check (B60+):**
+    *   Suchen Sie in der Liste ab Zeile 60 Ihren Landkreis.
+    *   Standard-Einstellung: `(Leer)` oder `Normal` -> Die Liste wird normal berechnet (gefiltert).
+    *   Einstellung `Audit`: Schaltet die Liste in den Prüfmodus (siehe Schritt 4).
 
----
+## Schritt 3: Liste prüfen (Zuschuss-Blätter)
+Gehen Sie in das entsprechende Tabellenblatt für Ihren Zuschuss (z.B. `Mainz-Bingen`, `Hessen`).
+*   **Fall A: Die Liste ist gefüllt.**
+    *   Prüfen Sie stichprobenartig, ob alle erwarteten Personen enthalten sind.
+    *   Achten Sie auf die Sortierung (z.B. Einheimische zuerst).
+*   **Fall B: Die Liste ist leer / Fehlermeldung.**
+    *   `❌ Maßnahme zu kurz`: Prüfen Sie das Datum im SETUP.
+    *   `❌ Zu wenige Teilnehmer`: Es haben sich nicht genug Personen qualifiziert (Mindestanzahl nicht erreicht).
 
-### 2.2 Altersgrenzen und Override-Logik (Spalten J-N)
-
-Das System verwendet eine duale Logik aus "Harten" und "Weichen" Grenzen für Teilnehmer (TN).
-
-| Parameter (Spalte) | Beschreibung | Interaktion |
-| :--- | :--- | :--- |
-| `MIN_ALTER_TN` (J) | **Standard-Mindestalter.** Der reguläre Wert. | Wird **ignoriert**, wenn `MIN_ALTER_SOFT_TN` aktiv ist. |
-| `MIN_ALTER_SOFT_TN` (L) | **Ausnahme-Mindestalter.** Ermöglicht jüngeren Teilnehmern den Zugang. | **Priorität:** Wenn Wert > 0, ersetzt er die Spalte J als Untergrenze.<br>*Formel:* `Effektiv = IF(SOFT>0; SOFT; HARD)` |
-| `MAX_ALTER_TN` (K) | **Höchstalter.** Älter als dieser Wert = Ausschluss. | Wert `0` deaktiviert die Obergrenze. |
-
-> **Wichtig:** Das Alter wird dynamisch zum **Ende der Maßnahme** (`SETUP!H23`) berechnet: `DATEDIF(Geburtsdatum; Ende; "Y")`.
+## Schritt 4: Fehlerursachen finden ("Audit Mode")
+Fehlt eine Person auf der Liste? Nutzen Sie den integrierten **Audit Mode**:
+1.  Gehen Sie zurück ins `SETUP`.
+2.  Stellen Sie bei Ihrem Landkreis (Bereich B60:Z100) den Modus auf **`Audit`**.
+3.  Wechseln Sie wieder in das Zuschuss-Blatt.
+4.  Sie sehen nun eine Tabelle mit **allen** Personen und dem Grund ihres Ausschlusses (z.B. "Alter ungültig", "Nicht Lokal", "Status-Fehler").
+5.  Korrigieren Sie die Daten in der `TN_LISTE` und stellen Sie den Modus im `SETUP` zurück auf Leer/Normal.
 
 ---
 
-### 2.3 Quoten-Steuerung (Spalten Q-T)
+# Teil 2: Technische Dokumentation (V8 Logik)
 
-Steuert das Verhältnis von einheimischen zu auswärtigen Teilnehmern.
+Die "V8"-Formel ist ein vollständig konfigurierbares, regelbasiertes System ("Dynamische Regel-Injektion"). Die Logik ist in einer einzigen Formel gekapselt, Parameter kommen aus `CACHE_RULES`.
 
-| Parameter (Spalte) | Beschreibung |
-| :--- | :--- |
-| `MIN_QUOTE` (Q) | **Schwellenwert.** (Dezimal: 0,5 = 50%). Ignoriert bei `MEHRHEIT`. |
-| `QUOTE_MODUS` (R) | `PROZENT` (Anteil >= Quote) oder `MEHRHEIT` (Lokal > Extern). |
-| `QUOTE_BEZUG` (S) | **Bezugsgruppe.** (Siehe Warnung unten!). Bestimmt die Basis der Berechnung. |
-| `QUOTE_AKTION` (T) | **Konsequenz.** |
+### 2.1 Detaillierte Parameter-Referenz (CACHE_RULES)
 
-#### ⚠️ KRITISCH: Der Parameter `QUOTE_BEZUG` (Spalte S)
-Der Parameter `QUOTE_BEZUG` definiert, **welche Funktionen zur Quoten-Berechnung herangezogen werden**.
-Z.B. `TN` oder `TN;MA`.
-Wenn `QUOTE_BEZUG` auf `--` oder leer gesetzt wird, zählt die Formel **niemanden** zur Quote. Das Ergebnis ist immer `0 von 0 (0%)`.
+Hier finden Sie eine Erklärung zu jeder Spalte im `RULES`-Blatt.
 
-#### `QUOTE_AKTION` (Spalte T) im Detail
-| Wert | Verhalten |
-| :--- | :--- |
-| **`KEINE_QUOTE`** | Die Quote wird komplett ignoriert. Alle Externen bleiben auf der Liste. |
-| **`STRIKT_LOKAL`** | Alle Externen werden **immer** entfernt, egal ob Quote erfüllt oder nicht. |
-| **`SOLIDARISCH`** | **Bedingte Filterung:**<br>✅ Quote erfüllt → Externe dürfen bleiben.<br>❌ Quote nicht erfüllt → Alle Externen werden entfernt. |
+**Spalte B: `KEY` (Regel-Schlüssel)**
+Der eindeutige Identifikator für den Datensatz, z.B. `Mainz-Bingen_Freizeit`. Er wird aus `Gebietskörperschaft` und `TYP` zusammengesetzt. Die V8-Formel sucht exakt nach diesem Schlüssel, um ihre Konfiguration zu laden.
 
-> [!TIP]
-> - `KEINE_QUOTE`: Für Schulungen/Seminare ohne Wohnort-Anforderung.
-> - `STRIKT_LOKAL`: Wenn nur Einheimische gefördert werden dürfen.
-> - `SOLIDARISCH`: Die faire Option. Externe dürfen mit, solange genug Einheimische dabei sind.
+**Spalte C: `Gebietskörperschaft`**
+Der offizielle Name des Landkreises oder der Stadt (z.B. `Landkreis Mainz-Bingen`). Dieser Wert wird als Standard für die lokale Prüfung verwendet, wenn keine Tags gesetzt sind. Er muss exakt mit der Schreibweise in `TN_LISTE` (Spalte AQ) übereinstimmen.
 
-#### Praxisbeispiel: Der "Berliner-Fall"
-**Situation:** 4 lokale TN + 1 externer TN (aus Berlin).
-| Konfiguration | Ergebnis |
-| :--- | :--- |
-| `BEZUG=TN`, `MODE=MEHRHEIT`, `ACTION=SOLIDARISCH` | Quote 4 > 1 → ✅ Erfüllt. Berliner **bleibt**. |
-| `BEZUG=--`, `MODE=MEHRHEIT`, `ACTION=SOLIDARISCH` | Quote 0 > 0 → ❌ Fail! Berliner **fliegt raus**. |
+**Spalte D: `TYP`**
+Die Art der Veranstaltung, z.B. `Freizeit`, `Schulung` oder `Seminar`. Dieser Wert wird mit der Auswahl im `SETUP` (Zelle B18) abgeglichen. Nur wenn Typ und Landkreis passen, wird die Regel geladen.
 
----
+**Spalte F: `MIN_ANZAHL` (Mindest-Teilnehmer)**
+Die absolute Untergrenze für die *förderfähige* Gruppengröße (z.B. `7`). Wenn weniger Personen qualifiziert sind als hier angegeben, gibt die Formel den Fehler `❌ Zu wenige Teilnehmer` aus. Sie dient als globale Sperre für ungültige Maßnahmen.
 
-### 2.4 Zielgruppen und Output (Spalten O, P, U-W)
+**Spalte G: `MIN_ANZAHL_BEZUG`**
+Bestimmt, welche Personengruppen für die Mindestanzahl gezählt werden (z.B. `TN` oder `ALLE`). Standardmäßig zählen nur Teilnehmer (`TN`). Wenn hier `ALLE` steht, zählen auch Mitarbeitende zur Erfüllung der Mindestgröße.
 
-*   **`TARGET_GROUPS` (O):** Nur Personen mit diesen Funktionen werden in die Liste aufgenommen (Filter 1).
-*   **`GRUPPEN_NUR_LOKAL` (P):** Personen dieser Funktionen werden entfernt, wenn sie nicht aus dem Landkreis kommen (Filter 2, vor Quote).
-*   **`OUTPUT_COLUMNS` (U):** Liste der Spalten (z.B. `Name;PLZ`), die ausgegeben werden.
-*   **`LABEL_MAP` (V):** Umbenennung (z.B. `Name:Nachname`).
-*   **`SORT_ORDER` (W):** Sortierlogik (z.B. `LOKAL_FIRST;ALPHA`).
+**Spalte H: `MIN_TAGE` (Mindest-Dauer)**
+Die erforderliche Mindestdauer der Maßnahme in Tagen (z.B. `3`). Die Formel prüft `(Ende - Start + 1)` gegen diesen Wert. Ist die Maßnahme zu kurz, wird die gesamte Liste mit `❌ Maßnahme zu kurz` gesperrt.
 
----
+**Spalte I: `MIN_ANWESENHEIT`**
+Die Mindestanzahl an Tagen, die eine *einzelne Person* anwesend sein muss, um zu zählen. Wer weniger Tage da war (Spalte "Anwesenheit" oder "Tage" in `TN_LISTE`), wird individuell herausgefiltert. Leere Anwesenheitsfelder werden wie "volle Dauer" behandelt.
 
-### 2.5 Anzeigemodus (Spalte X)
+**Spalte J: `MIN_ALTER_TN` (Mindestalter TN - Hart)**
+Das reguläre Mindestalter für Teilnehmer (z.B. `6`). Dies ist die harte Untergrenze. Teilnehmer, die am Stichtag jünger sind, werden entfernt – es sei denn, Spalte L (`SOFT`) definiert eine Ausnahme.
 
-Der Parameter `DISPLAY_MODE` steuert ausschließlich die **Darstellung** der berechneten Liste, nicht die Förderfähigkeit der Maßnahme an sich.
-> **Wichtig:** Eine ungültige Maßnahme (z.B. zu wenige Teilnehmer) gibt aus Sicherheitsgründen **niemals** eine Liste aus, egal welcher Modus gewählt ist.
+**Spalte K: `MAX_ALTER_TN` (Höchstalter TN)**
+Das maximale Alter für Teilnehmer (z.B. `26`). Wer am Stichtag älter ist, wird aussortiert. Ein Wert von `0` oder Leer bedeutet "kein Höchstalter".
 
-| Wert | Beschreibung |
-| :--- | :--- |
-| **`FILTERED`** (Standard) | Zeigt streng nur die Personen an, die **individuell förderfähig** sind (Alter, Wohnort, Quote erfüllt). |
-| **`SHOW_ALL`** | Zeigt **alle gültigen Anmeldungen** der Zielgruppe (Basis-Pool). <br>Dient der Vollständigkeit für die Sachbearbeitung, addiert also auch nicht-förderfähige Personen zur Liste dazu (solange die Maßnahme als Ganzes gültig ist). |
+**Spalte L: `MIN_ALTER_SOFT_TN` (Mindestalter TN - Weich)**
+Eine optionale, niedrigere Altersgrenze (z.B. `5`), die die harte Grenze (`MIN_ALTER_TN`) überschreibt, falls gesetzt. Dies erlaubt flexible Regeln wie "Eigentlich ab 6, aber ab 5 toleriert". Wenn leer, gilt strikt Spalte J.
 
----
+**Spalte M: `MIN_ALTER_MA` (Mindestalter Mitarbeiter)**
+Das Mindestalter für Personen mit der Funktion `MA`. Mitarbeitende müssen oft älter sein als Teilnehmer (z.B. `16`). Wer jünger ist, wird aus der Mitarbeiter-Liste entfernt.
 
-### 2.6 Definition: Die "Zielgruppe" (Basis-Pool)
-Die "Zielgruppe" (technisch `mask_base_pool`) definiert die Menge an Personen, die für die aktuelle Liste überhaupt in Frage kommen – **noch vor** jeder Prüfung auf Förderfähigkeit (Alter, Wohnort, etc.).
-Nur wer zur Zielgruppe gehört, wird im Modus `SHOW_ALL` angezeigt.
+**Spalte N: `MIN_ALTER_LEITUNG` (Mindestalter Leitung)**
+Das spezifische Mindestalter für die Funktion `LEITUNG` (z.B. `18`). Es überschreibt das allgemeine Mitarbeiter-Alter. Eine zu junge Leitung wird nicht als Leitung anerkannt (und fliegt von der Liste).
 
-Eine Person gehört zur Zielgruppe, wenn sie **alle drei** folgenden Bedingungen erfüllt (UND-Verknüpfung):
+**Spalte O: `TARGET_GROUPS` (Erlaubte Funktionen)**
+Eine Positiv-Liste der Funktionen, die auf dieser Liste erscheinen dürfen (z.B. `TN` oder `TN;MA;LEITUNG`). Wer eine Funktion hat, die hier nicht steht (z.B. `REF`), wird sofort ausgeblendet. Dies trennt z.B. Teilnehmer-Listen von Mitarbeiter-Listen.
 
-1.  **Gültiger Status:** Die Person muss den Status "Angemeldet" haben. (Stornierte oder auf Warteliste befindliche Personen werden sofort ignoriert).
-2.  **Dateikompatibilität (`filter_function`):** Die Person muss zur Art der Datei passen.
-    *   *Beispiel:* Eine reine Teilnehmer-Liste (`...TN1.txt`) hat intern den Filter auf "TN". Mitarbeiter (MA) gehören hier **nicht** zur Zielgruppe, selbst wenn sie angemeldet sind.
-3.  **Regelkonformität (`TARGET_GROUPS`):** Die Funktion der Person muss im Regelsatz (Spalte O) erlaubt sein.
-    *   *Beispiel:* Wenn Spalte O nur `TN;MA` enthält, gehören Referenten (`REF`) **nicht** zur Zielgruppe.
+**Spalte P: `GRUPPEN_NUR_LOKAL` (Zwingend Lokal)**
+Definiert Funktionen, die *zwingend* aus dem eigenen Landkreis kommen müssen, um gefördert zu werden (z.B. `TN`). Auswärtige Personen dieser Gruppe werden individuell gefiltert, noch **bevor** die Quote berechnet wird.
 
-> **Zusammengefasst:** Die Zielgruppe ist die Schnittmenge aus **Anmeldung** + **Dateityp** + **Erlaubnis**.
+**Spalte Q: `MIN_QUOTE` (Quote)**
+Der erforderliche Anteil an Einheimischen als Dezimalzahl (z.B. `0,5` für 50%). Dieser Wert ist die Zielvorgabe. Er interagiert direkt mit `QUOTE_AKTION`: Wird die Quote verfehlt, treten die dort definierten Maßnahmen in Kraft.
 
----
+**Spalte R: `QUOTE_MODUS`**
+Legt die Berechnungsmethode fest: `PROZENT` (Anteil >= Min_Quote) oder `MEHRHEIT` (Einheimische > Auswärtige). "Mehrheit" ist oft strikter als 50%, da bei Gleichstand die Bedingung nicht erfüllt ist.
 
-## 3. Logik-Ketten im Detail
+**Spalte S: `QUOTE_BEZUG` (Basis der Quote)**
+Bestimmt, wer in die Quotenberechnung einfließt (z.B. `TN` oder `TN;MA`). Gruppen, die hier nicht genannt sind, sind "neutral" und beeinflussen die Quote nicht. Dies verhindert, dass z.B. viele auswärtige Referenten die Teilnehmer-Quote verfälschen.
 
-### 3.1 Die Kaskade der Altersprüfung
+**Spalte T: `QUOTE_AKTION` (Konsequenz)**
+Regelt das Verhalten bei verfehlter Quote. `KEINE_QUOTE` ignoriert das Ergebnis. `STRIKT_LOKAL` wirft alle Auswärtigen raus. `SOLIDARISCH` wirft Auswärtige nur raus, wenn die Quote *nicht* erfüllt ist – ein fairer Kompromiss.
+
+**Spalte U: `OUTPUT_COLUMNS` (Ausgabe-Spalten)**
+Eine Liste der Spalten, die im finalen Tabellenblatt erscheinen sollen (z.B. `Nachname;Vorname;Geburtsdatum`). Sie bestimmt Reihenfolge und Inhalt der PDF-Liste. Namen müssen mit den Headern in `TN_LISTE` übereinstimmen.
+
+**Spalte V: `LABEL_MAP` (Spalten-Umbenennung)**
+Erlaubt das Umbenennen von Spalten für den Ausdruck (z.B. `Geburtsdatum=Geburtsjahr`). Das Format ist `Original=Neu`. Nützlich, wenn das Amt andere Begriffe verlangt als die Datenbank (z.B. "Wohnort" statt "Ort").
+
+**Spalte W: `SORT_ORDER` (Sortierung)**
+Bestimmt die Reihenfolge der Zeilen (z.B. `LOKAL_FIRST;ALPHA`). `LOKAL_FIRST` stellt Einheimische voran (wichtig für die Prüfung), `ALPHA` sortiert nach Namen. Mehrere Kriterien werden nacheinander angewendet.
+
+**Spalte X: `DISPLAY_MODE` (Anzeige-Modus)**
+Schaltet zwischen `FILTERED` (nur Förderfähige zeigen) und `SHOW_ALL` (alle Anmeldungen zeigen) um. `SHOW_ALL` ist für Anwesenheitslisten gedacht, ignoriert aber nicht die globalen Sperren (Min-Anzahl/Dauer).
+
+### 2.2 Die Kaskade der Altersprüfung
 Jeder Datensatz durchläuft diese Prüfung:
 1.  **Funktion ermitteln:** Ist es TN, MA oder LEITUNG?
 2.  **Referenz-Alter wählen:**
-    *   Für TN: Prüfe `MIN_ALTER_TN_SOFT`. Ist es gesetzt?
+    *   Für TN: Ist `MIN_ALTER_TN_SOFT` gesetzt?
         *   JA: Nutze `SOFT` als Untergrenze.
         *   NEIN: Nutze `MIN_ALTER_TN` als Untergrenze.
     *   Für MA: Nutze `MIN_ALTER_MA`.
-3.  **Prüfung:** `Alter >= Untergrenze` UND `Alter <= Obergrenze`.
+3.  **Berechnung:** Alter am **letzten Tag** der Maßnahme (`SETUP!H23`).
 
-### 3.2 Die Intelligente Orts-Prüfung ("Local Check")
-Die Formel ermittelt automatisch, ob eine Person aus dem Landkreis kommt. Dabei gilt folgende Priorität:
-1.  **Zuschuss-Tags (Spalte AS):** Wenn hier ein Wert steht, wird dieser genutzt (für manuelle Zuweisungen bei Stadt/Kreis-Listen).
-2.  **Landkreis (Spalte AQ):** Wenn die Tags leer sind, nutzt die Formel den Wert aus dieser Spalte (Fallback).
-*Dieses Verfahren garantiert, dass sowohl Datenbank-Imports als auch manuelle Korrekturen korrekt erkannt werden.*
+### 2.3 Die Intelligente Orts-Prüfung ("Local Check")
+Die Formel ermittelt automatisch, ob eine Person aus dem Landkreis kommt. Priorität:
+1.  **Zuschuss-Tags (Spalte AS):** Manueller Override (z.B. "Mainz-Bingen" eintragen, um Zuweisung zu erzwingen).
+2.  **Landkreis (Spalte AQ):** Automatischer Wert aus Datenbank/Import (Fallback).
 
-### 3.3 Die Quoten-Logik (Aktions-Matrix)
-Wenn die Quote (Prozent oder Mehrheit) **NICHT** erfüllt ist, greift `QUOTE_AKTION`:
+### 2.4 Quoten-Logik (Aktions-Matrix)
+Wenn die Quote nicht erfüllt ist, greift `QUOTE_AKTION`:
+*   **`SOLIDARISCH`**: Die faire Option. Solange die Quote erfüllt ist, dürfen Auswärtige bleiben. Wird sie unterschritten, werden Auswärtige entfernt, bis nur noch Einheimische übrig sind (wodurch die Quote formal 100% wird und die Förderung für diese gesichert ist).
+*   **`STRIKT_LOKAL`**: Es werden grundsätzlich keine Auswärtigen geduldet.
 
-1.  **`KEINE_QUOTE`**: Keine Aktion. Die Quote wird ignoriert. Alle externen Teilnehmer verbleiben auf der Liste. (Typisch für Schulungen).
-2.  **`STRIKT_LOKAL`**: Harter Filter. Alle Teilnehmer, deren Wohnort nicht dem Landkreis entspricht, werden entfernt. Unabhängig von der Quote.
-3.  **`SOLIDARISCH`**: Bedingter Filter.
-    *   Ist die Quote erfüllt? → Keine Aktion (Externe dürfen bleiben).
-    *   Ist die Quote **nicht** erfüllt? → Alle externen Teilnehmer werden entfernt. Damit verbleiben nur Einheimische, womit die Quote (jetzt 100%) formal erfüllt ist und die Förderung für die Einheimischen gesichert wird.
-
-### 3.4 Die Sortier-Logik
-Die Ausgabe wird gesteuert durch `SORT_ORDER` (Spalte W).
-*   **Format:** `KEY1;KEY2` (Primär- und Sekundärschlüssel).
-*   **Schlüssel `LOKAL_FIRST`:** Sortiert Einheimische nach oben, Externe nach unten.
-*   **Schlüssel `ALPHA`:** Sortiert alphabetisch nach Nachnamen.
-*   **Schlüssel `FUNKTION_ALPHA`:** Sortiert nach Funktion (TN > LEITUNG > MA > REF), dann alphabetisch.
+### 2.5 Audit & Display Mode
+*   **DISPLAY_MODE=SHOW_ALL** (in `RULES`): Zeigt pauschal alle angemeldeten Personen der Zielgruppe an. Nützlich für "Anwesenheitslisten", aber nicht für Zuschussanträge.
+*   **AUDIT_MODE** (im `SETUP`): Erzeugt einen detaillierten Fehlerbericht statt der normalen Liste. Zeigt pro Person, warum sie abgelehnt wurde (Alter, Wohnort, Dauer etc.).
 
 ---
 
-## 4. Fehlersuche (Troubleshooting)
+# Teil 3: Troubleshooting
 
-### Fall A: "❌ Maßnahme zu kurz" / "❌ Zu wenige Teilnehmer"
+### "❌ Maßnahme zu kurz" / "❌ Zu wenige Teilnehmer"
 Dies sind **globale Sperren**. Die V8 gibt keine Namensliste aus, um zu verhindern, dass eine ungültige Liste eingereicht wird.
-*Lösung:* Prüfen Sie die Dauer in `SETUP` bzw. die Anzahl der *gültigen* Teilnehmer.
+*Lösung:* Prüfen Sie die Dauer in `SETUP` oder fügen Sie mehr qualifizierte Teilnehmer hinzu.
 
-### Fall B: "✅ Keine Personen nach aktuellen Kriterien."
-Die Filterung war zu strikt – niemand ist übrig geblieben.
-In neueren Versionen (ab V8.1) enthält diese Meldung eine Statistik (`Stats -> BasePool | Eligible | Local`), die verrät, an welcher Stelle die Filter greifen.
-*   `Local: 0` -> Prüfen Sie die Schreibweise von Landkreis in `SETUP` und `TN_LISTE` (Spalte AQ).
+### "✅ Keine Personen nach aktuellen Kriterien."
+Niemand hat die Prüfung bestanden.
+*   Prüfen Sie im `SETUP` den **Audit-Modus**, um zu sehen, woran es liegt.
+*   Oft ist das Alter der Teilnehmer zu niedrig oder der Landkreis falsch geschrieben.
 
-### Fall C: Leere Felder in der Ausgabe
-*Ursache:* Die Spaltennamen in der V8-Konfiguration (`OUTPUT_COLUMNS`) stimmen nicht exakt mit den Headern in `TN_LISTE` überein.
-*Lösung:* Prüfen Sie auf Tippfehler (z.B. "Straße" vs. "Strasse").
+### Leere Felder in der Ausgabe
+Die Spaltennamen in `OUTPUT_COLUMNS` (RULES) stimmen nicht mit `TN_LISTE` überein.
+*Lösung:* Tippfehler prüfen (z.B. "Strasse" vs. "Straße").
