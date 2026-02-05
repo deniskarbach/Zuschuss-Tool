@@ -15,6 +15,10 @@
   setup_end; IFERROR(VALUE(SETUP!H23); 0);
   measure_duration; IF((setup_end > 0) * (setup_start > 0); setup_end - setup_start + 1; 1);
   
+  local_mode_raw; IFERROR(TRIM(VLOOKUP(setup_lk_name; SETUP!$B$60:$Z$100; 4; FALSE)); "");
+  active_mode; IF(local_mode_raw <> ""; local_mode_raw; raw_debug);
+  run_audit; (active_mode="Audit");
+  
   headers; TN_LISTE!A1:AZ1; 
   raw_data; TN_LISTE!A2:AZ2000;
   
@@ -43,6 +47,8 @@
   output_cols_raw; r_txt(20);
   label_map_raw; r_txt(21);
   sort_order_raw; r_txt(22);
+  display_mode_raw; r_txt(23);
+  display_mode; IF(display_mode_raw=""; "FILTERED"; display_mode_raw);
   
   IF(r_row=0; IF(print_mode; ""; "❌ Rule Key not found: " & rule_key);
    IF(output_cols_raw=""; IF(print_mode; ""; "❌ Config fehlt: OUTPUT_COLUMNS");
@@ -137,9 +143,12 @@
             )
           );
           
-          mask_final; ARRAYFORMULA(mask_func_candidates * IF(force_local_filter; is_local; TRUE));
+          mask_eligible; ARRAYFORMULA(mask_func_candidates * IF(force_local_filter; is_local; TRUE));
           
-          filtered_indices; IFERROR(FILTER(SEQUENCE(ROWS(raw_data)); mask_final); 0);
+          is_show_all; (display_mode="SHOW_ALL");
+          mask_display; IF(is_show_all; mask_all_candidates; mask_eligible);
+          
+          filtered_indices; IFERROR(FILTER(SEQUENCE(ROWS(raw_data)); mask_display); 0);
           
           IF(ROWS(filtered_indices)=1 * (INDEX(filtered_indices;1)=0); IF(print_mode; ""; "✅ Keine Personen nach aktuellen Kriterien.");
            LET(
@@ -261,18 +270,67 @@
         )
       ));
       
-      IF(debug_mode;
-         VSTACK(
-           "V8 BETA (LOGIC COMPLETED)";
-           "Input: " & COUNTA(c_nn) & " -> Final: " & ROWS(limited_data);
-           "Measure: " & measure_duration & " Tage (Min " & min_tage & ")";
-           "MinAnzahl: " & cnt_min_check & " (Limit " & min_anzahl & ") -> OK: " & check_min_anzahl;
-           "Quote: " & TEXT(quote_pct; "0%") & " (OK: " & quote_ok & ") Action: " & quote_action;
-           "Sorted By: " & sort_order_raw;
-           "---";
+      res_audit_table; IF(run_audit;
+          LET(
+             reasons_col; MAP(SEQUENCE(ROWS(raw_data)); LAMBDA(i;
+               LET(
+                 s_stat; INDEX(mask_stat; i);
+                 s_tg; INDEX(mask_tg_func; i);
+                 s_age; INDEX(age_ok; i);
+                 s_days; INDEX(days_ok; i);
+                 s_loc; INDEX(is_local; i);
+                 s_nn; INDEX(c_nn; i);
+                 
+                 IF(s_nn=""; "OK";
+                   IF(NOT(s_stat); "Status-Fehler (" & INDEX(c_stat;i) & ")";
+                    IF(NOT(s_tg); "Falsche Zielgruppe/Tags";
+                     IF(NOT(s_age); "Alter ungültig (" & INDEX(val_ages;i) & "J)";
+                      IF(NOT(s_days); "Zu kurz da (" & INDEX(val_days;i) & "T)";
+                       IF(NOT(s_loc); "Nicht Lokal";
+                        "OK"
+                       )
+                      )
+                     )
+                    )
+                   )
+                 )
+               )
+             ));
+             
+             header_row; HSTACK("Nachname"; "Vorname"; "AUDIT-STATUS"; "Geburtsdatum"; "Ort");
+             data_rows; HSTACK(
+                CHOOSECOLS(raw_data; idx_nn); 
+                CHOOSECOLS(raw_data; idx_vn);
+                reasons_col;
+                CHOOSECOLS(raw_data; idx_geb);
+                CHOOSECOLS(raw_data; idx_ort)
+             );
+             
+             pad; LAMBDA(t; HSTACK(t; ""; ""; ""; ""));
+             
+             VSTACK(
+               pad("=== INTEGRIERTER AUDIT REPORT (POC) ===");
+               pad("Zeigt alle Zeilen, die NICHT auf der Liste stehen:");
+               header_row;
+               FILTER(data_rows; reasons_col <> "OK")
+             )
+          )
+       ; "");
+
+       IF(run_audit; res_audit_table;
+        IF(debug_mode;
+          VSTACK(
+            "V8 BETA (RLP) | Mode: " & active_mode;
+            "Input: " & COUNTA(c_nn) & " -> Final: " & ROWS(limited_data);
+            "Measure: " & measure_duration & " Tage (Min " & min_tage & ")";
+            "MinAnzahl: " & cnt_min_check & " (Limit " & min_anzahl & ") -> OK: " & check_min_anzahl;
+            "Quote: " & TEXT(quote_pct; "0%") & " (OK: " & quote_ok & ") Action: " & quote_action;
+            "Sorted By: " & sort_order_raw;
+            "---";
+            res_table
+          );
            res_table
-         );
-          res_table
+        )
        )
       )
      )
