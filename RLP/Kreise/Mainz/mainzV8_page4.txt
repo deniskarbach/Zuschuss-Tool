@@ -6,7 +6,7 @@
   
   filter_function; ".*";
   
-  setup_lk_name; "Stadt Mainz";
+  setup_lk_name; "Kreisfreie Stadt Mainz";
   
   global_mode_raw; IFERROR(TRIM(SETUP!B69); "Normal");
   local_mode_raw; IFERROR(TRIM(VLOOKUP(setup_lk_name; SETUP!$B$48:$Z$100; 4; FALSE)); "");
@@ -211,11 +211,25 @@
       current_end_idx; end_idx;
       
       paged_indices; IF(total_rows >= current_start_idx;
-         CHOOSEROWS(filtered_indices; SEQUENCE(MIN(total_rows - current_start_idx + 1; page_size); 1; current_start_idx));
-         0
+         LET(
+           req_idx; SEQUENCE(MIN(total_rows - current_start_idx + 1; page_size); 1; current_start_idx);
+           safe_idx; IFERROR(FILTER(req_idx; req_idx <= ROWS(filtered_indices)); 0);
+           IF(SUM(N(req_idx <= ROWS(filtered_indices))) > 0;
+             CHOOSEROWS(filtered_indices; safe_idx);
+             ""
+           )
+         );
+         ""
       );
       paged_data; IF(ISNUMBER(INDEX(paged_indices;1));
-         CHOOSEROWS(sorted_data; SEQUENCE(ROWS(paged_indices); 1; current_start_idx));
+         LET(
+           req_idx; SEQUENCE(ROWS(paged_indices); 1; current_start_idx);
+           safe_idx; IFERROR(FILTER(req_idx; req_idx <= ROWS(sorted_data)); 0);
+           IF(SUM(N(req_idx <= ROWS(sorted_data))) > 0;
+             CHOOSEROWS(sorted_data; safe_idx);
+             0
+           )
+         );
          0
       );
       

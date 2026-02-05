@@ -273,7 +273,7 @@
              reasons_col; MAP(SEQUENCE(ROWS(raw_data)); LAMBDA(i;
                LET(
                  s_stat; INDEX(mask_stat; i);
-                 s_tg; INDEX(mask_tg); i);
+                 s_tg; INDEX(mask_tg; i);
                  s_age; INDEX(age_ok; i);
                  s_days; INDEX(days_ok; i);
                  s_loc; INDEX(is_local; i);
