@@ -1,9 +1,6 @@
 =LET(
-
-  
   filter_function; "MA";
-  max_rows; 6;
-
+  max_rows; 10;
   
   setup_lk_name; "Landkreis Rhein-Hunsrück-Kreis";
   
@@ -152,12 +149,12 @@
           
           mask_eligible; ARRAYFORMULA(mask_func_candidates * IF(force_local_filter; is_local; TRUE));
       
-      is_show_all; (display_mode="SHOW_ALL");
-      is_filtered; (display_mode="FILTERED");
-      
-      mask_display; IF(is_show_all; mask_base_pool; mask_eligible);
-      
-      filtered_indices; IFERROR(FILTER(SEQUENCE(ROWS(raw_data)); mask_display); 0);
+          is_show_all; (display_mode="SHOW_ALL");
+          is_filtered; (display_mode="FILTERED");
+          
+          mask_display; IF(is_show_all; mask_base_pool; mask_eligible);
+          
+          filtered_indices; IFERROR(FILTER(SEQUENCE(ROWS(raw_data)); mask_display); 0);
           
           IF(ROWS(filtered_indices)=1 * (INDEX(filtered_indices;1)=0); IF(print_mode; ""; "✅ Keine Personen nach aktuellen Kriterien.");
            LET(
@@ -206,10 +203,19 @@
       sorted_data; CHOOSECOLS(sorted_data_with_local; SEQUENCE(COLUMNS(raw_data)));
       
       total_rows; ROWS(sorted_data);
-      actual_rows; IF(max_rows=0; total_rows; MIN(total_rows; max_rows));
-      limited_data; IF(actual_rows=total_rows; sorted_data; CHOOSEROWS(sorted_data; SEQUENCE(actual_rows)));
-      limited_indices; IF(actual_rows=total_rows; filtered_indices; CHOOSEROWS(filtered_indices; SEQUENCE(actual_rows)));
+
+      paged_indices; IF(total_rows >= 1;
+         CHOOSEROWS(filtered_indices; SEQUENCE(MIN(total_rows; max_rows)));
+         0
+      );
+      paged_data; IF(ISNUMBER(INDEX(paged_indices;1));
+         CHOOSEROWS(sorted_data; SEQUENCE(ROWS(paged_indices)));
+         0
+      );
       
+      IF(ISNUMBER(INDEX(paged_indices;1))=FALSE; IF(print_mode; ""; "Keine Ergebnisse.");
+      
+      LET(limited_data; paged_data;
       sorted_func; CHOOSECOLS(limited_data; idx_func);
       sorted_beh; IF(idx_beh>0; CHOOSECOLS(limited_data; idx_beh); ARRAYFORMULA(IF(SEQUENCE(ROWS(limited_data));"")));
       sorted_soz; IF(idx_soz>0; CHOOSECOLS(limited_data; idx_soz); ARRAYFORMULA(IF(SEQUENCE(ROWS(limited_data));"")));
@@ -331,7 +337,8 @@
           VSTACK(
            "V8 BETA (LOGIC COMPLETED)";
            "Sheet: " & setup_lk_name & " | Mode: " & active_mode & " (Global: " & global_mode_raw & " / Local: '" & local_mode_raw & "')";
-           "Input: " & COUNTA(c_nn) & " -> Final: " & ROWS(limited_data);
+           "Input: " & COUNTA(c_nn) & " -> Final: " & ROWS(sorted_data);
+           "Shown: " & ROWS(res_table) & " (Max: " & max_rows & ")";
            "Measure: " & measure_duration & " Tage (Min " & min_tage & ")";
            "MinAnzahl: " & cnt_min_check & " (Limit " & min_anzahl & ") -> OK: " & check_min_anzahl;
            "Quote: " & TEXT(quote_pct; "0%") & " (OK: " & quote_ok & ") Action: " & quote_action;
@@ -348,4 +355,4 @@
    )
   )
  )
-))))
+)))

@@ -1,9 +1,11 @@
 =LET(
-
-  start_offset; 22;
-  max_rows; 10;
-
+  page; 2;
+  page_size; 35;
+  start_idx; (page - 1) * page_size + 1;
+  end_idx; page * page_size;
   
+  filter_function; "TN";
+
   setup_lk_name; "Landkreis Rhein-Hunsrück-Kreis";
   
   global_mode_raw; IFERROR(TRIM(SETUP!B69); "Normal");
@@ -15,7 +17,6 @@
   print_mode; (active_mode="Drucken");
   
   debug_mode; run_debug;
-  
   setup_event_typ; TRIM(SETUP!B18);
   rule_key; setup_lk_name & "_" & SUBSTITUTE(setup_event_typ; " "; "_");
   
@@ -54,8 +55,6 @@
   display_mode_raw; r_txt(23);
   display_mode; IF(display_mode_raw=""; "FILTERED"; display_mode_raw);
   
-  filter_function; "TN";
-
   IF(r_row=0; IF(print_mode; ""; "❌ Rule Key not found: " & rule_key);
    IF(output_cols_raw=""; IF(print_mode; ""; "❌ Config fehlt: OUTPUT_COLUMNS");
     LET(
@@ -154,12 +153,12 @@
           
           mask_eligible; ARRAYFORMULA(mask_func_candidates * IF(force_local_filter; is_local; TRUE));
       
-      is_show_all; (display_mode="SHOW_ALL");
-      is_filtered; (display_mode="FILTERED");
-      
-      mask_display; IF(is_show_all; mask_base_pool; mask_eligible);
-      
-      filtered_indices; IFERROR(FILTER(SEQUENCE(ROWS(raw_data)); mask_display); 0);
+          is_show_all; (display_mode="SHOW_ALL");
+          is_filtered; (display_mode="FILTERED");
+          
+          mask_display; IF(is_show_all; mask_base_pool; mask_eligible);
+          
+          filtered_indices; IFERROR(FILTER(SEQUENCE(ROWS(raw_data)); mask_display); 0);
           
           IF(ROWS(filtered_indices)=1 * (INDEX(filtered_indices;1)=0); IF(print_mode; ""; "✅ Keine Personen nach aktuellen Kriterien.");
            LET(
@@ -208,14 +207,21 @@
       sorted_data; CHOOSECOLS(sorted_data_with_local; SEQUENCE(COLUMNS(raw_data)));
       
       total_rows; ROWS(sorted_data);
-      start_row; IF(start_offset=0; 1; IF(start_offset >= total_rows; 0; start_offset + 1));
-      remaining_rows; IF(start_row=0; 0; total_rows - start_offset);
-      actual_rows; IF(remaining_rows=0; 0; IF(max_rows=0; remaining_rows; MIN(remaining_rows; max_rows)));
-      limited_data; IF(actual_rows=0; ""; CHOOSEROWS(sorted_data; SEQUENCE(actual_rows; 1; start_row)));
-      limited_indices; IF(actual_rows=0; 0; CHOOSEROWS(filtered_indices; SEQUENCE(actual_rows; 1; start_row)));
+      current_start_idx; start_idx;
+      current_end_idx; end_idx;
       
-      IF(actual_rows=0; "";
-       LET(
+      paged_indices; IF(total_rows >= current_start_idx;
+         CHOOSEROWS(filtered_indices; SEQUENCE(MIN(total_rows - current_start_idx + 1; page_size); 1; current_start_idx));
+         0
+      );
+      paged_data; IF(ISNUMBER(INDEX(paged_indices;1));
+         CHOOSEROWS(sorted_data; SEQUENCE(ROWS(paged_indices); 1; current_start_idx));
+         0
+      );
+      
+      IF(ISNUMBER(INDEX(paged_indices;1))=FALSE; IF(print_mode; ""; "Seite " & page & " leer.");
+      
+      LET(limited_data; paged_data;
       sorted_func; CHOOSECOLS(limited_data; idx_func);
       sorted_beh; IF(idx_beh>0; CHOOSECOLS(limited_data; idx_beh); ARRAYFORMULA(IF(SEQUENCE(ROWS(limited_data));"")));
       sorted_soz; IF(idx_soz>0; CHOOSECOLS(limited_data; idx_soz); ARRAYFORMULA(IF(SEQUENCE(ROWS(limited_data));"")));
@@ -246,7 +252,7 @@
         )
       ));
       
-      col_wohnort_land; MAP(sorted_bl; LAMBDA(bl; IF(lk<>""; "Deutschland"; "Ausland")));
+      col_wohnort_land; MAP(sorted_bl; LAMBDA(bl; IF(bl<>""; "Deutschland"; "Ausland")));
       
       sorted_geb; CHOOSECOLS(limited_data; idx_geb);
       col_geburtsjahr; MAP(sorted_geb; LAMBDA(d; IFERROR(YEAR(d); IFERROR(YEAR(DATEVALUE(d)); d))));
@@ -260,7 +266,7 @@
       
       res_table; MAKEARRAY(ROWS(limited_data); num_out_cols; LAMBDA(r; c;
         LET(
-          tpl; TRIM(INDEX(col_map; 1; c));
+          tpl; TRIM(INDEX(col_map; c));
           single_token; REGEXEXTRACT(tpl; "^\{([^}]+)\}$");
           
           val; IF(ISERROR(single_token);
@@ -284,6 +290,7 @@
           val
         )
       ));
+      
        res_audit_table; IF(run_audit;
           LET(
              reasons_col; MAP(SEQUENCE(ROWS(raw_data)); LAMBDA(i;
@@ -336,7 +343,8 @@
           VSTACK(
            "V8 BETA (LOGIC COMPLETED)";
            "Sheet: " & setup_lk_name & " | Mode: " & active_mode & " (Global: " & global_mode_raw & " / Local: '" & local_mode_raw & "')";
-           "Input: " & COUNTA(c_nn) & " -> Final: " & ROWS(limited_data);
+           "Input: " & COUNTA(c_nn) & " -> Final: " & ROWS(sorted_data);
+           "Page: " & page & " (Size " & page_size & ") -> Shown: " & ROWS(res_table);
            "Measure: " & measure_duration & " Tage (Min " & min_tage & ")";
            "MinAnzahl: " & cnt_min_check & " (Limit " & min_anzahl & ") -> OK: " & check_min_anzahl;
            "Quote: " & TEXT(quote_pct; "0%") & " (OK: " & quote_ok & ") Action: " & quote_action;

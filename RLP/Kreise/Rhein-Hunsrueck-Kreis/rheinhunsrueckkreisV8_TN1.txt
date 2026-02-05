@@ -1,10 +1,11 @@
 =LET(
-
+  page; 1;
+  page_size; 35;
+  start_idx; (page - 1) * page_size + 1;
+  end_idx; page * page_size;
   
   filter_function; "TN";
-  max_rows; 22;
 
-  
   setup_lk_name; "Landkreis Rhein-Hunsrück-Kreis";
   
   global_mode_raw; IFERROR(TRIM(SETUP!B69); "Normal");
@@ -151,7 +152,7 @@
           );
           
           mask_eligible; ARRAYFORMULA(mask_func_candidates * IF(force_local_filter; is_local; TRUE));
-          
+      
           is_show_all; (display_mode="SHOW_ALL");
           is_filtered; (display_mode="FILTERED");
           
@@ -206,10 +207,21 @@
       sorted_data; CHOOSECOLS(sorted_data_with_local; SEQUENCE(COLUMNS(raw_data)));
       
       total_rows; ROWS(sorted_data);
-      actual_rows; IF(max_rows=0; total_rows; MIN(total_rows; max_rows));
-      limited_data; IF(actual_rows=total_rows; sorted_data; CHOOSEROWS(sorted_data; SEQUENCE(actual_rows)));
-      limited_indices; IF(actual_rows=total_rows; filtered_indices; CHOOSEROWS(filtered_indices; SEQUENCE(actual_rows)));
+      current_start_idx; start_idx;
+      current_end_idx; end_idx;
       
+      paged_indices; IF(total_rows >= current_start_idx;
+         CHOOSEROWS(filtered_indices; SEQUENCE(MIN(total_rows - current_start_idx + 1; page_size); 1; current_start_idx));
+         0
+      );
+      paged_data; IF(ISNUMBER(INDEX(paged_indices;1));
+         CHOOSEROWS(sorted_data; SEQUENCE(ROWS(paged_indices); 1; current_start_idx));
+         0
+      );
+      
+      IF(ISNUMBER(INDEX(paged_indices;1))=FALSE; IF(print_mode; ""; "Seite " & page & " leer.");
+      
+      LET(limited_data; paged_data;
       sorted_func; CHOOSECOLS(limited_data; idx_func);
       sorted_beh; IF(idx_beh>0; CHOOSECOLS(limited_data; idx_beh); ARRAYFORMULA(IF(SEQUENCE(ROWS(limited_data));"")));
       sorted_soz; IF(idx_soz>0; CHOOSECOLS(limited_data; idx_soz); ARRAYFORMULA(IF(SEQUENCE(ROWS(limited_data));"")));
@@ -331,7 +343,8 @@
           VSTACK(
            "V8 BETA (LOGIC COMPLETED)";
            "Sheet: " & setup_lk_name & " | Mode: " & active_mode & " (Global: " & global_mode_raw & " / Local: '" & local_mode_raw & "')";
-           "Input: " & COUNTA(c_nn) & " -> Final: " & ROWS(limited_data);
+           "Input: " & COUNTA(c_nn) & " -> Final: " & ROWS(sorted_data);
+           "Page: " & page & " (Size " & page_size & ") -> Shown: " & ROWS(res_table);
            "Measure: " & measure_duration & " Tage (Min " & min_tage & ")";
            "MinAnzahl: " & cnt_min_check & " (Limit " & min_anzahl & ") -> OK: " & check_min_anzahl;
            "Quote: " & TEXT(quote_pct; "0%") & " (OK: " & quote_ok & ") Action: " & quote_action;
@@ -348,4 +361,4 @@
    )
   )
  )
-))))
+)))

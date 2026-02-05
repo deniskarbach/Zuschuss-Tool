@@ -152,12 +152,12 @@
           
           mask_eligible; ARRAYFORMULA(mask_func_candidates * IF(force_local_filter; is_local; TRUE));
       
-      is_show_all; (display_mode="SHOW_ALL");
-      is_filtered; (display_mode="FILTERED");
-      
-      mask_display; IF(is_show_all; mask_base_pool; mask_eligible);
-      
-      filtered_indices; IFERROR(FILTER(SEQUENCE(ROWS(raw_data)); mask_display); 0);
+          is_show_all; (display_mode="SHOW_ALL");
+          is_filtered; (display_mode="FILTERED");
+          
+          mask_display; IF(is_show_all; mask_base_pool; mask_eligible);
+          
+          filtered_indices; IFERROR(FILTER(SEQUENCE(ROWS(raw_data)); mask_display); 0);
           
           IF(ROWS(filtered_indices)=1 * (INDEX(filtered_indices;1)=0); IF(print_mode; ""; "✅ Keine Personen nach aktuellen Kriterien.");
            LET(
@@ -348,4 +348,4 @@
    )
   )
  )
-))))
+)))
