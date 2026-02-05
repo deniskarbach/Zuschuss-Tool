@@ -146,6 +146,15 @@ Wenn die Quote nicht erfüllt ist, greift `QUOTE_AKTION`:
 *   **DISPLAY_MODE=SHOW_ALL** (in `RULES`): Zeigt pauschal alle angemeldeten Personen der Zielgruppe an. Nützlich für "Anwesenheitslisten", aber nicht für Zuschussanträge.
 *   **AUDIT_MODE** (im `SETUP`): Erzeugt einen detaillierten Fehlerbericht statt der normalen Liste. Zeigt pro Person, warum sie abgelehnt wurde (Alter, Wohnort, Dauer etc.).
 
+### 2.6 Globale Modi (SETUP)
+Zelle `B54` (oder `B69` je nach Version) im Blatt `SETUP` steuert das globale Verhalten aller Listen:
+
+| Modus | Verhalten |
+| :--- | :--- |
+| **`Normal`** (oder Leer) | **Standard.** Die Liste wird berechnet und angezeigt. Kritische Fehler (z.B. "Zu wenige Teilnehmer") werden als Text ausgegeben. |
+| **`Debug`** | Zeigt über der Liste einen **Diagnose-Block** mit Statistiken an (Input-Zeilen, gefilterte Zeilen, gemessene Dauer, Quote etc.). Hilfreich zur Fehlersuche. |
+| **`Drucken`** | **"Clean Mode".** Unterdrückt Fehlermeldungen. Wenn eine Liste z.B. wegen zu geringer Teilnehmerzahl eigentlich ungültig ist, wird sie statt einer Fehlermeldung komplett leer angezeigt. Dies verhindert, dass versehentlich Fehlertexte gedruckt werden. |
+
 ---
 
 # Teil 3: Troubleshooting
