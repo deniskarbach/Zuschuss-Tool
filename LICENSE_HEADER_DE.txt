@@ -1,0 +1,20 @@
+Zuschuss-System V8
+Copyright (C) 2026 Denis Karbach
+
+Dieses Programm ist freie Software: Sie können es unter den Bedingungen
+der GNU Affero General Public License, wie von der Free Software Foundation,
+Version 3 der Lizenz oder (nach Ihrer Option) jeder späteren Version,
+weiterverbreiten und/oder modifizieren.
+
+Dieses Programm wird in der Hoffnung verteilt, dass es nützlich sein wird,
+jedoch OHNE JEGLICHE GARANTIE, auch ohne die implizite Garantie der
+MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK.
+Siehe die GNU Affero General Public License für weitere Details.
+
+Sie sollten eine Kopie der GNU Affero General Public License zusammen mit
+diesem Programm erhalten haben. Wenn nicht, siehe <https://www.gnu.org/licenses/>.
+
+---
+HINWEIS: Dies ist eine inoffizielle Übersetzung des englischen Originaltextes
+zu Informationszwecken. Rechtlich bindend ist ausschließlich die englische
+Version der GNU AGPL v3.

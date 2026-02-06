@@ -1,0 +1,94 @@
+Zuschuss-System V8
+Copyright (C) 2026 Denis Karbach
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+--------------------------------------------------------------------------------
+
+Zuschuss-System V8
+Copyright (C) 2026 Denis Karbach
+
+Dieses Programm ist freie Software: Sie können es unter den Bedingungen
+der GNU Affero General Public License, wie von der Free Software Foundation,
+Version 3 der Lizenz oder (nach Ihrer Option) jeder späteren Version,
+weiterverbreiten und/oder modifizieren.
+
+Dieses Programm wird in der Hoffnung verteilt, dass es nützlich sein wird,
+jedoch OHNE JEGLICHE GARANTIE, auch ohne die implizite Garantie der
+MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK.
+Siehe die GNU Affero General Public License für weitere Details.
+
+Sie sollten eine Kopie der GNU Affero General Public License zusammen mit
+diesem Programm erhalten haben. Wenn nicht, siehe <https://www.gnu.org/licenses/>.
+
+---
+HINWEIS: Dies ist eine inoffizielle Übersetzung des englischen Originaltextes
+zu Informationszwecken. Rechtlich bindend ist ausschließlich die englische
+Version der GNU AGPL v3.
+
+--------------------------------------------------------------------------------
+DRITTANBIETER-LIZENZEN
+--------------------------------------------------------------------------------
+
+GeoNames Postal Code files
+Creative Commons Attribution 4.0 License
+
+--------------------------------------------------------------------------------
+⚠️ WICHTIGER RECHTLICHER HINWEIS UND HAFTUNGSAUSSCHLUSS
+--------------------------------------------------------------------------------
+
+1. Keine Rechtsberatung, kein Gewähr für Richtigkeit
+Dieses Software-Werkzeug ("Zuschuss-Tool") wurde nach bestem Wissen und Gewissen entwickelt, um bei der Berechnung und Zusammenstellung von Zuschussanträgen zu unterstützen. Es handelt sich hierbei ausdrücklich um eine unverbindliche Hilfestellung. Die Berechnungen basieren auf komplexen Formeln und Skripten, die Fehler enthalten können.
+
+2. Alleinige Verantwortung des Nutzers
+Die Nutzung dieses Tools erfolgt auf eigene Gefahr. Der Nutzer (z.B. der antragstellende Verein) ist allein dafür verantwortlich, alle Ergebnisse VOR der Einreichung bei Behörden oder Zuschussgebern manuell zu überprüfen. Der Autor/Entwickler übernimmt keine Verantwortung für:
+- Abgelehnte Zuschussanträge.
+- Falsch berechnete Beträge (zu hoch oder zu niedrige Auszahlungen).
+- Rückforderungen seitens der Zuschussgeber.
+- Versäumte Fristen aufgrund technischer Fehler.
+- Technischen Support.
+- Sonstige Schäden oder Nachteile.
+
+3. Keine Markenrechte
+Die Nutzung des Namens "CVJM" oder des CVJM-Logos in diesem Tool impliziert keine offizielle Herausgeberschaft durch den CVJM Gesamtverband oder andere offizielle Gliederungen, sofern dies nicht explizit anders ausgewiesen ist.
+
+Mit der Nutzung dieses Tools erkennst Du diesen Haftungsausschluss vollumfänglich an.
+
+--------------------------------------------------------------------------------
+ANLEITUNGEN & TOOLTIPS (SETUP)
+--------------------------------------------------------------------------------
+
+A: URL der Online-Anmeldung (*)
+Bitte gib hier den Link zur verknüpften Google-Tabelle an, in der die Antworten deiner Freizeitanmeldung gesammelt werden.
+Wichtig: Kopiere nicht den Link zum öffentlichen Anmeldeformular, sondern die URL der dazugehörigen Antwort-Tabelle (Sheets), auf die du als Administrator Zugriff hast.
+
+B: Art der Datenerfassung - Prüfkriterium (**)
+Lege hier fest, wie das System mit den Daten arbeiten soll:
+„Ja“: Die Daten werden automatisch aus der verknüpften Tabelle bezogen.
+„Nein“: Die Daten werden von dir manuell eingetragen.
+
+C: Erstmalige Zugriffs-Bestätigung (***)
+Damit Google Sheets Informationen aus der externen Datenbank (z. B. für Landkreise und Orte) laden kann, musst du die Verbindung einmalig autorisieren:
+Falls eine Meldung wie #REF! oder „Berechtigung erforderlich“ erscheint, klicke auf die entsprechende Zelle. Klicke im erscheinenden Fenster auf den blauen Button „Zugriff zulassen“.
+Hinweis: Dies ist ein Sicherheitsmechanismus von Google, der nur einmal pro Datei aktiviert werden muss.
+
+D: Anzeige-Modus - Debug & Drucken (****)
+Wähle aus, wie die Liste und eventuelle Fehler dargestellt werden sollen:
+- Normal: Die Liste wird berechnet. Kritische Fehler (z. B. „Zu wenige Teilnehmende“) erscheinen als Texthinweis.
+- Debug: Zeigt zusätzlich einen Diagnose-Block über der Liste an (z. B. Input-Zeilen, Filter-Statistiken, Berechnungsdauer). Ideal zur Fehlersuche.
+- Drucken (Clean Mode): Unterdrückt alle Fehlermeldungen. Ist eine Liste ungültig, bleibt sie komplett leer. So wird verhindert, dass versehentlich Fehlertexte mit ausgedruckt werden.
+
+E: Audit-Modus (*****)
+Der Audit-Modus deaktiviert die automatische Filterung. Er zeigt stattdessen alle angemeldeten Personen an – inklusive einer Begründung, warum jemand ausgeschlossen wurde (z. B. „Alter“ oder „Wohnort“).
+Nutzen: Verwende diesen Modus zur Fehlerkontrolle, um transparent nachzuvollziehen, warum bestimmte Personen nicht auf der offiziellen Zuschussliste erscheinen.

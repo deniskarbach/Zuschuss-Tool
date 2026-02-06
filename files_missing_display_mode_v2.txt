@@ -1,8 +1,0 @@
-./Hessen/Land/hessenV8_TN1.txt
-./RLP/VG/Ruedesheim/vgruedesheimV8_TN2.txt
-./RLP/VG/Ruedesheim/vgruedesheimV8_TN3.txt
-./RLP/VG/Ruedesheim/vgruedesheimV8_TN1.txt
-./RLP/VG/Ruedesheim/vgruedesheimV8_MA.txt
-./RLP/Kreise/Mainz-Bingen/mainzbingenV8_REF.txt
-./RLP/Kreise/Mainz-Bingen/mainzbingenV8_TN1.txt
-./RLP/Kreise/Mainz-Bingen/mainzbingenV8_TN2.txt
