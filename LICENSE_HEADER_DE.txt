@@ -1,4 +1,4 @@
-Zuschuss-System V8
+Zuschuss-Tool V8
 Copyright (C) 2026 Denis Karbach
 
 Dieses Programm ist freie Software: Sie können es unter den Bedingungen

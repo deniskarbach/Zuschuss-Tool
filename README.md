@@ -1,4 +1,4 @@
-# Zuschuss-System V8
+# Zuschuss-Tool V8
 
 **Ein Open-Source-Werkzeug für das Zuschussmanagement und die Erstellung von Förderlisten für Jugendfreizeiten und Bildungsmaßnahmen.**
 

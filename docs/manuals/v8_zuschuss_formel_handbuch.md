@@ -1,4 +1,4 @@
-# 📘 V8 Zuschuss-System: Benutzerhandbuch & Technische Referenz
+# 📘 V8 Zuschuss-Tool: Benutzerhandbuch & Technische Referenz
 
 *Version: 8.2.0*
 *Datum: 05.02.2026*

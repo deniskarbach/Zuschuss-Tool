@@ -1,5 +1,5 @@
 /**
- * Zuschuss-System V8
+ * Zuschuss-Tool V8
  * Copyright (C) 2026 Denis Karbach
  *
  * This program is free software: you can redistribute it and/or modify
