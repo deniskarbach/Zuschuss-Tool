@@ -237,15 +237,15 @@
       
       col_wohnort_land; MAP(sorted_bl; LAMBDA(bl; IF(bl<>""; "Deutschland"; "Ausland")));
       
-      col_gender_m; MAP(sorted_gender; LAMBDA(g; IF(LEFT(LOWER(TRIM(g));1)="m"; "x"; "")));
-      col_gender_w; MAP(sorted_gender; LAMBDA(g; IF(LEFT(LOWER(TRIM(g));1)="w"; "x"; "")));
+      col_gender_m; MAP(sorted_gender; LAMBDA(g; IF(LEFT(LOWER(TRIM(g));1)="m"; g; "")));
+      col_gender_w; MAP(sorted_gender; LAMBDA(g; IF(LEFT(LOWER(TRIM(g));1)="w"; g; "")));
       col_gender_d; MAP(sorted_gender; LAMBDA(g; 
         LET(
           rg; LOWER(TRIM(g));
           fc; LEFT(rg; 1);
           is_ka; OR(rg=""; IFERROR(SEARCH("k.a"; rg); 0) > 0);
           is_mw; OR(fc="m"; fc="w");
-          IF(AND(NOT(is_mw); NOT(is_ka)); "x"; "")
+          IF(AND(NOT(is_mw); NOT(is_ka)); g; "")
         )
       ));
       

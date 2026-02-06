@@ -110,7 +110,7 @@
       is_must_local_group; ARRAYFORMULA(IF(tg_must_be_local=""; FALSE; REGEXMATCH(c_func; regex_must_local)));
       target_lk; TRIM(CLEAN(setup_lk_name));
       check_val; ARRAYFORMULA(IF(c_tags=""; c_lk; c_tags));
-      is_local; ARRAYFORMULA(REGEXMATCH(check_val; "(^|;)" & target_lk & "(;|$)"));
+      is_local; ARRAYFORMULA(REGEXMATCH(check_val; "(^|;)(Landkreis )?Rhein-Lahn-Kreis(;|$)"));
       
       mask_local_hard; ARRAYFORMULA(IF(is_must_local_group; is_local; TRUE));
       
@@ -203,71 +203,77 @@
       sorted_func; CHOOSECOLS(sorted_data; idx_func);
       sorted_beh; IF(idx_beh>0; CHOOSECOLS(sorted_data; idx_beh); ARRAYFORMULA(IF(SEQUENCE(ROWS(sorted_data));"")));
       sorted_soz; IF(idx_soz>0; CHOOSECOLS(sorted_data; idx_soz); ARRAYFORMULA(IF(SEQUENCE(ROWS(sorted_data));"")));
-      sorted_lk; IF(idx_lk>0; CHOOSECOLS(sorted_data; idx_lk); ARRAYFORMULA(IF(SEQUENCE(ROWS(sorted_data));""))); 
-      
-      col_f_logik; MAP(sorted_func; sorted_beh; LAMBDA(fn; beh;
-        IF(fn="TN"; "Teilnehmer:in";
-          IF(fn="MA";
-            IF(OR(beh="BEGLEITPERSON"; beh="MmB_BEGLEITPERSON"; beh="GL_BEGLEITPERSON");
-              "Betreuer:in für Teilnehmende mit Behinderung";
-              "Betreuer:in für Teilnehmende ohne Behinderung"
-            );
-            IF(fn="REF"; "Referent:in"; IF(fn="LEITUNG"; "Leitung"; fn))
-          )
-        )
-      ));
-      
-      col_g_logik; MAP(sorted_func; sorted_beh; sorted_soz; LAMBDA(fn; beh; soz;
-        LET(
-          has_mmb; OR(beh="MmB"; beh="MmB_BEGLEITPERSON"; beh="GL"; beh="GL_BEGLEITPERSON");
-          has_arb; soz="Arbeitslos";
-          has_eink; soz="Einkommensschwach";
-          role_txt; IF(fn="TN"; "Teilnehmer:in"; IF(fn="MA"; "Betreuer:in"; IF(fn="REF"; "Referent:in"; IF(fn="LEITUNG"; "Leitung"; fn))));
-          mmb_txt; IF(has_mmb; role_txt & " mit Behinderung"; "");
-          arb_txt; IF(has_arb; "Arbeitslose:r " & role_txt; "");
-          eink_txt; IF(has_eink; "einkommensschwach"; "");
-          TEXTJOIN(" und" & CHAR(10); TRUE; mmb_txt; arb_txt; eink_txt)
-        )
-      ));
-      
-      col_wohnort_land; MAP(sorted_lk; LAMBDA(lk; IF(lk<>""; "Deutschland"; "Ausland")));
-      
-      sorted_geb; CHOOSECOLS(sorted_data; idx_geb);
-      col_geburtsjahr; MAP(sorted_geb; LAMBDA(d; IFERROR(YEAR(d); IFERROR(YEAR(DATEVALUE(d)); d))));
-      
-      label_blob; SPLIT(label_map_raw; ";");
-      label_keys; ARRAYFORMULA(REGEXEXTRACT(label_blob;"^(.*)="));
-      label_vals; ARRAYFORMULA(REGEXEXTRACT(label_blob;"=(.*)$"));
-      
-      col_map; SPLIT(output_cols_raw; ";");
-      num_out_cols; COLUMNS(col_map);
-      
-      res_table; MAKEARRAY(ROWS(sorted_data); num_out_cols; LAMBDA(r; c;
-        LET(
-          tpl; TRIM(INDEX(col_map; c));
-          single_token; REGEXEXTRACT(tpl; "^\{([^}]+)\}$");
-          
-          val; IF(ISERROR(single_token);
-             REDUCE(tpl; SEQUENCE(COLUMNS(headers)); LAMBDA(curr; i; 
-                SUBSTITUTE(curr; "{" & INDEX(headers; i) & "}"; INDEX(sorted_data; r; i))
-             ));
-             IF(single_token="_F_LOGIK"; INDEX(col_f_logik; r);
-               IF(single_token="_G_LOGIK"; INDEX(col_g_logik; r);
-                 IF(single_token="_WOHNORT_LAND"; INDEX(col_wohnort_land; r);
-                   IF(single_token="_GEBURTSJAHR"; INDEX(col_geburtsjahr; r);
-                     LET(
-                       h_idx; IFERROR(MATCH(single_token; headers; 0); 0);
-                       raw_v; IF(h_idx=0; tpl; INDEX(sorted_data; r; h_idx));
-                       IFERROR(XLOOKUP(single_token & ":" & raw_v; label_keys; label_vals; raw_v); raw_v)
-                     )
-                   )
-                 )
-               )
-             )
-          );
-          val
-        )
-      ));
+       sorted_lk; IF(idx_lk>0; CHOOSECOLS(sorted_data; idx_lk); ARRAYFORMULA(IF(SEQUENCE(ROWS(sorted_data));""))); 
+       sorted_tags; CHOOSECOLS(sorted_data; idx_tags);
+       sorted_is_local; CHOOSECOLS(sorted_data_with_local; idx_is_local);
+
+       sorted_region_raw; sorted_lk;
+       
+       col_f_logik; MAP(sorted_func; sorted_beh; LAMBDA(fn; beh;
+         IF(fn="TN"; "Teilnehmer:in";
+           IF(fn="MA";
+             IF(OR(beh="BEGLEITPERSON"; beh="MmB_BEGLEITPERSON"; beh="GL_BEGLEITPERSON");
+               "Betreuer:in für Teilnehmende mit Behinderung";
+               "Betreuer:in für Teilnehmende ohne Behinderung"
+             );
+             IF(fn="REF"; "Referent:in"; IF(fn="LEITUNG"; "Leitung"; fn))
+           )
+         )
+       ));
+       
+       col_g_logik; MAP(sorted_func; sorted_beh; sorted_soz; LAMBDA(fn; beh; soz;
+         LET(
+           has_mmb; OR(beh="MmB"; beh="MmB_BEGLEITPERSON"; beh="GL"; beh="GL_BEGLEITPERSON");
+           has_arb; soz="Arbeitslos";
+           has_eink; soz="Einkommensschwach";
+           role_txt; IF(fn="TN"; "Teilnehmer:in"; IF(fn="MA"; "Betreuer:in"; IF(fn="REF"; "Referent:in"; IF(fn="LEITUNG"; "Leitung"; fn))));
+           mmb_txt; IF(has_mmb; role_txt & " mit Behinderung"; "");
+           arb_txt; IF(has_arb; "Arbeitslose:r " & role_txt; "");
+           eink_txt; IF(has_eink; "einkommensschwach"; "");
+           TEXTJOIN(" und" & CHAR(10); TRUE; mmb_txt; arb_txt; eink_txt)
+         )
+       ));
+       
+       col_wohnort_land; MAP(sorted_lk; LAMBDA(lk; IF(lk<>""; "Deutschland"; "Ausland")));
+       
+       sorted_geb; CHOOSECOLS(sorted_data; idx_geb);
+       col_geburtsjahr; MAP(sorted_geb; LAMBDA(d; IFERROR(YEAR(d); IFERROR(YEAR(DATEVALUE(d)); d))));
+       
+       label_blob; SPLIT(label_map_raw; ";");
+       label_keys; ARRAYFORMULA(REGEXEXTRACT(label_blob;"^(.*)="));
+       label_vals; ARRAYFORMULA(REGEXEXTRACT(label_blob;"=(.*)$"));
+       
+       col_map; SPLIT(output_cols_raw; ";");
+       num_out_cols; COLUMNS(col_map);
+       
+       res_table; MAKEARRAY(ROWS(sorted_data); num_out_cols; LAMBDA(r; c;
+         LET(
+           tpl; TRIM(INDEX(col_map; c));
+           single_token; REGEXEXTRACT(tpl; "^\{([^}]+)\}$");
+           
+           val; IF(ISERROR(single_token);
+              REDUCE(tpl; SEQUENCE(COLUMNS(headers)); LAMBDA(curr; i; 
+                 SUBSTITUTE(curr; "{" & INDEX(headers; i) & "}"; INDEX(sorted_data; r; i))
+              ));
+              IF(single_token="_F_LOGIK"; INDEX(col_f_logik; r);
+                IF(single_token="_G_LOGIK"; INDEX(col_g_logik; r);
+                  IF(single_token="_WOHNORT_LAND"; INDEX(col_wohnort_land; r);
+                    IF(single_token="_LK_CLEAN"; IF(INDEX(sorted_is_local; r); setup_lk_name; INDEX(sorted_region_raw; r));
+                      IF(single_token="_GEBURTSJAHR"; INDEX(col_geburtsjahr; r);
+                        LET(
+                          h_idx; IFERROR(MATCH(single_token; headers; 0); 0);
+                          raw_v; IF(h_idx=0; tpl; INDEX(sorted_data; r; h_idx));
+                          IFERROR(XLOOKUP(single_token & ":" & raw_v; label_keys; label_vals; raw_v); raw_v)
+                        )
+                      )
+                    )
+                  )
+                )
+              )
+           );
+           val
+         )
+       ));
        res_audit_table; IF(run_audit;
           LET(
              reasons_col; MAP(SEQUENCE(ROWS(raw_data)); LAMBDA(i;

@@ -110,7 +110,7 @@
       regex_must_local; SUBSTITUTE(tg_must_be_local; ";"; "|");
       is_must_local_group; ARRAYFORMULA(IF(tg_must_be_local=""; FALSE; REGEXMATCH(c_func; regex_must_local)));
       target_lk; TRIM(CLEAN(setup_lk_name));
-      is_local; ARRAYFORMULA(REGEXMATCH(c_tags; "(^|;)" & target_lk & "(;|$)"));
+      is_local; ARRAYFORMULA(REGEXMATCH(c_tags; "(^|;)(" & target_lk & "|VG Rüdesheim|VG-Rüdesheim)(;|$)"));
       
       mask_local_hard; ARRAYFORMULA(IF(is_must_local_group; is_local; TRUE));
       

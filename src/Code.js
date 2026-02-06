@@ -59,7 +59,7 @@ function processExport() {
 
         // PDF Generation via Export URL
         // We export the specific gid
-        const url = `https://docs.google.com/spreadsheets/d/${ss.getId()}/export?format=pdf&gid=${sheet.getSheetId()}&size=A4&portrait=false&fitw=true&gridlines=false`;
+        const url = `https://docs.google.com/spreadsheets/d/${ss.getId()}/export?format=pdf&gid=${sheet.getSheetId()}&size=A4&portrait=true&fitw=true&gridlines=false`;
         const response = UrlFetchApp.fetch(url, { headers: { 'Authorization': 'Bearer ' + token } });
         blobs.push(response.getBlob().setName(`${sheetName}.pdf`));
     });

@@ -275,15 +275,17 @@
              ));
              IF(single_token="_F_LOGIK"; INDEX(col_f_logik; r);
                IF(single_token="_G_LOGIK"; INDEX(col_g_logik; r);
-                 IF(single_token="_WOHNORT_LAND"; INDEX(col_wohnort_land; r);
-                   IF(single_token="_GEBURTSJAHR"; INDEX(col_geburtsjahr; r);
-                     LET(
-                       h_idx; IFERROR(MATCH(single_token; headers; 0); 0);
-                       raw_v; IF(h_idx=0; tpl; INDEX(limited_data; r; h_idx));
-                       IFERROR(XLOOKUP(single_token & ":" & raw_v; label_keys; label_vals; raw_v); raw_v)
+                   IF(single_token="_WOHNORT_LAND"; INDEX(col_wohnort_land; r);
+                     IF(single_token="_UEBERNACHTUNGEN"; IFERROR(INDEX(val_days; r) - 1; 0);
+                       IF(single_token="_GEBURTSJAHR"; INDEX(col_geburtsjahr; r);
+                         LET(
+                           h_idx; IFERROR(MATCH(single_token; headers; 0); 0);
+                           raw_v; IF(h_idx=0; tpl; INDEX(limited_data; r; h_idx));
+                           IFERROR(XLOOKUP(single_token & ":" & raw_v; label_keys; label_vals; raw_v); raw_v)
+                         )
+                       )
                      )
                    )
-                 )
                )
              )
           );

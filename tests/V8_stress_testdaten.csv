@@ -1,0 +1,301 @@
+Status,Funktion,Nachname,Vorname,Anwesenheit,Juleica,Behinderung,Soziales,Geburtsdatum,Adresse,PLZ,Wohnort,Geschlecht,Landkreis,Bundesland
+Angemeldet,TN,Testperson_Mainz-Bingen_1,TN_1,10,--,--,--,03.05.2020,Musterstr. 1,55218,Ingelheim am Rhein,m,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_2,TN_2,10,--,--,--,15.10.2018,Musterstr. 2,55218,Ingelheim am Rhein,m,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_3,TN_3,3,--,--,--,26.05.2013,Musterstr. 3,55218,Ingelheim am Rhein,d,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_4,TN_4,10,--,--,--,03.05.2015,Musterstr. 4,55218,Ingelheim am Rhein,d,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_5,TN_5,10,--,--,--,16.05.2017,Musterstr. 5,55218,Ingelheim am Rhein,w,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_6,TN_6,10,--,--,--,19.09.2017,Musterstr. 6,55218,Ingelheim am Rhein,d,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_7,TN_7,10,--,--,--,24.02.2016,Musterstr. 7,55218,Ingelheim am Rhein,w,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_8,TN_8,10,--,--,--,02.05.2018,Musterstr. 8,55218,Ingelheim am Rhein,m,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_9,TN_9,5,--,--,--,07.07.2015,Musterstr. 9,55218,Ingelheim am Rhein,d,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_10,TN_10,10,--,--,--,01.07.2014,Musterstr. 10,55218,Ingelheim am Rhein,m,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_11,TN_11,10,--,--,--,20.12.2011,Musterstr. 11,55218,Ingelheim am Rhein,m,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_12,TN_12,3,--,--,--,01.07.2021,Musterstr. 12,55218,Ingelheim am Rhein,m,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Storniert,TN,Testperson_Mainz-Bingen_13,TN_13,10,--,--,--,22.07.2015,Musterstr. 13,55218,Ingelheim am Rhein,w,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_14,TN_14,10,--,--,--,11.07.2011,Musterstr. 14,55218,Ingelheim am Rhein,w,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_15,TN_15,10,--,--,--,25.09.2018,Musterstr. 15,55218,Ingelheim am Rhein,w,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_16,TN_16,10,--,--,--,07.02.2015,Musterstr. 16,55218,Ingelheim am Rhein,m,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_17,TN_17,10,--,--,--,01.05.2016,Musterstr. 17,55218,Ingelheim am Rhein,d,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_18,TN_18,10,--,--,Bildungspaket,09.10.2016,Musterstr. 18,55218,Ingelheim am Rhein,m,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,MA,Testperson_Mainz-Bingen_19,MA_19,10,--,--,Bildungspaket,15.12.1998,Musterstr. 19,55218,Ingelheim am Rhein,m,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_20,TN_20,10,--,--,--,11.02.2012,Musterstr. 20,55218,Ingelheim am Rhein,m,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_21,TN_21,10,--,--,--,10.08.2015,Musterstr. 21,55218,Ingelheim am Rhein,m,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Storniert,MA,Testperson_Mainz-Bingen_22,MA_22,10,--,--,--,02.02.2010,Musterstr. 22,55218,Ingelheim am Rhein,m,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_23,TN_23,10,--,--,--,14.08.2017,Musterstr. 23,55218,Ingelheim am Rhein,d,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_24,TN_24,10,--,--,--,27.08.2012,Musterstr. 24,55218,Ingelheim am Rhein,d,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_25,TN_25,10,--,--,--,21.01.2013,Musterstr. 25,55218,Ingelheim am Rhein,d,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_26,TN_26,10,--,--,--,07.04.2013,Musterstr. 26,55218,Ingelheim am Rhein,d,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_27,TN_27,10,--,--,--,25.07.2013,Musterstr. 27,55218,Ingelheim am Rhein,d,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_28,TN_28,10,--,B,--,24.03.2015,Musterstr. 28,55218,Ingelheim am Rhein,d,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_29,TN_29,10,--,B,Bildungspaket,23.10.2017,Musterstr. 29,55218,Ingelheim am Rhein,w,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_30,TN_30,10,--,--,--,15.04.2018,Musterstr. 30,55218,Ingelheim am Rhein,m,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_31,TN_31,10,--,--,--,20.10.2017,Musterstr. 31,55218,Ingelheim am Rhein,m,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Abgemeldet,TN,Testperson_Mainz-Bingen_32,TN_32,10,--,--,--,08.12.2018,Musterstr. 32,55218,Ingelheim am Rhein,m,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_33,TN_33,10,--,--,--,01.05.2020,Musterstr. 33,55218,Ingelheim am Rhein,m,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,MA,Testperson_Mainz-Bingen_34,MA_34,10,--,--,--,19.12.2003,Musterstr. 34,55218,Ingelheim am Rhein,m,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_35,TN_35,10,--,--,--,13.03.2013,Musterstr. 35,55218,Ingelheim am Rhein,d,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_36,TN_36,10,--,--,--,12.09.2016,Musterstr. 36,55218,Ingelheim am Rhein,w,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_37,TN_37,10,--,--,--,11.12.2012,Musterstr. 37,55218,Ingelheim am Rhein,d,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_38,TN_38,10,--,--,--,20.03.2015,Musterstr. 38,55218,Ingelheim am Rhein,w,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,LEITUNG,Testperson_Mainz-Bingen_39,LEITUNG_39,10,JB-12345,--,--,13.02.1981,Musterstr. 39,55218,Ingelheim am Rhein,d,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,MA,Testperson_Mainz-Bingen_40,MA_40,5,--,--,--,19.12.2007,Musterstr. 40,55218,Ingelheim am Rhein,m,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_41,TN_41,10,--,--,--,10.03.2015,Musterstr. 41,55218,Ingelheim am Rhein,w,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_42,TN_42,10,--,--,--,13.06.2013,Musterstr. 42,55218,Ingelheim am Rhein,w,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_43,TN_43,10,--,--,--,09.09.2017,Musterstr. 43,55218,Ingelheim am Rhein,d,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,MA,Testperson_Mainz-Bingen_44,MA_44,10,JB-12345,--,--,25.11.2010,Musterstr. 44,55218,Ingelheim am Rhein,m,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_45,TN_45,10,--,B,--,17.04.2017,Musterstr. 45,55218,Ingelheim am Rhein,m,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_46,TN_46,10,--,--,--,01.07.2021,Musterstr. 46,55218,Ingelheim am Rhein,m,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_47,TN_47,10,--,--,--,01.07.2021,Musterstr. 47,55218,Ingelheim am Rhein,w,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_48,TN_48,10,--,--,Bildungspaket,14.10.2020,Musterstr. 48,55218,Ingelheim am Rhein,m,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,MA,Testperson_Mainz-Bingen_49,MA_49,10,JB-12345,--,--,22.08.2001,Musterstr. 49,55218,Ingelheim am Rhein,w,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_50,TN_50,10,--,G,--,11.01.2016,Musterstr. 50,55218,Ingelheim am Rhein,d,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_51,TN_51,10,--,--,Bildungspaket,10.05.2012,Musterstr. 51,55218,Ingelheim am Rhein,d,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,MA,Testperson_Mainz-Bingen_52,MA_52,10,--,--,--,09.04.2006,Musterstr. 52,55218,Ingelheim am Rhein,m,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_53,TN_53,10,--,--,--,15.06.2015,Musterstr. 53,55218,Ingelheim am Rhein,m,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_54,TN_54,10,--,--,--,23.05.2017,Musterstr. 54,55218,Ingelheim am Rhein,w,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_55,TN_55,10,--,--,--,13.03.2013,Musterstr. 55,55218,Ingelheim am Rhein,d,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_56,TN_56,10,--,--,--,04.06.2012,Musterstr. 56,55218,Ingelheim am Rhein,m,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_57,TN_57,10,--,--,--,07.04.2011,Musterstr. 57,55218,Ingelheim am Rhein,w,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_58,TN_58,10,--,--,--,07.12.2019,Musterstr. 58,55218,Ingelheim am Rhein,d,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_59,TN_59,4,--,--,--,23.05.2011,Musterstr. 59,55218,Ingelheim am Rhein,w,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_60,TN_60,10,--,--,--,04.05.2016,Musterstr. 60,55218,Ingelheim am Rhein,d,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,LEITUNG,Testperson_Mainz-Bingen_61,LEITUNG_61,10,JB-12345,--,--,02.06.1978,Musterstr. 61,55218,Ingelheim am Rhein,d,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,MA,Testperson_Mainz-Bingen_62,MA_62,10,JB-12345,--,--,14.07.2010,Musterstr. 62,55218,Ingelheim am Rhein,m,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_63,TN_63,10,--,--,--,06.09.2019,Musterstr. 63,55218,Ingelheim am Rhein,d,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,LEITUNG,Testperson_Mainz-Bingen_64,LEITUNG_64,10,--,--,--,08.08.1995,Musterstr. 64,55218,Ingelheim am Rhein,d,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_65,TN_65,10,--,--,--,27.10.2011,Musterstr. 65,55218,Ingelheim am Rhein,d,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_66,TN_66,10,--,--,Bildungspaket,13.05.2014,Musterstr. 66,55218,Ingelheim am Rhein,d,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,MA,Testperson_Mainz-Bingen_67,MA_67,10,--,--,--,27.10.1997,Musterstr. 67,55218,Ingelheim am Rhein,w,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,LEITUNG,Testperson_Mainz-Bingen_68,LEITUNG_68,10,--,--,--,12.08.1992,Musterstr. 68,55218,Ingelheim am Rhein,w,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_69,TN_69,10,--,--,--,27.03.2017,Musterstr. 69,55218,Ingelheim am Rhein,d,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz-Bingen_70,TN_70,10,--,--,Bildungspaket,21.09.2012,Musterstr. 70,55218,Ingelheim am Rhein,w,Landkreis Mainz-Bingen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Altenkirchen_1,TN_1,1,--,--,--,17.05.2018,Musterstr. 71,57610,Altenkirchen,w,Landkreis Altenkirchen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Altenkirchen_2,TN_2,10,--,--,--,21.03.2013,Musterstr. 72,57610,Altenkirchen,w,Landkreis Altenkirchen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Altenkirchen_3,TN_3,10,--,--,--,24.10.2011,Musterstr. 73,57610,Altenkirchen,w,Landkreis Altenkirchen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Altenkirchen_4,TN_4,10,--,--,--,04.05.2018,Musterstr. 74,57610,Altenkirchen,m,Landkreis Altenkirchen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Altenkirchen_5,TN_5,10,--,--,--,17.08.2019,Musterstr. 75,57610,Altenkirchen,d,Landkreis Altenkirchen,Rheinland-Pfalz
+Angemeldet,REF,Testperson_Altenkirchen_6,REF_6,10,--,--,Bildungspaket,17.09.1990,Musterstr. 76,57610,Altenkirchen,m,Landkreis Altenkirchen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Altenkirchen_7,TN_7,10,--,--,--,28.10.2016,Musterstr. 77,57610,Altenkirchen,w,Landkreis Altenkirchen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Altenkirchen_8,TN_8,10,--,--,Bildungspaket,06.01.2011,Musterstr. 78,57610,Altenkirchen,w,Landkreis Altenkirchen,Rheinland-Pfalz
+Angemeldet,MA,Testperson_Altenkirchen_9,MA_9,10,JB-12345,--,--,02.09.2010,Musterstr. 79,57610,Altenkirchen,w,Landkreis Altenkirchen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Altenkirchen_10,TN_10,10,--,--,--,11.06.2015,Musterstr. 80,57610,Altenkirchen,m,Landkreis Altenkirchen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Altenkirchen_11,TN_11,10,--,--,--,06.05.2013,Musterstr. 81,57610,Altenkirchen,m,Landkreis Altenkirchen,Rheinland-Pfalz
+Angemeldet,MA,Testperson_Altenkirchen_12,MA_12,1,--,--,--,19.11.1997,Musterstr. 82,57610,Altenkirchen,m,Landkreis Altenkirchen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Altenkirchen_13,TN_13,10,--,--,--,08.10.2017,Musterstr. 83,57610,Altenkirchen,w,Landkreis Altenkirchen,Rheinland-Pfalz
+Angemeldet,MA,Testperson_Altenkirchen_14,MA_14,10,--,--,--,15.07.2001,Musterstr. 84,57610,Altenkirchen,w,Landkreis Altenkirchen,Rheinland-Pfalz
+Angemeldet,MA,Testperson_Altenkirchen_15,MA_15,10,JB-12345,--,--,16.08.1997,Musterstr. 85,57610,Altenkirchen,m,Landkreis Altenkirchen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Altenkirchen_16,TN_16,10,--,--,--,11.05.2015,Musterstr. 86,57610,Altenkirchen,w,Landkreis Altenkirchen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Altenkirchen_17,TN_17,1,--,--,--,12.04.2018,Musterstr. 87,57610,Altenkirchen,d,Landkreis Altenkirchen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Altenkirchen_18,TN_18,10,--,--,--,07.03.2011,Musterstr. 88,57610,Altenkirchen,m,Landkreis Altenkirchen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Altenkirchen_19,TN_19,10,--,--,Bildungspaket,27.09.2017,Musterstr. 89,57610,Altenkirchen,d,Landkreis Altenkirchen,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Altenkirchen_20,TN_20,10,--,--,Bildungspaket,05.05.2012,Musterstr. 90,57610,Altenkirchen,d,Landkreis Altenkirchen,Rheinland-Pfalz
+Angemeldet,REF,Testperson_Alzey-Worms_1,REF_1,10,--,--,--,12.06.1974,Musterstr. 91,55232,Alzey,d,Landkreis Alzey-Worms,Rheinland-Pfalz
+Angemeldet,MA,Testperson_Alzey-Worms_2,MA_2,10,JB-12345,--,--,08.01.2007,Musterstr. 92,55232,Alzey,d,Landkreis Alzey-Worms,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Alzey-Worms_3,TN_3,10,--,--,--,02.09.2017,Musterstr. 93,55232,Alzey,m,Landkreis Alzey-Worms,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Alzey-Worms_4,TN_4,10,--,--,Bildungspaket,03.07.2013,Musterstr. 94,55232,Alzey,d,Landkreis Alzey-Worms,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Alzey-Worms_5,TN_5,10,--,--,--,16.05.2016,Musterstr. 95,55232,Alzey,m,Landkreis Alzey-Worms,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Alzey-Worms_6,TN_6,10,--,--,--,21.12.2011,Musterstr. 96,55232,Alzey,w,Landkreis Alzey-Worms,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Alzey-Worms_7,TN_7,10,--,--,--,21.09.2015,Musterstr. 97,55232,Alzey,d,Landkreis Alzey-Worms,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Alzey-Worms_8,TN_8,10,--,--,--,15.04.2019,Musterstr. 98,55232,Alzey,d,Landkreis Alzey-Worms,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Alzey-Worms_9,TN_9,10,--,--,--,02.08.2013,Musterstr. 99,55232,Alzey,w,Landkreis Alzey-Worms,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Alzey-Worms_10,TN_10,10,--,--,--,05.07.2016,Musterstr. 100,55232,Alzey,m,Landkreis Alzey-Worms,Rheinland-Pfalz
+Angemeldet,LEITUNG,Testperson_Alzey-Worms_11,LEITUNG_11,10,JB-12345,--,--,02.09.1996,Musterstr. 101,55232,Alzey,d,Landkreis Alzey-Worms,Rheinland-Pfalz
+Angemeldet,REF,Testperson_Alzey-Worms_12,REF_12,10,--,--,--,24.12.1975,Musterstr. 102,55232,Alzey,m,Landkreis Alzey-Worms,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Alzey-Worms_13,TN_13,10,--,--,--,06.11.2016,Musterstr. 103,55232,Alzey,w,Landkreis Alzey-Worms,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Alzey-Worms_14,TN_14,10,--,--,--,07.11.2016,Musterstr. 104,55232,Alzey,w,Landkreis Alzey-Worms,Rheinland-Pfalz
+Angemeldet,REF,Testperson_Alzey-Worms_15,REF_15,10,--,--,--,25.10.1978,Musterstr. 105,55232,Alzey,d,Landkreis Alzey-Worms,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Alzey-Worms_16,TN_16,10,--,--,--,25.06.2020,Musterstr. 106,55232,Alzey,m,Landkreis Alzey-Worms,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Alzey-Worms_17,TN_17,10,--,--,--,01.07.2021,Musterstr. 107,55232,Alzey,m,Landkreis Alzey-Worms,Rheinland-Pfalz
+Angemeldet,REF,Testperson_Alzey-Worms_18,REF_18,10,--,--,--,24.01.1969,Musterstr. 108,55232,Alzey,w,Landkreis Alzey-Worms,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Alzey-Worms_19,TN_19,10,--,G,--,18.09.2014,Musterstr. 109,55232,Alzey,d,Landkreis Alzey-Worms,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Alzey-Worms_20,TN_20,2,--,--,--,24.10.2012,Musterstr. 110,55232,Alzey,d,Landkreis Alzey-Worms,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Kreuznach_1,TN_1,10,--,--,--,11.04.2015,Musterstr. 111,55543,Bad Kreuznach,d,Landkreis Bad Kreuznach,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Kreuznach_2,TN_2,10,--,--,--,19.05.2017,Musterstr. 112,55543,Bad Kreuznach,w,Landkreis Bad Kreuznach,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Kreuznach_3,TN_3,10,--,--,--,01.07.2021,Musterstr. 113,55543,Bad Kreuznach,d,Landkreis Bad Kreuznach,Rheinland-Pfalz
+Angemeldet,LEITUNG,Testperson_Kreuznach_4,LEITUNG_4,10,--,--,--,26.05.1987,Musterstr. 114,55543,Bad Kreuznach,d,Landkreis Bad Kreuznach,Rheinland-Pfalz
+Angemeldet,MA,Testperson_Kreuznach_5,MA_5,10,--,--,--,15.09.2004,Musterstr. 115,55543,Bad Kreuznach,m,Landkreis Bad Kreuznach,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Kreuznach_6,TN_6,10,--,--,--,05.07.2013,Musterstr. 116,55543,Bad Kreuznach,w,Landkreis Bad Kreuznach,Rheinland-Pfalz
+Angemeldet,MA,Testperson_Kreuznach_7,MA_7,10,JB-12345,--,--,26.10.1998,Musterstr. 117,55543,Bad Kreuznach,m,Landkreis Bad Kreuznach,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Kreuznach_8,TN_8,10,--,--,--,08.08.2015,Musterstr. 118,55543,Bad Kreuznach,w,Landkreis Bad Kreuznach,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Kreuznach_9,TN_9,10,--,--,Bildungspaket,11.11.2018,Musterstr. 119,55543,Bad Kreuznach,m,Landkreis Bad Kreuznach,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Kreuznach_10,TN_10,3,--,--,Bildungspaket,17.10.2020,Musterstr. 120,55543,Bad Kreuznach,w,Landkreis Bad Kreuznach,Rheinland-Pfalz
+Angemeldet,MA,Testperson_Kreuznach_11,MA_11,10,--,--,--,02.06.2000,Musterstr. 121,55543,Bad Kreuznach,m,Landkreis Bad Kreuznach,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Kreuznach_12,TN_12,10,--,--,--,16.10.2016,Musterstr. 122,55543,Bad Kreuznach,d,Landkreis Bad Kreuznach,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Kreuznach_13,TN_13,10,--,--,--,09.03.2020,Musterstr. 123,55543,Bad Kreuznach,w,Landkreis Bad Kreuznach,Rheinland-Pfalz
+Angemeldet,MA,Testperson_Kreuznach_14,MA_14,10,JB-12345,--,--,05.04.2004,Musterstr. 124,55543,Bad Kreuznach,m,Landkreis Bad Kreuznach,Rheinland-Pfalz
+Angemeldet,MA,Testperson_Kreuznach_15,MA_15,10,JB-12345,--,--,27.02.2000,Musterstr. 125,55543,Bad Kreuznach,w,Landkreis Bad Kreuznach,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Kreuznach_16,TN_16,10,--,--,--,02.04.2017,Musterstr. 126,55543,Bad Kreuznach,w,Landkreis Bad Kreuznach,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Kreuznach_17,TN_17,10,--,--,--,05.12.2015,Musterstr. 127,55543,Bad Kreuznach,w,Landkreis Bad Kreuznach,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Kreuznach_18,TN_18,10,--,--,--,10.03.2013,Musterstr. 128,55543,Bad Kreuznach,m,Landkreis Bad Kreuznach,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Kreuznach_19,TN_19,10,--,--,--,09.12.2012,Musterstr. 129,55543,Bad Kreuznach,d,Landkreis Bad Kreuznach,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Kreuznach_20,TN_20,10,--,--,--,19.03.2014,Musterstr. 130,55543,Bad Kreuznach,d,Landkreis Bad Kreuznach,Rheinland-Pfalz
+Storniert,TN,Testperson_Bernkastel-Wittlich_1,TN_1,10,--,G,--,14.09.2013,Musterstr. 131,54516,Wittlich,m,Landkreis Bernkastel-Wittlich,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Bernkastel-Wittlich_2,TN_2,10,--,--,--,17.03.2020,Musterstr. 132,54516,Wittlich,d,Landkreis Bernkastel-Wittlich,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Bernkastel-Wittlich_3,TN_3,10,--,--,Bildungspaket,21.03.2020,Musterstr. 133,54516,Wittlich,m,Landkreis Bernkastel-Wittlich,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Bernkastel-Wittlich_4,TN_4,10,--,--,--,18.12.2012,Musterstr. 134,54516,Wittlich,w,Landkreis Bernkastel-Wittlich,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Bernkastel-Wittlich_5,TN_5,10,--,--,--,18.02.2016,Musterstr. 135,54516,Wittlich,w,Landkreis Bernkastel-Wittlich,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Bernkastel-Wittlich_6,TN_6,10,--,--,--,19.01.2017,Musterstr. 136,54516,Wittlich,w,Landkreis Bernkastel-Wittlich,Rheinland-Pfalz
+Angemeldet,MA,Testperson_Bernkastel-Wittlich_7,MA_7,5,--,--,--,18.10.2006,Musterstr. 137,54516,Wittlich,m,Landkreis Bernkastel-Wittlich,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Bernkastel-Wittlich_8,TN_8,10,--,--,--,26.11.2011,Musterstr. 138,54516,Wittlich,w,Landkreis Bernkastel-Wittlich,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Bernkastel-Wittlich_9,TN_9,10,--,G,--,25.12.2016,Musterstr. 139,54516,Wittlich,d,Landkreis Bernkastel-Wittlich,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Bernkastel-Wittlich_10,TN_10,10,--,--,--,19.06.2014,Musterstr. 140,54516,Wittlich,w,Landkreis Bernkastel-Wittlich,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Bernkastel-Wittlich_11,TN_11,10,--,--,--,25.05.2012,Musterstr. 141,54516,Wittlich,d,Landkreis Bernkastel-Wittlich,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Bernkastel-Wittlich_12,TN_12,10,--,--,--,12.05.2013,Musterstr. 142,54516,Wittlich,m,Landkreis Bernkastel-Wittlich,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Bernkastel-Wittlich_13,TN_13,10,--,--,--,17.07.2019,Musterstr. 143,54516,Wittlich,w,Landkreis Bernkastel-Wittlich,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Bernkastel-Wittlich_14,TN_14,10,--,--,--,23.05.2013,Musterstr. 144,54516,Wittlich,d,Landkreis Bernkastel-Wittlich,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Bernkastel-Wittlich_15,TN_15,10,--,--,--,18.04.2014,Musterstr. 145,54516,Wittlich,d,Landkreis Bernkastel-Wittlich,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Bernkastel-Wittlich_16,TN_16,10,--,--,--,05.03.2016,Musterstr. 146,54516,Wittlich,d,Landkreis Bernkastel-Wittlich,Rheinland-Pfalz
+Storniert,MA,Testperson_Bernkastel-Wittlich_17,MA_17,10,--,--,--,18.12.2002,Musterstr. 147,54516,Wittlich,d,Landkreis Bernkastel-Wittlich,Rheinland-Pfalz
+Angemeldet,MA,Testperson_Bernkastel-Wittlich_18,MA_18,10,--,--,--,12.08.2000,Musterstr. 148,54516,Wittlich,d,Landkreis Bernkastel-Wittlich,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Bernkastel-Wittlich_19,TN_19,10,--,--,--,03.09.2019,Musterstr. 149,54516,Wittlich,w,Landkreis Bernkastel-Wittlich,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Bernkastel-Wittlich_20,TN_20,10,--,--,--,04.07.2017,Musterstr. 150,54516,Wittlich,w,Landkreis Bernkastel-Wittlich,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz_1,TN_1,10,--,G,--,04.05.2020,Musterstr. 151,55116,Mainz,d,Kreisfreie Stadt Mainz,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz_2,TN_2,10,--,--,--,20.07.2012,Musterstr. 152,55116,Mainz,w,Kreisfreie Stadt Mainz,Rheinland-Pfalz
+Angemeldet,MA,Testperson_Mainz_3,MA_3,10,JB-12345,--,--,04.11.2004,Musterstr. 153,55116,Mainz,w,Kreisfreie Stadt Mainz,Rheinland-Pfalz
+Angemeldet,MA,Testperson_Mainz_4,MA_4,10,JB-12345,--,--,21.02.2005,Musterstr. 154,55116,Mainz,m,Kreisfreie Stadt Mainz,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz_5,TN_5,10,--,--,--,11.04.2015,Musterstr. 155,55116,Mainz,d,Kreisfreie Stadt Mainz,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz_6,TN_6,10,--,--,--,11.04.2020,Musterstr. 156,55116,Mainz,w,Kreisfreie Stadt Mainz,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz_7,TN_7,10,--,--,--,17.06.2014,Musterstr. 157,55116,Mainz,w,Kreisfreie Stadt Mainz,Rheinland-Pfalz
+Abgemeldet,TN,Testperson_Mainz_8,TN_8,10,--,--,--,04.03.2015,Musterstr. 158,55116,Mainz,d,Kreisfreie Stadt Mainz,Rheinland-Pfalz
+Angemeldet,MA,Testperson_Mainz_9,MA_9,10,JB-12345,B,--,02.01.2003,Musterstr. 159,55116,Mainz,d,Kreisfreie Stadt Mainz,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz_10,TN_10,3,--,G,--,04.08.2011,Musterstr. 160,55116,Mainz,m,Kreisfreie Stadt Mainz,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz_11,TN_11,10,--,--,--,12.10.2011,Musterstr. 161,55116,Mainz,m,Kreisfreie Stadt Mainz,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz_12,TN_12,10,--,--,--,03.12.2018,Musterstr. 162,55116,Mainz,m,Kreisfreie Stadt Mainz,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz_13,TN_13,10,--,B,--,15.11.2012,Musterstr. 163,55116,Mainz,d,Kreisfreie Stadt Mainz,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz_14,TN_14,10,--,--,--,08.03.2011,Musterstr. 164,55116,Mainz,m,Kreisfreie Stadt Mainz,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz_15,TN_15,10,--,--,--,06.02.2015,Musterstr. 165,55116,Mainz,m,Kreisfreie Stadt Mainz,Rheinland-Pfalz
+Angemeldet,MA,Testperson_Mainz_16,MA_16,10,JB-12345,--,--,12.08.1999,Musterstr. 166,55116,Mainz,m,Kreisfreie Stadt Mainz,Rheinland-Pfalz
+Angemeldet,MA,Testperson_Mainz_17,MA_17,2,--,--,--,05.02.2004,Musterstr. 167,55116,Mainz,w,Kreisfreie Stadt Mainz,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz_18,TN_18,10,--,--,--,23.08.2011,Musterstr. 168,55116,Mainz,w,Kreisfreie Stadt Mainz,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz_19,TN_19,10,--,--,--,03.08.2011,Musterstr. 169,55116,Mainz,d,Kreisfreie Stadt Mainz,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Mainz_20,TN_20,10,--,--,--,20.03.2017,Musterstr. 170,55116,Mainz,d,Kreisfreie Stadt Mainz,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Rhein-Hunsrück-Kreis_1,TN_1,10,--,--,--,08.02.2014,Musterstr. 171,55469,Simmern,d,Rhein-Hunsrück-Kreis,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Rhein-Hunsrück-Kreis_2,TN_2,10,--,--,--,20.05.2012,Musterstr. 172,55469,Simmern,d,Rhein-Hunsrück-Kreis,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Rhein-Hunsrück-Kreis_3,TN_3,10,--,--,Bildungspaket,23.09.2016,Musterstr. 173,55469,Simmern,d,Rhein-Hunsrück-Kreis,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Rhein-Hunsrück-Kreis_4,TN_4,10,--,--,--,19.04.2015,Musterstr. 174,55469,Simmern,m,Rhein-Hunsrück-Kreis,Rheinland-Pfalz
+Storniert,TN,Testperson_Rhein-Hunsrück-Kreis_5,TN_5,10,--,G,--,09.03.2019,Musterstr. 175,55469,Simmern,m,Rhein-Hunsrück-Kreis,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Rhein-Hunsrück-Kreis_6,TN_6,10,--,--,--,09.04.2020,Musterstr. 176,55469,Simmern,w,Rhein-Hunsrück-Kreis,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Rhein-Hunsrück-Kreis_7,TN_7,10,--,--,--,03.09.2016,Musterstr. 177,55469,Simmern,d,Rhein-Hunsrück-Kreis,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Rhein-Hunsrück-Kreis_8,TN_8,10,--,--,--,18.12.2018,Musterstr. 178,55469,Simmern,w,Rhein-Hunsrück-Kreis,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Rhein-Hunsrück-Kreis_9,TN_9,4,--,--,--,04.08.2018,Musterstr. 179,55469,Simmern,w,Rhein-Hunsrück-Kreis,Rheinland-Pfalz
+Angemeldet,MA,Testperson_Rhein-Hunsrück-Kreis_10,MA_10,1,--,--,--,19.12.2010,Musterstr. 180,55469,Simmern,m,Rhein-Hunsrück-Kreis,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Rhein-Hunsrück-Kreis_11,TN_11,10,--,--,--,19.04.2012,Musterstr. 181,55469,Simmern,m,Rhein-Hunsrück-Kreis,Rheinland-Pfalz
+Angemeldet,MA,Testperson_Rhein-Hunsrück-Kreis_12,MA_12,10,--,--,--,02.12.2005,Musterstr. 182,55469,Simmern,w,Rhein-Hunsrück-Kreis,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Rhein-Hunsrück-Kreis_13,TN_13,10,--,B,--,17.06.2012,Musterstr. 183,55469,Simmern,w,Rhein-Hunsrück-Kreis,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Rhein-Hunsrück-Kreis_14,TN_14,10,--,--,--,25.12.2015,Musterstr. 184,55469,Simmern,d,Rhein-Hunsrück-Kreis,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Rhein-Hunsrück-Kreis_15,TN_15,10,--,--,--,25.06.2017,Musterstr. 185,55469,Simmern,w,Rhein-Hunsrück-Kreis,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Rhein-Hunsrück-Kreis_16,TN_16,10,--,--,--,21.04.2015,Musterstr. 186,55469,Simmern,w,Rhein-Hunsrück-Kreis,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Rhein-Hunsrück-Kreis_17,TN_17,10,--,--,--,24.03.2014,Musterstr. 187,55469,Simmern,m,Rhein-Hunsrück-Kreis,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Rhein-Hunsrück-Kreis_18,TN_18,10,--,--,--,03.12.2018,Musterstr. 188,55469,Simmern,w,Rhein-Hunsrück-Kreis,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Rhein-Hunsrück-Kreis_19,TN_19,4,--,--,--,04.07.2015,Musterstr. 189,55469,Simmern,m,Rhein-Hunsrück-Kreis,Rheinland-Pfalz
+Angemeldet,MA,Testperson_Rhein-Hunsrück-Kreis_20,MA_20,10,JB-12345,--,Bildungspaket,24.04.2004,Musterstr. 190,55469,Simmern,w,Rhein-Hunsrück-Kreis,Rheinland-Pfalz
+Angemeldet,MA,Testperson_Rhein-Lahn-Kreis_1,MA_1,10,--,--,--,06.03.2004,Musterstr. 191,56130,Bad Ems,w,Landkreis Rhein-Lahn-Kreis,Rheinland-Pfalz
+Storniert,TN,Testperson_Rhein-Lahn-Kreis_2,TN_2,10,--,--,--,17.09.2020,Musterstr. 192,56130,Bad Ems,w,Landkreis Rhein-Lahn-Kreis,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Rhein-Lahn-Kreis_3,TN_3,10,--,B,--,07.04.2019,Musterstr. 193,56130,Bad Ems,w,Landkreis Rhein-Lahn-Kreis,Rheinland-Pfalz
+Angemeldet,MA,Testperson_Rhein-Lahn-Kreis_4,MA_4,10,JB-12345,--,--,20.03.1998,Musterstr. 194,56130,Bad Ems,d,Landkreis Rhein-Lahn-Kreis,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Rhein-Lahn-Kreis_5,TN_5,10,--,--,--,24.11.2014,Musterstr. 195,56130,Bad Ems,m,Landkreis Rhein-Lahn-Kreis,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Rhein-Lahn-Kreis_6,TN_6,10,--,--,--,10.11.2014,Musterstr. 196,56130,Bad Ems,d,Landkreis Rhein-Lahn-Kreis,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Rhein-Lahn-Kreis_7,TN_7,10,--,--,Bildungspaket,15.09.2012,Musterstr. 197,56130,Bad Ems,m,Landkreis Rhein-Lahn-Kreis,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Rhein-Lahn-Kreis_8,TN_8,10,--,--,--,09.10.2018,Musterstr. 198,56130,Bad Ems,w,Landkreis Rhein-Lahn-Kreis,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Rhein-Lahn-Kreis_9,TN_9,10,--,--,--,16.08.2014,Musterstr. 199,56130,Bad Ems,m,Landkreis Rhein-Lahn-Kreis,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Rhein-Lahn-Kreis_10,TN_10,10,--,--,Bildungspaket,05.09.2015,Musterstr. 200,56130,Bad Ems,d,Landkreis Rhein-Lahn-Kreis,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Rhein-Lahn-Kreis_11,TN_11,10,--,--,--,04.11.2014,Musterstr. 201,56130,Bad Ems,d,Landkreis Rhein-Lahn-Kreis,Rheinland-Pfalz
+Angemeldet,MA,Testperson_Rhein-Lahn-Kreis_12,MA_12,10,JB-12345,--,--,27.04.1999,Musterstr. 202,56130,Bad Ems,w,Landkreis Rhein-Lahn-Kreis,Rheinland-Pfalz
+Storniert,TN,Testperson_Rhein-Lahn-Kreis_13,TN_13,10,--,--,--,05.09.2017,Musterstr. 203,56130,Bad Ems,d,Landkreis Rhein-Lahn-Kreis,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Rhein-Lahn-Kreis_14,TN_14,10,--,--,--,08.04.2015,Musterstr. 204,56130,Bad Ems,d,Landkreis Rhein-Lahn-Kreis,Rheinland-Pfalz
+Storniert,TN,Testperson_Rhein-Lahn-Kreis_15,TN_15,10,--,--,--,13.02.2013,Musterstr. 205,56130,Bad Ems,m,Landkreis Rhein-Lahn-Kreis,Rheinland-Pfalz
+Angemeldet,MA,Testperson_Rhein-Lahn-Kreis_16,MA_16,4,--,--,--,27.01.2000,Musterstr. 206,56130,Bad Ems,m,Landkreis Rhein-Lahn-Kreis,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Rhein-Lahn-Kreis_17,TN_17,10,--,--,--,08.08.2017,Musterstr. 207,56130,Bad Ems,m,Landkreis Rhein-Lahn-Kreis,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Rhein-Lahn-Kreis_18,TN_18,10,--,--,--,18.02.2012,Musterstr. 208,56130,Bad Ems,d,Landkreis Rhein-Lahn-Kreis,Rheinland-Pfalz
+Angemeldet,MA,Testperson_Rhein-Lahn-Kreis_19,MA_19,10,--,--,Bildungspaket,02.03.2009,Musterstr. 209,56130,Bad Ems,w,Landkreis Rhein-Lahn-Kreis,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Rhein-Lahn-Kreis_20,TN_20,10,--,--,--,25.09.2016,Musterstr. 210,56130,Bad Ems,d,Landkreis Rhein-Lahn-Kreis,Rheinland-Pfalz
+Angemeldet,MA,Testperson_Trier-Saarburg_1,MA_1,10,--,--,--,02.11.2006,Musterstr. 211,54439,Saarburg,m,Landkreis Trier-Saarburg,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Trier-Saarburg_2,TN_2,10,--,--,--,22.12.2016,Musterstr. 212,54439,Saarburg,m,Landkreis Trier-Saarburg,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Trier-Saarburg_3,TN_3,10,--,--,--,10.08.2018,Musterstr. 213,54439,Saarburg,d,Landkreis Trier-Saarburg,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Trier-Saarburg_4,TN_4,10,--,--,--,05.08.2018,Musterstr. 214,54439,Saarburg,w,Landkreis Trier-Saarburg,Rheinland-Pfalz
+Angemeldet,MA,Testperson_Trier-Saarburg_5,MA_5,10,--,--,--,07.05.1998,Musterstr. 215,54439,Saarburg,d,Landkreis Trier-Saarburg,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Trier-Saarburg_6,TN_6,10,--,--,--,11.06.2019,Musterstr. 216,54439,Saarburg,m,Landkreis Trier-Saarburg,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Trier-Saarburg_7,TN_7,10,--,--,--,14.08.2016,Musterstr. 217,54439,Saarburg,d,Landkreis Trier-Saarburg,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Trier-Saarburg_8,TN_8,10,--,--,--,06.03.2012,Musterstr. 218,54439,Saarburg,w,Landkreis Trier-Saarburg,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Trier-Saarburg_9,TN_9,10,--,--,--,04.12.2020,Musterstr. 219,54439,Saarburg,w,Landkreis Trier-Saarburg,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Trier-Saarburg_10,TN_10,10,--,--,--,08.09.2013,Musterstr. 220,54439,Saarburg,w,Landkreis Trier-Saarburg,Rheinland-Pfalz
+Angemeldet,MA,Testperson_Trier-Saarburg_11,MA_11,10,JB-12345,--,--,21.11.1998,Musterstr. 221,54439,Saarburg,d,Landkreis Trier-Saarburg,Rheinland-Pfalz
+Angemeldet,MA,Testperson_Trier-Saarburg_12,MA_12,10,JB-12345,--,--,15.03.1997,Musterstr. 222,54439,Saarburg,w,Landkreis Trier-Saarburg,Rheinland-Pfalz
+Abgemeldet,TN,Testperson_Trier-Saarburg_13,TN_13,10,--,--,--,01.11.2015,Musterstr. 223,54439,Saarburg,d,Landkreis Trier-Saarburg,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Trier-Saarburg_14,TN_14,10,--,--,--,01.07.2021,Musterstr. 224,54439,Saarburg,d,Landkreis Trier-Saarburg,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Trier-Saarburg_15,TN_15,10,--,--,--,05.10.2014,Musterstr. 225,54439,Saarburg,d,Landkreis Trier-Saarburg,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Trier-Saarburg_16,TN_16,10,--,--,--,24.02.2016,Musterstr. 226,54439,Saarburg,m,Landkreis Trier-Saarburg,Rheinland-Pfalz
+Storniert,TN,Testperson_Trier-Saarburg_17,TN_17,10,--,--,--,04.12.2018,Musterstr. 227,54439,Saarburg,d,Landkreis Trier-Saarburg,Rheinland-Pfalz
+Angemeldet,MA,Testperson_Trier-Saarburg_18,MA_18,10,--,--,Bildungspaket,10.04.2004,Musterstr. 228,54439,Saarburg,w,Landkreis Trier-Saarburg,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Trier-Saarburg_19,TN_19,10,--,--,--,23.08.2015,Musterstr. 229,54439,Saarburg,d,Landkreis Trier-Saarburg,Rheinland-Pfalz
+Angemeldet,MA,Testperson_Trier-Saarburg_20,MA_20,10,--,--,--,01.10.2007,Musterstr. 230,54439,Saarburg,w,Landkreis Trier-Saarburg,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Westerwaldkreis_1,TN_1,10,--,--,--,03.12.2016,Musterstr. 231,56410,Montabaur,w,Westerwaldkreis,Rheinland-Pfalz
+Angemeldet,MA,Testperson_Westerwaldkreis_2,MA_2,10,--,--,--,16.04.1997,Musterstr. 232,56410,Montabaur,w,Westerwaldkreis,Rheinland-Pfalz
+Angemeldet,MA,Testperson_Westerwaldkreis_3,MA_3,10,--,--,--,17.09.2003,Musterstr. 233,56410,Montabaur,d,Westerwaldkreis,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Westerwaldkreis_4,TN_4,10,--,--,--,05.03.2019,Musterstr. 234,56410,Montabaur,w,Westerwaldkreis,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Westerwaldkreis_5,TN_5,10,--,--,--,23.06.2013,Musterstr. 235,56410,Montabaur,w,Westerwaldkreis,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Westerwaldkreis_6,TN_6,10,--,--,--,05.06.2014,Musterstr. 236,56410,Montabaur,m,Westerwaldkreis,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Westerwaldkreis_7,TN_7,10,--,--,--,04.05.2016,Musterstr. 237,56410,Montabaur,d,Westerwaldkreis,Rheinland-Pfalz
+Angemeldet,MA,Testperson_Westerwaldkreis_8,MA_8,10,JB-12345,--,--,13.09.2007,Musterstr. 238,56410,Montabaur,m,Westerwaldkreis,Rheinland-Pfalz
+Angemeldet,MA,Testperson_Westerwaldkreis_9,MA_9,10,--,--,--,13.12.2007,Musterstr. 239,56410,Montabaur,m,Westerwaldkreis,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Westerwaldkreis_10,TN_10,10,--,--,--,27.11.2017,Musterstr. 240,56410,Montabaur,m,Westerwaldkreis,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Westerwaldkreis_11,TN_11,10,--,--,--,28.01.2017,Musterstr. 241,56410,Montabaur,d,Westerwaldkreis,Rheinland-Pfalz
+Abgemeldet,TN,Testperson_Westerwaldkreis_12,TN_12,10,--,--,--,20.09.2019,Musterstr. 242,56410,Montabaur,d,Westerwaldkreis,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Westerwaldkreis_13,TN_13,10,--,--,--,27.11.2014,Musterstr. 243,56410,Montabaur,d,Westerwaldkreis,Rheinland-Pfalz
+Angemeldet,LEITUNG,Testperson_Westerwaldkreis_14,LEITUNG_14,10,--,--,--,03.07.1996,Musterstr. 244,56410,Montabaur,w,Westerwaldkreis,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Westerwaldkreis_15,TN_15,10,--,--,--,04.07.2011,Musterstr. 245,56410,Montabaur,m,Westerwaldkreis,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Westerwaldkreis_16,TN_16,10,--,--,--,09.09.2013,Musterstr. 246,56410,Montabaur,w,Westerwaldkreis,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Westerwaldkreis_17,TN_17,10,--,--,--,02.03.2013,Musterstr. 247,56410,Montabaur,w,Westerwaldkreis,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Westerwaldkreis_18,TN_18,10,--,--,--,23.10.2014,Musterstr. 248,56410,Montabaur,d,Westerwaldkreis,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Westerwaldkreis_19,TN_19,10,--,--,--,17.03.2014,Musterstr. 249,56410,Montabaur,d,Westerwaldkreis,Rheinland-Pfalz
+Angemeldet,TN,Testperson_Westerwaldkreis_20,TN_20,10,--,--,--,15.10.2013,Musterstr. 250,56410,Montabaur,d,Westerwaldkreis,Rheinland-Pfalz
+Angemeldet,MA,Testperson_Neunkirchen_1,MA_1,10,--,--,--,13.08.2008,Musterstr. 251,57290,Neunkirchen,w,Gemeinde Neunkirchen,Nordrhein-Westfalen
+Angemeldet,TN,Testperson_Neunkirchen_2,TN_2,10,--,--,--,21.04.2016,Musterstr. 252,57290,Neunkirchen,d,Gemeinde Neunkirchen,Nordrhein-Westfalen
+Angemeldet,TN,Testperson_Neunkirchen_3,TN_3,10,--,--,--,08.02.2014,Musterstr. 253,57290,Neunkirchen,m,Gemeinde Neunkirchen,Nordrhein-Westfalen
+Angemeldet,TN,Testperson_Neunkirchen_4,TN_4,10,--,--,--,11.12.2019,Musterstr. 254,57290,Neunkirchen,w,Gemeinde Neunkirchen,Nordrhein-Westfalen
+Angemeldet,MA,Testperson_Neunkirchen_5,MA_5,10,JB-12345,--,Bildungspaket,16.08.2002,Musterstr. 255,57290,Neunkirchen,w,Gemeinde Neunkirchen,Nordrhein-Westfalen
+Angemeldet,TN,Testperson_Neunkirchen_6,TN_6,10,--,--,--,04.10.2018,Musterstr. 256,57290,Neunkirchen,d,Gemeinde Neunkirchen,Nordrhein-Westfalen
+Angemeldet,TN,Testperson_Neunkirchen_7,TN_7,10,--,--,--,02.06.2016,Musterstr. 257,57290,Neunkirchen,w,Gemeinde Neunkirchen,Nordrhein-Westfalen
+Angemeldet,MA,Testperson_Neunkirchen_8,MA_8,10,--,--,--,15.09.2007,Musterstr. 258,57290,Neunkirchen,d,Gemeinde Neunkirchen,Nordrhein-Westfalen
+Angemeldet,TN,Testperson_Neunkirchen_9,TN_9,10,--,--,--,03.04.2015,Musterstr. 259,57290,Neunkirchen,d,Gemeinde Neunkirchen,Nordrhein-Westfalen
+Angemeldet,TN,Testperson_Neunkirchen_10,TN_10,10,--,--,--,22.05.2015,Musterstr. 260,57290,Neunkirchen,d,Gemeinde Neunkirchen,Nordrhein-Westfalen
+Angemeldet,TN,Testperson_Neunkirchen_11,TN_11,10,--,B,--,04.06.2018,Musterstr. 261,57290,Neunkirchen,d,Gemeinde Neunkirchen,Nordrhein-Westfalen
+Angemeldet,TN,Testperson_Neunkirchen_12,TN_12,10,--,--,--,16.07.2015,Musterstr. 262,57290,Neunkirchen,m,Gemeinde Neunkirchen,Nordrhein-Westfalen
+Angemeldet,TN,Testperson_Neunkirchen_13,TN_13,10,--,--,--,12.08.2019,Musterstr. 263,57290,Neunkirchen,w,Gemeinde Neunkirchen,Nordrhein-Westfalen
+Angemeldet,TN,Testperson_Neunkirchen_14,TN_14,10,--,--,--,06.10.2020,Musterstr. 264,57290,Neunkirchen,m,Gemeinde Neunkirchen,Nordrhein-Westfalen
+Angemeldet,TN,Testperson_Neunkirchen_15,TN_15,10,--,--,--,01.01.2012,Musterstr. 265,57290,Neunkirchen,m,Gemeinde Neunkirchen,Nordrhein-Westfalen
+Angemeldet,MA,Testperson_Gießen_1,MA_1,10,--,G,--,15.03.2006,Musterstr. 266,35390,Gießen,d,Landkreis Gießen,Hessen
+Angemeldet,TN,Testperson_Gießen_2,TN_2,1,--,--,--,18.06.2011,Musterstr. 267,35390,Gießen,m,Landkreis Gießen,Hessen
+Angemeldet,MA,Testperson_Gießen_3,MA_3,10,JB-12345,--,--,26.07.2003,Musterstr. 268,35390,Gießen,w,Landkreis Gießen,Hessen
+Angemeldet,MA,Testperson_Gießen_4,MA_4,10,JB-12345,--,--,26.08.1997,Musterstr. 269,35390,Gießen,m,Landkreis Gießen,Hessen
+Angemeldet,MA,Testperson_Gießen_5,MA_5,10,JB-12345,--,Bildungspaket,05.02.2005,Musterstr. 270,35390,Gießen,w,Landkreis Gießen,Hessen
+Angemeldet,TN,Testperson_Gießen_6,TN_6,10,--,--,--,17.05.2012,Musterstr. 271,35390,Gießen,m,Landkreis Gießen,Hessen
+Angemeldet,TN,Testperson_Gießen_7,TN_7,10,--,--,--,01.11.2019,Musterstr. 272,35390,Gießen,m,Landkreis Gießen,Hessen
+Angemeldet,TN,Testperson_Gießen_8,TN_8,10,--,--,--,01.07.2021,Musterstr. 273,35390,Gießen,m,Landkreis Gießen,Hessen
+Storniert,TN,Testperson_Gießen_9,TN_9,10,--,--,--,02.07.2020,Musterstr. 274,35390,Gießen,d,Landkreis Gießen,Hessen
+Angemeldet,TN,Testperson_Gießen_10,TN_10,10,--,--,--,16.01.2020,Musterstr. 275,35390,Gießen,m,Landkreis Gießen,Hessen
+Angemeldet,TN,Testperson_Gießen_11,TN_11,10,--,--,--,27.01.2020,Musterstr. 276,35390,Gießen,w,Landkreis Gießen,Hessen
+Angemeldet,TN,Testperson_Gießen_12,TN_12,10,--,--,--,11.01.2018,Musterstr. 277,35390,Gießen,d,Landkreis Gießen,Hessen
+Angemeldet,MA,Testperson_Gießen_13,MA_13,10,JB-12345,--,--,10.02.2007,Musterstr. 278,35390,Gießen,d,Landkreis Gießen,Hessen
+Angemeldet,MA,Testperson_Gießen_14,MA_14,10,--,--,--,09.03.2008,Musterstr. 279,35390,Gießen,w,Landkreis Gießen,Hessen
+Angemeldet,MA,Testperson_Gießen_15,MA_15,10,--,--,--,25.08.2005,Musterstr. 280,35390,Gießen,w,Landkreis Gießen,Hessen
+Angemeldet,TN,Testperson_Stadt_1,TN_1,5,--,--,--,14.05.2013,Musterstr. 281,10115,Berlin,w,"Berlin, Stadt",Berlin
+Angemeldet,TN,Testperson_Stadt_2,TN_2,10,--,--,--,22.02.2019,Musterstr. 282,10115,Berlin,d,"Berlin, Stadt",Berlin
+Angemeldet,TN,Testperson_Stadt_3,TN_3,10,--,--,--,23.08.2013,Musterstr. 283,10115,Berlin,m,"Berlin, Stadt",Berlin
+Angemeldet,TN,Testperson_Stadt_4,TN_4,10,--,--,--,05.07.2014,Musterstr. 284,10115,Berlin,w,"Berlin, Stadt",Berlin
+Angemeldet,TN,Testperson_Stadt_5,TN_5,10,--,--,--,22.07.2012,Musterstr. 285,10115,Berlin,d,"Berlin, Stadt",Berlin
+Angemeldet,TN,Testperson_Stadt_6,TN_6,10,--,--,--,07.08.2019,Musterstr. 286,10115,Berlin,w,"Berlin, Stadt",Berlin
+Angemeldet,TN,Testperson_Stadt_7,TN_7,10,--,--,--,23.03.2017,Musterstr. 287,10115,Berlin,d,"Berlin, Stadt",Berlin
+Angemeldet,TN,Testperson_Stadt_8,TN_8,10,--,--,--,08.11.2020,Musterstr. 288,10115,Berlin,d,"Berlin, Stadt",Berlin
+Angemeldet,TN,Testperson_Stadt_9,TN_9,10,--,--,Bildungspaket,24.02.2020,Musterstr. 289,10115,Berlin,w,"Berlin, Stadt",Berlin
+Angemeldet,TN,Testperson_Stadt_10,TN_10,10,--,--,--,21.03.2016,Musterstr. 290,10115,Berlin,d,"Berlin, Stadt",Berlin
+Angemeldet,TN,Testperson_München_1,TN_1,10,--,--,--,23.10.2016,Musterstr. 291,80331,München,m,Stadt München,Bayern
+Angemeldet,TN,Testperson_München_2,TN_2,10,--,G,--,01.12.2018,Musterstr. 292,80331,München,w,Stadt München,Bayern
+Angemeldet,TN,Testperson_München_3,TN_3,10,--,--,Bildungspaket,01.03.2019,Musterstr. 293,80331,München,d,Stadt München,Bayern
+Angemeldet,TN,Testperson_München_4,TN_4,10,--,--,--,23.08.2011,Musterstr. 294,80331,München,w,Stadt München,Bayern
+Angemeldet,TN,Testperson_München_5,TN_5,10,--,--,--,12.01.2012,Musterstr. 295,80331,München,d,Stadt München,Bayern
+Abgemeldet,MA,Testperson_Hamburg_1,MA_1,10,--,--,--,28.11.1999,Musterstr. 296,20095,Hamburg,m,Stadt Hamburg,Hamburg
+Abgemeldet,LEITUNG,Testperson_Hamburg_2,LEITUNG_2,10,JB-12345,--,--,13.08.1992,Musterstr. 297,20095,Hamburg,w,Stadt Hamburg,Hamburg
+Angemeldet,TN,Testperson_Hamburg_3,TN_3,10,--,--,--,14.09.2013,Musterstr. 298,20095,Hamburg,d,Stadt Hamburg,Hamburg
+Angemeldet,MA,Testperson_Hamburg_4,MA_4,10,JB-12345,--,--,13.02.1997,Musterstr. 299,20095,Hamburg,m,Stadt Hamburg,Hamburg
+Angemeldet,TN,Testperson_Hamburg_5,TN_5,10,--,--,Bildungspaket,03.01.2011,Musterstr. 300,20095,Hamburg,m,Stadt Hamburg,Hamburg
