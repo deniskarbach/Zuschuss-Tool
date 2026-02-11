@@ -5,7 +5,7 @@
   
   global_mode_raw; IFERROR(TRIM(SETUP!B54); "Normal");
   local_mode_raw; IFERROR(TRIM(VLOOKUP(setup_lk_name; SETUP!$B$60:$Z$100; 4; FALSE)); "");
-  active_mode; IF(local_mode_raw <> ""; local_mode_raw; global_mode_raw);
+  active_mode; IF(OR(local_mode_raw = ""; local_mode_raw = "Deaktiviert"); global_mode_raw; local_mode_raw);
   
   run_audit; (active_mode="Audit");
   run_debug; (active_mode="Debug");

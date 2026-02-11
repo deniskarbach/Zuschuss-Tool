@@ -16,7 +16,7 @@
   measure_duration; IF((setup_end > 0) * (setup_start > 0); setup_end - setup_start + 1; 1);
   
   local_mode_raw; IFERROR(TRIM(VLOOKUP(setup_lk_name; SETUP!$B$60:$Z$100; 4; FALSE)); "");
-  active_mode; IF(local_mode_raw <> ""; local_mode_raw; raw_debug);
+  active_mode; IF(OR(local_mode_raw = ""; local_mode_raw = "Deaktiviert"); raw_debug; local_mode_raw);
   run_audit; (active_mode="Audit");
   
   headers; TN_LISTE!A1:AZ1; 
