@@ -15,3 +15,7 @@ Die neue Tabelle öffnet sich automatisch. Diese Kopie gehört nun allein dir un
 *   **Keine Datenübertragung:** Es werden keinerlei Daten an externe Server oder an den Urheber gesendet. Die gesamte Verarbeitung findet ausschließlich innerhalb deiner eigenen Google Tabelle statt.
 
 Du hast die volle Kontrolle über deine Daten.
+
+### Hinweis zu den Regeln (RULES)
+
+Standardmäßig bezieht diese Tabelle die Regeln (RULES) aus einer zentralen Master-Datei. Möchtest du eigene Regeln definieren, musst du das Tabellenblatt `CACHE_RULES` einblenden und die dortige Tabelle so aufbereiten, dass du deine eigenen Werte eintragen kannst.
