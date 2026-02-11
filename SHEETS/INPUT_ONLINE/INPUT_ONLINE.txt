@@ -1,0 +1,32 @@
+=WENN(SETUP!B32=""; "⚠️ Keine URL hinterlegt";
+  WENNFEHLER(
+    WENN(SETUP!B37="Ja";
+      LET(
+        raw; IMPORTRANGE(
+          SETUP!B32;
+          WENN(SETUP!K32=""; "Formularantworten 1"; SETUP!K32) & "!A1:ZZ"
+        );
+        header; INDEX(raw; 1; 0);
+        name_col; WENNFEHLER(
+          VERGLEICH("*nachname*"; header; 0);
+          WENNFEHLER(
+            VERGLEICH("*familienname*"; header; 0);
+            WENNFEHLER(
+              VERGLEICH("name*"; header; 0);
+              WENNFEHLER(
+                VERGLEICH("*surname*"; header; 0);
+                WENNFEHLER(
+                  VERGLEICH("*last?name*"; header; 0);
+                  1
+                )
+              )
+            )
+          )
+        );
+        QUERY(raw; "SELECT * WHERE Col" & name_col & " IS NOT NULL")
+      );
+      WENN(SETUP!B37="Nein"; "⏹️ Import deaktiviert (Manuelle Eingabe)"; "ℹ️ Bitte Import konfigurieren")
+    );
+    "❌ Fehler beim Import (Zugriff erlaubt?)"
+  )
+)

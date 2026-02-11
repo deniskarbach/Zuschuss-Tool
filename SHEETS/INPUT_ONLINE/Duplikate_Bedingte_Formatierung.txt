@@ -1,0 +1,1 @@
+=ZÄHLENWENNS($E:$E; $E1; $F:$F; $F1; $K:$K; $K1) > 1

@@ -70,15 +70,17 @@ function processExport() {
         const sheet = ss.getSheetByName(sheetName);
         if (!sheet) return;
 
-        // Create Temp Spreadsheet
+        // Read values from ORIGINAL sheet (where all formula references are intact)
+        const values = sheet.getDataRange().getValues();
+
+        // Create Temp Spreadsheet and copy sheet (preserves formatting)
         const tempSS = SpreadsheetApp.create(`Temp_${sheetName}`);
         const tempSheet = sheet.copyTo(tempSS);
         tempSheet.setName(sheetName);
         tempSS.deleteSheet(tempSS.getSheets()[0]); // Delete the default "Sheet1"
 
-        // FLATTEN FORMULAS (Fix for #REF! errors)
-        const range = tempSheet.getDataRange();
-        range.setValues(range.getValues());
+        // FLATTEN: Overwrite broken formulas with correct values from original
+        tempSheet.getRange(1, 1, values.length, values[0].length).setValues(values);
 
         // Flush to ensure changes are saved before export
         SpreadsheetApp.flush();
