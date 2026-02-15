@@ -1,0 +1,20 @@
+=MAP(M2:M1253; N2:N1253; LAMBDA(plz; ort;
+  IF(plz=""; "";
+    IFERROR(
+      LET(
+        plz_txt; TEXT(plz;"00000");
+        ort_lower; LOWER(TRIM(ort));
+        landkreis; INDEX(FILTER(CACHE_PLZDB!C:C;
+          CACHE_PLZDB!A:A = plz_txt;
+          LOWER(CACHE_PLZDB!B:B) = ort_lower
+        ); 1);
+        tags; INDEX(FILTER(CACHE_PLZDB!E:E;
+          CACHE_PLZDB!A:A = plz_txt;
+          LOWER(CACHE_PLZDB!B:B) = ort_lower
+        ); 1);
+        IF(tags <> ""; tags; landkreis)
+      );
+      ""
+    )
+  )
+))

@@ -1,0 +1,14 @@
+[Bedingte Formatierung]
+Bereich anwenden auf: AQ2:AQ (oder AQ2:AQ2000)
+
+Benutzerdefinierte Formel:
+=UND($M2<>""; AQ2="")
+
+Erklärung:
+- $M2<>"" prüft, ob eine PLZ vorhanden ist (Spalte M).
+- AQ2="" prüft, ob die aktuelle Zelle (Landkreis) leer geblieben ist.
+
+Empfohlene Formatierung:
+- Hintergrundfarbe: Hellrot / Orange
+- Textfarbe: Dunkelrot
+- Bedeutung: "Achtung! Daten konnten nicht automatisch zugeordnet werden. Bitte Wohnort (Spalte N) prüfen."

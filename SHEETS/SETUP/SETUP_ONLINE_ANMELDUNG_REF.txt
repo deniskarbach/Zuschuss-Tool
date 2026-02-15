@@ -1,0 +1,1 @@
+=IF(B37="Ja"; IF(ISERROR(E37); "Status: Ok"; "✅ Daten werden bezogen"); "")

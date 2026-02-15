@@ -1,0 +1,7 @@
+=IF(B42="Legitimieren"; 
+  IMPORTRANGE(
+    IF(ISBLANK(B49); "1_ps3EArlcSRNHOkHoOy_4nbcPQCXMSXHyarPRy7BzH8"; B49); 
+    IF(ISBLANK(K49); "MASTER_DB_INFO!A1"; K49 & "!A1")
+  ); 
+  "🔒 Bitte legitimieren"
+)

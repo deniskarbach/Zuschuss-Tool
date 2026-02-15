@@ -1,0 +1,10 @@
+=WENN(B37="Ja";
+  WENN(B32="";
+    "⚠️ Fehler: Keine URL in B32 hinterlegt";
+    WENN(ISTFEHLER(IMPORTRANGE(B32; WENN(K32=""; "Formularantworten 1"; K32) & "!A1"));
+      IMPORTRANGE(B32; WENN(K32=""; "Formularantworten 1"; K32) & "!A1");
+      "Status: OK"
+    )
+  );
+  "🔒 Bitte legitimieren"
+)

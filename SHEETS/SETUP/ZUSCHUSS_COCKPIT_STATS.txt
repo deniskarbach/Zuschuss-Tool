@@ -1,0 +1,38 @@
+=LET(
+  headers; TN_LISTE!A1:AZ1;
+  data; TN_LISTE!A2:AZ;
+  
+  get_col; LAMBDA(name; CHOOSECOLS(data; MATCH(name; headers; 0)));
+  
+  c_status; get_col("Status");
+  c_lk; get_col("Landkreis");
+  c_gender; get_col("Geschlecht");
+  c_func; get_col("Funktion");
+  
+  mask_active; ARRAYFORMULA(IFERROR(SEARCH("Angemeldet"; c_status); 0) > 0);
+  
+  active_lk; FILTER(c_lk; mask_active);
+  active_gender; FILTER(c_gender; mask_active);
+  active_func; FILTER(c_func; mask_active);
+  
+  stats_total; COUNTA(active_lk);
+  
+  stats_lk; QUERY(active_lk; "SELECT Col1, COUNT(Col1) WHERE Col1 IS NOT NULL GROUP BY Col1 LABEL COUNT(Col1) 'Anzahl' FORMAT COUNT(Col1) '0'");
+  stats_gender; QUERY(active_gender; "SELECT Col1, COUNT(Col1) WHERE Col1 IS NOT NULL GROUP BY Col1 LABEL COUNT(Col1) 'Anzahl' FORMAT COUNT(Col1) '0'");
+  stats_func; QUERY(active_func; "SELECT Col1, COUNT(Col1) WHERE Col1 IS NOT NULL GROUP BY Col1 LABEL COUNT(Col1) 'Anzahl' FORMAT COUNT(Col1) '0'");
+  
+  VSTACK(
+    "📊 ZUSCHUSS-COCKPIT";
+    "-------------------";
+    "Gesamtteilnehmer (Angemeldet): " & stats_total;
+    " ";
+    "--- NACH FUNKTION ---";
+    stats_func;
+    " ";
+    "--- NACH GESCHLECHT ---";
+    stats_gender;
+    " ";
+    "--- NACH LANDKREIS ---";
+    stats_lk
+  )
+)

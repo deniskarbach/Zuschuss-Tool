@@ -1,0 +1,36 @@
+=LET(
+  raw_headers; TN_LISTE!A1:AZ1;
+  raw_data; TN_LISTE!A2:AZ2500;
+
+  input_regions; B60:B100;
+
+  idx_stat; MATCH("Status"; raw_headers; 0);
+  idx_lk; MATCH("Landkreis"; raw_headers; 0);
+  idx_func; MATCH("Funktion"; raw_headers; 0);
+  idx_gend; MATCH("Geschlecht"; raw_headers; 0);
+
+  c_stat; INDEX(raw_data; 0; idx_stat);
+  c_lk; INDEX(raw_data; 0; idx_lk);
+  c_func; INDEX(raw_data; 0; idx_func);
+  c_gend; INDEX(raw_data; 0; idx_gend);
+
+  MAP(input_regions; LAMBDA(r;
+    IF(r=""; "";
+      LET(
+        cnt_total; COUNTIFS(c_lk; r; c_stat; "*Angemeldet*");
+        cnt_tn; COUNTIFS(c_lk; r; c_stat; "*Angemeldet*"; c_func; "TN");
+        cnt_ma; cnt_total - cnt_tn;
+        cnt_m; COUNTIFS(c_lk; r; c_stat; "*Angemeldet*"; c_gend; "m*");
+        cnt_w; COUNTIFS(c_lk; r; c_stat; "*Angemeldet*"; c_gend; "w*");
+        cnt_d; cnt_total - cnt_m - cnt_w;
+
+        HSTACK(
+          IF(cnt_total=0; "-"; cnt_total);
+          IF(cnt_tn=0; "-"; cnt_tn);
+          IF(cnt_ma=0; "-"; cnt_ma);
+          IF(cnt_total=0; "-"; cnt_m & "m | " & cnt_w & "w | " & cnt_d & "d")
+        )
+      )
+    )
+  ))
+)

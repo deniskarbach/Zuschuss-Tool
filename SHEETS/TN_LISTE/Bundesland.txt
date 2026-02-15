@@ -1,0 +1,11 @@
+=MAP(M2:M1253; N2:N1253; LAMBDA(plz; ort;
+  IF(plz=""; "";
+    IFERROR(
+      INDEX(FILTER(CACHE_PLZDB!D:D;
+        CACHE_PLZDB!A:A = TEXT(plz;"00000");
+        LOWER(CACHE_PLZDB!B:B) = LOWER(TRIM(ort))
+      ); 1);
+      ""
+    )
+  )
+))

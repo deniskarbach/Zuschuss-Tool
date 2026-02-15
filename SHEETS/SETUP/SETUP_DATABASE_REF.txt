@@ -1,0 +1,1 @@
+=IF(B42="Legitimieren"; IF(ISERROR(E42); "⚠️ Maus über #REF! halten & klicken"; "✅ Dauerhaft Verbunden"); "")
