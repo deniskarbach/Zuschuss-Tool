@@ -2,7 +2,7 @@
 
   
   filter_function; "TN";
-  max_rows; 149;
+  max_rows; 22;
 
   
   setup_lk_name; "Landkreis Bad Kreuznach";

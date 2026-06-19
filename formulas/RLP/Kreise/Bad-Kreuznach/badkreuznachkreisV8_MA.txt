@@ -2,7 +2,7 @@
 
   
   filter_function; "MA";
-  max_rows; 12;
+  max_rows; 10;
 
   
   setup_lk_name; "Landkreis Bad Kreuznach";
